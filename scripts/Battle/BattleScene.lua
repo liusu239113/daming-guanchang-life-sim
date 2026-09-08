@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明浮生志2 - 3D讨伐战斗场景
+-- 大明设身处地官场人生模拟 - 3D讨伐战斗场景
 -- 自动战斗：双方单位在战场上移动、寻敌、攻击、死亡
 -- 战斗结束后结算奖励/伤亡，回写 GameData
 -- ============================================================================
@@ -992,6 +992,7 @@ end
 -- ============================================================================
 
 local function CreateBattleUI()
+    local rivalName = tostring(rivalData_.name)
     uiRoot_ = UI.Panel {
         id = "battleUI",
         width = "100%", height = "100%",
@@ -1019,7 +1020,7 @@ local function CreateBattleUI()
                     UI.Panel {
                         flexDirection = "row", alignItems = "center", gap = 6,
                         children = {
-                            UI.Label { id = "enemyInfo", text = rivalData_.name, fontSize = 14, fontColor = { 255, 180, 180, 255 } },
+                            UI.Label { id = "enemyInfo", text = rivalName, fontSize = 14, fontColor = { 255, 180, 180, 255 } },
                             UI.Panel { width = 10, height = 10, borderRadius = 5, backgroundColor = { 255, 80, 80, 255 } },
                         },
                     },

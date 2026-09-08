@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明浮生志2 — 大明风华
+-- 大明设身处地官场人生模拟 — 大明风华
 -- 主入口文件
 -- ============================================================================
 
@@ -321,7 +321,7 @@ function ShowSettingsModal()
             UI.Panel {
                 width = "100%", alignItems = "center", gap = 4,
                 children = {
-                    UI.Label { text = "大明浮生志 · 贰", fontSize = 15, fontColor = Theme.TEXT_PRIMARY },
+                    UI.Label { text = "大明设身处地官场人生模拟", fontSize = 15, fontColor = Theme.TEXT_PRIMARY },
                     UI.Label { text = "大明风华 · 版本 v2.0.0", fontSize = 11, fontColor = Theme.TEXT_MUTED },
                     UI.Label { text = "一款大明王朝宗族模拟经营游戏", fontSize = 11, fontColor = Theme.TEXT_MUTED },
                 },
@@ -584,7 +584,7 @@ end
 
 function Start()
     -- 设置窗口标题
-    graphics.windowTitle = "大明浮生志2 — 大明风华"
+    graphics.windowTitle = "大明设身处地官场人生模拟 — 大明风华"
 
     -- 初始化随机种子
     math.randomseed(os.time())
@@ -664,13 +664,13 @@ function Start()
     -- 显示主菜单
     ShowScreen("menu")
 
-    print("[大明浮生志2] 游戏启动完成")
+    print("[大明设身处地官场人生模拟] 游戏启动完成")
 end
 
 function Stop()
     -- 退出时自动存档
     if currentScreen_ == "game" and GameData.state then
         SaveSystem.AutoSave()
-        print("[大明浮生志2] 退出自动存档完成")
+        print("[大明设身处地官场人生模拟] 退出自动存档完成")
     end
 end

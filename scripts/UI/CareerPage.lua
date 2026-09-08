@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明浮生志2 - 仕途科举 / 从军 页面
+-- 大明设身处地官场人生模拟 - 仕途科举 / 从军 页面
 -- 从 GameScreen.lua 拆分出来的全屏页面模块
 -- ============================================================================
 
@@ -322,6 +322,7 @@ function CareerPage.Create(pageTitle, gameScreen)
                     if r.reqIdentity == rankName then nextRank = r; break end
                 end
 
+                ---@type Widget[]
                 local cardChildren = {
                     UI.Panel {
                         flexDirection = "row", gap = 6, alignItems = "center", flexShrink = 1,
@@ -517,6 +518,7 @@ function CareerPage.ShowExamStrategyModal(member, exam, gameScreen)
     local examPassQ = examCfg and examCfg.pass or 2
 
     -- 顶部信息
+    ---@type Widget[]
     local infoChildren = {
         UI.Label { text = member.name .. " · 学识" .. member.study, fontSize = 16, fontColor = Theme.TEXT_PRIMARY, fontWeight = "bold" },
         UI.Label { text = "考试形式：共" .. examTotalQ .. "题，答对" .. examPassQ .. "题即可通过", fontSize = 13, fontColor = Theme.TEXT_SECONDARY },

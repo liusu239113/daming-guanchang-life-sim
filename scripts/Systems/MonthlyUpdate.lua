@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明浮生志2 - 月度结算系统
+-- 大明设身处地官场人生模拟 - 月度结算系统
 -- 每月自动结算：资源产出、口粮消耗、族人成长、随机事件
 -- ============================================================================
 
@@ -614,7 +614,7 @@ function MonthlyUpdate.ProcessTax(report)
         taxRate = taxRate * difficulty.taxMul
 
         -- 官员减税：族中最高官职提供税赋减免
-        local taxReduceMax = 0
+        local taxReduceMax = 0.0
         for _, m in ipairs(GameData.GetAliveMembers()) do
             if m.state == "为官" and m.officialRank then
                 for _, rank in ipairs(MemberData.OFFICIAL_RANKS) do

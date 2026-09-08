@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明浮生志2 - 模态对话框集合
+-- 大明设身处地官场人生模拟 - 模态对话框集合
 -- 从 GameScreen.lua 提取，包含所有弹窗 UI
 -- 使用注入模式：Init(GameScreen) 将 Show* 方法挂载到 GameScreen 上
 -- ============================================================================
@@ -72,6 +72,7 @@ end
 local function StatBar(label, val, maxVal, aptitudeInfo)
     maxVal = maxVal or 100
     local pct = math.min(1.0, val / maxVal)
+    ---@type Widget[]
     local barChildren = {
         UI.Label { text = label, fontSize = 12, fontColor = Theme.TEXT_SECONDARY, width = 28 },
         UI.Panel {
@@ -87,9 +88,10 @@ local function StatBar(label, val, maxVal, aptitudeInfo)
     }
     -- 资质星级显示（紧跟数值后面）
     if aptitudeInfo then
+        ---@type RGBAColor
         local starsColor = MemberData.GetStarsColor(aptitudeInfo.stars)
         barChildren[#barChildren + 1] = UI.Label {
-            text = MemberData.GetStarsLabel(aptitudeInfo.stars),
+            text = tostring(MemberData.GetStarsLabel(aptitudeInfo.stars)),
             fontSize = 10, fontColor = starsColor, width = 38, textAlign = "right",
         }
     end
@@ -2073,6 +2075,7 @@ function GameScreen.ShowPrayDialog()
 
     -- ========== Phase 1: 选择祭品 ==========
     local function showPhase1()
+        ---@type Widget[]
         local children = {
             UI.Panel {
                 width = "100%", padding = 8, borderRadius = 6,
@@ -2187,6 +2190,7 @@ function GameScreen.ShowPrayDialog()
     function showPhase3(tier, hex)
         modal:ClearContent()
         modal.title = "祭天祈福 · " .. hex.gua .. "卦"
+        ---@type Widget[]
         local children = {
             -- 卦象标题
             UI.Panel {
@@ -2360,6 +2364,7 @@ function GameScreen.ShowCourtesanDialog()
             end
         end
 
+        ---@type Widget[]
         local children = {
             UI.Panel {
                 width = "100%", padding = 8, borderRadius = 6,
@@ -2438,6 +2443,7 @@ function GameScreen.ShowCourtesanDialog()
             return
         end
         local round = rounds[roundIdx]
+        local roundDescription = tostring(round.desc)
         modal.title = "花魁大赛 · " .. round.name .. "（第" .. roundIdx .. "/3轮）"
 
         -- 初始化本轮得分
@@ -2449,7 +2455,7 @@ function GameScreen.ShowCourtesanDialog()
                 backgroundGradient = { direction = "to-right", from = { 230, 120, 160, 40 }, to = { 0, 0, 0, 0 } },
                 children = {
                     UI.Label { text = "第" .. roundIdx .. "轮：" .. round.name, fontSize = 16, fontColor = { 200, 100, 140, 255 }, fontWeight = "bold" },
-                    UI.Label { text = round.desc, fontSize = 12, fontColor = Theme.TEXT_MUTED, marginTop = 2 },
+                    UI.Label { text = roundDescription, fontSize = 12, fontColor = Theme.TEXT_MUTED, marginTop = 2 },
                 },
             },
             -- 选手状态
@@ -2564,6 +2570,8 @@ function GameScreen.ShowCourtesanDialog()
         local rankIcons = { "冠", "亚", "季", "殿" }
         for rank, entry in ipairs(rankList) do
             local isPlayer = not entry.isAI
+            local rankText = tostring(rankIcons[rank] or rank)
+            local rankColor = rank == 1 and Theme.GOLD or (rank == 2 and Theme.SILVER_COLOR or Theme.TEXT_MUTED)
             children[#children + 1] = UI.Panel {
                 width = "100%", padding = 8, borderRadius = 6,
                 backgroundColor = isPlayer and { 255, 240, 245, 255 } or Theme.BG_WHITE,
@@ -2573,8 +2581,8 @@ function GameScreen.ShowCourtesanDialog()
                     UI.Panel {
                         flexDirection = "row", gap = 6, alignItems = "center",
                         children = {
-                            UI.Label { text = rankIcons[rank] or rank, fontSize = 16,
-                                fontColor = rank == 1 and Theme.GOLD or (rank == 2 and Theme.SILVER_COLOR or Theme.TEXT_MUTED),
+                            UI.Label { text = rankText, fontSize = 16,
+                                fontColor = rankColor,
                                 fontWeight = "bold" },
                             UI.Label { text = entry.name, fontSize = 14, fontColor = Theme.TEXT_PRIMARY, fontWeight = isPlayer and "bold" or "normal" },
                             isPlayer and UI.Label { text = "(我方)", fontSize = 11, fontColor = { 200, 100, 140, 255 } } or nil,

@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明浮生志2 - 游戏主界面（族谱中心 + 全屏页面切换）
+-- 大明设身处地官场人生模拟 - 游戏主界面（族谱中心 + 全屏页面切换）
 -- 顶部资源栏 + 中央内容区(族谱/宗祠/族人/产业/仕途/族规/事件) + 浮动时间控制 + 底部导航
 -- ============================================================================
 
@@ -128,6 +128,7 @@ end
 
 local function CreateTopBar()
     local s = GameData.state
+    local clanName = tostring(s.clanName)
     return UI.Panel {
         id = "topBar",
         width = "100%",
@@ -148,7 +149,7 @@ local function CreateTopBar()
                         backgroundColor = { 255, 252, 240, 160 },
                         borderRadius = 6, paddingHorizontal = 6, paddingVertical = 2,
                         children = {
-                            UI.Label { id = "clanNameLabel", text = s.clanName, fontSize = 16, fontColor = Theme.GOLD_DARK, fontWeight = "bold" },
+                            UI.Label { id = "clanNameLabel", text = clanName, fontSize = 16, fontColor = Theme.GOLD_DARK, fontWeight = "bold" },
                             UI.Panel {
                                 paddingHorizontal = 6, paddingVertical = 2,
                                 borderRadius = 4, backgroundColor = { 56, 168, 120, 40 },
@@ -1123,6 +1124,7 @@ end
 
 function GameScreen.CreateClanPage()
     local s = GameData.state
+    local clanName = tostring(s.clanName)
     local rankName = GameData.GetClanRankName()
     local nextRankIdx = math.min(s.clanRank + 1, #GameData.CLAN_RANKS)
     local nextRank = GameData.CLAN_RANKS[nextRankIdx]
@@ -1152,7 +1154,7 @@ function GameScreen.CreateClanPage()
                             UI.Panel {
                                 flexDirection = "row", justifyContent = "space-between", alignItems = "center",
                                 children = {
-                                    UI.Label { text = s.clanName, fontSize = 18, fontColor = Theme.GOLD },
+                                    UI.Label { text = clanName, fontSize = 18, fontColor = Theme.GOLD },
                                     UI.Label { text = GameData.GetRegion().name, fontSize = 12, fontColor = Theme.TEXT_SECONDARY },
                                 },
                             },
@@ -1298,6 +1300,56 @@ function GameScreen.CreateClanPage()
                                         backgroundImage = Theme.IMG.BTN_WORSHIP, backgroundFit = "cover", overflow = "hidden",
                                     },
                                     UI.Label { text = "祈福", fontSize = 11, fontColor = Theme.TEXT_MUTED, textAlign = "center" },
+                                },
+                            },
+                            -- 秋收族宴
+                            UI.Panel {
+                                alignItems = "center", gap = 4,
+                                children = {
+                                    UI.Panel {
+                                        width = 72, height = 72, borderRadius = 36,
+                                        opacity = (s.lastHarvestFeastYear < s.year and GameData.CanAfford(20, 30, 10, 0)) and 1.0 or 0.5,
+                                        onClick = function(self)
+                                            if s.lastHarvestFeastYear >= s.year then
+                                                Toast.Warn("今年已举办过秋收族宴，明年再来")
+                                                return
+                                            end
+                                            if not GameData.CanAfford(20, 30, 10, 0) then
+                                                Toast.NotEnough("银两、粮食或布匹")
+                                                return
+                                            end
+
+                                            local farmCount = 0
+                                            for _, industry in ipairs(s.industries) do
+                                                local industryType = GameData.GetIndustryType(industry.typeId)
+                                                if industryType and industryType.resource == "grain" then
+                                                    farmCount = farmCount + 1
+                                                end
+                                            end
+                                            local bonusGrain = 15 + farmCount * 8
+                                            local bonusFame = 5 + math.min(farmCount, 5)
+                                            local desc = "消耗 银两20、粮食30、布匹10\n获得 粮食+" .. bonusGrain .. "、声望+" .. bonusFame
+                                                .. "\n\n族中设宴答谢耕作者，粮田与渔业越兴，宴后收获越丰。"
+                                                .. "\n（当前粮产产业 " .. farmCount .. " 座；每年仅可举办一次）\n\n确认举办秋收族宴？"
+                                            GameScreen.ShowConfirm("秋收族宴", desc, "设宴", function()
+                                                if GameData.SpendResources(20, 30, 10, 0) then
+                                                    AudioManager.Celebrate()
+                                                    GameData.AddResource("grain", bonusGrain)
+                                                    GameData.AddResource("fame", bonusFame)
+                                                    s.lastHarvestFeastYear = s.year
+                                                    GameData.AddLog("举办秋收族宴，族人同心，粮食+" .. bonusGrain .. "、声望+" .. bonusFame .. "。")
+                                                    GameScreen.RefreshAll()
+                                                    Toast.Success("秋收族宴圆满，粮食+" .. bonusGrain .. " 声望+" .. bonusFame)
+                                                end
+                                            end)
+                                        end,
+                                        backgroundImage = Theme.IMG.BTN_WORSHIP, backgroundFit = "cover", overflow = "hidden",
+                                        justifyContent = "center", alignItems = "center",
+                                        children = {
+                                            UI.Label { text = "宴", fontSize = 20, fontColor = Theme.GOLD, fontWeight = "bold" },
+                                        },
+                                    },
+                                    UI.Label { text = "秋收宴", fontSize = 11, fontColor = Theme.TEXT_MUTED, textAlign = "center" },
                                 },
                             },
                             -- 筑寨（望族解锁）

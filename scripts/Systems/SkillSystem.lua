@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明浮生志2 - 技能专精系统
+-- 大明设身处地官场人生模拟 - 技能专精系统
 -- 管理技能路径解锁、效果应用、培养训练
 -- ============================================================================
 
@@ -15,7 +15,7 @@ local SkillSystem = {}
 ---@param memberId number
 ---@param pathId string "scholar"|"warrior"|"merchant"
 ---@return boolean success
----@return string message
+---@return string|nil message
 function SkillSystem.UnlockPath(memberId, pathId)
     local member = GameData.GetMember(memberId)
     if not member or not member.alive then return false, "族人不存在或已故" end

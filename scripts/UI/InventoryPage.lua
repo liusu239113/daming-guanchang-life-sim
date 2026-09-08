@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明浮生志2 - 库房页面
+-- 大明设身处地官场人生模拟 - 库房页面
 -- 显示物品仓库，支持对族人使用物品
 -- ============================================================================
 
@@ -69,6 +69,7 @@ function InventoryPage.BuildItemCard(slot, itemType, rarityColor, gameScreen)
     local needsMember = (itemType.useEffect == "heal" or itemType.useEffect == "study_boost"
         or itemType.useEffect == "martial_boost" or itemType.useEffect == "martial_boost_large")
 
+    ---@type Widget[]
     local cardChildren = {
         -- 头部：图标+名称+数量
         UI.Panel {
@@ -151,6 +152,7 @@ function InventoryPage.BuildItemCard(slot, itemType, rarityColor, gameScreen)
                     statText = "武" .. m.martial
                 end
 
+                local memberName = tostring(m.name)
                 memberItems[#memberItems + 1] = UI.Panel {
                     width = "100%", paddingVertical = 4, paddingHorizontal = 8,
                     borderRadius = 5, backgroundColor = { 66, 133, 244, 12 },
@@ -159,7 +161,7 @@ function InventoryPage.BuildItemCard(slot, itemType, rarityColor, gameScreen)
                         UI.Panel {
                             flexDirection = "row", gap = 6, alignItems = "center",
                             children = {
-                                UI.Label { text = m.name, fontSize = 14, fontColor = Theme.TEXT_PRIMARY },
+                                UI.Label { text = memberName, fontSize = 14, fontColor = Theme.TEXT_PRIMARY },
                                 UI.Label { text = statText, fontSize = 12, fontColor = Theme.BLUE },
                             },
                         },

@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明浮生志2 - 事件/历史大势页面（从 GameScreen.lua 拆分）
+-- 大明设身处地官场人生模拟 - 事件/历史大势页面（从 GameScreen.lua 拆分）
 -- EventPage.Create(PageTitle, screen) 创建事件页面
 -- ============================================================================
 
@@ -79,6 +79,7 @@ function EventPage.Create(PageTitle, screen)
                 backgroundColor = Theme.BG_WHITE,
                 borderWidth = 1, borderColor = Theme.RED_DARK, gap = 8,
                 children = (function()
+                    ---@type Widget[]
                     local evtChildren = {
                         UI.Label { text = evt.title, fontSize = 17, fontColor = Theme.GOLD },
                         UI.Label { text = evt.desc, fontSize = 14, fontColor = Theme.TEXT_PRIMARY, whiteSpace = "normal" },

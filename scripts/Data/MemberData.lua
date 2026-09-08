@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明浮生志2 - 族人数据模块
+-- 大明设身处地官场人生模拟 - 族人数据模块
 -- 管理族人相关配置：天赋、身份、状态、年龄、科举、军职、联姻等
 -- 从 GameData.lua 中拆分出来
 -- ============================================================================
@@ -95,8 +95,9 @@ end
 
 --- 获取星级颜色
 ---@param stars number 1-5
----@return table rgba
+---@return RGBAColor
 function MemberData.GetStarsColor(stars)
+    ---@type RGBAColor[]
     local colors = {
         { 160, 160, 160, 255 },  -- 1星 灰色
         { 100, 180, 100, 255 },  -- 2星 绿色
@@ -104,7 +105,9 @@ function MemberData.GetStarsColor(stars)
         { 180, 100, 220, 255 },  -- 4星 紫色
         { 220, 180, 40, 255 },   -- 5星 金色
     }
-    return colors[stars] or colors[1]
+    ---@type RGBAColor
+    local fallback = { 160, 160, 160, 255 }
+    return colors[stars] or fallback
 end
 
 -- 年龄阶段
