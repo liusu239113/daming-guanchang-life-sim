@@ -19,7 +19,12 @@
 | `schemas/` | 项目与清单配置的 JSON Schema | 7 | 45 KB |
 | `lua-tools/` | Lua LSP 工具（语法/类型检查） | 3 | 113 KB |
 
-另见仓库根目录的 **`makerapi.md`** —— 从 `.emmylua/` 自动提取的**完整 API 清单**（单文件，便于查阅与喂给 AI）。
+另见两份配套文档：
+
+| 文档 | 内容 |
+|------|------|
+| **`WEB-RUNTIME.md`** | 官方 Web/WASM 运行时**实测调查**：引擎版本、CDN 地址、寻址规则、加载流程、CLI 能力 |
+| 仓库根 `makerapi.md` | 从 `.emmylua/` 自动提取的**完整 API 清单**（单文件，便于查阅与喂给 AI） |
 
 ---
 
@@ -186,16 +191,30 @@ function Input:GetKeyPress(key) end
 
 | 项目 | 值 |
 |------|-----|
-| 引擎 tag | `stable` |
-| 引擎标识 | `ef9e23e2`（hash，非语义版本号） |
+| 引擎版本 | **1.34.15**（stable，2026-10-16），client hash `3c445fc9` |
+| 本项目构建锁定 | `ef9e23e2`（见 `dist/1.0.59/engine-ef9e23e2.json`） |
 | 项目版本 | `1.0.59` |
 | Web/WebGL 支持 | ✅ **原生支持**（引擎自身即可输出 Web 构建） |
-| Web 运行时 | 由官方 CDN 托管：`https://tapcode-sce.spark.xd.com/src/web/src/index.min.js` |
+| Web 播放器 | `https://tapcode-sce.spark.xd.com/src/web/src/index.min.js`（146 KB） |
+| Web 运行时三件套 | ✅ **公开可下载**，见 `WEB-RUNTIME.md` |
 | WASM 平台标识 | 文档中以 "WASM" 指代 Web 平台 |
+
+**运行时文件**（实测 HTTP 200，2026-10-18）：
+
+```
+https://tapcode-sce.spark.xd.com/src/engine/assets/{uuid}-{hash}{ext}
+
+UrhoXRuntime.js    338,323 B  (0.32 MB)
+UrhoXRuntime.wasm  40,840,396 B (38.95 MB)
+UrhoXRuntime.data  95,039,696 B (90.64 MB)
+```
+
+完整寻址规则、加载流程与自托管分析见 **[`WEB-RUNTIME.md`](WEB-RUNTIME.md)**。
 
 > ⚠️ **无法提供的资料**（工作区中不存在，引擎闭源分发）：
 > - 引擎 C++ 源码、tolua 绑定生成物、CMake 构建脚本
-> - 可自托管的 `.wasm` / `.js` 运行时包（运行时从 CDN 动态加载）
+> - 游戏资源包（manifest 的 621 个 uuid 文件）的线上分发路径
+> - 自托管的**授权许可**（代码支持换 host，但需官方明确是否允许）
 
 ---
 
