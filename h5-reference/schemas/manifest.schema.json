@@ -1,0 +1,300 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://urhox.dev/schemas/manifest.schema.json",
+  "title": "UrhoX Manifest",
+  "description": "UrhoX 构建产物清单文件 (manifest-{hash}.json)，包含资源列表和来源配置",
+  "type": "object",
+  "required": ["format", "target", "project_id", "sources", "entry", "files"],
+  "properties": {
+    "format": {
+      "type": "integer",
+      "description": "配置格式版本（解析方式版本）",
+      "minimum": 1,
+      "examples": [1]
+    },
+    "target": {
+      "type": "string",
+      "description": "目标端类型",
+      "enum": ["client", "server"],
+      "examples": ["client", "server"]
+    },
+    "project_id": {
+      "type": "string",
+      "description": "项目唯一标识符",
+      "pattern": "^p_[a-zA-Z0-9]+$",
+      "examples": ["p_a2sf"]
+    },
+    "sources": {
+      "type": "object",
+      "description": "资源来源定义（运行时使用）",
+      "additionalProperties": {
+        "$ref": "#/$defs/manifestSource"
+      }
+    },
+    "entry": {
+      "type": "string",
+      "description": "游戏入口文件（UUID 协议格式或裸 UUID）",
+      "examples": ["uuid://O4j8fmPW9pXTQuVlwAbdDnYc", "O4j8fmPW9pXTQuVlwAbdDnYc"]
+    },
+    "preload_groups": {
+      "type": "array",
+      "description": "预加载分组列表",
+      "items": {
+        "type": "string"
+      },
+      "examples": [["core", "ui", "level_1"]]
+    },
+    "files": {
+      "type": "array",
+      "description": "资源文件列表",
+      "items": {
+        "$ref": "#/$defs/manifestFile"
+      }
+    },
+    "download_config": {
+      "type": "object",
+      "description": "下载配置",
+      "properties": {
+        "concurrent_downloads": {
+          "type": "integer",
+          "description": "并发下载数量",
+          "minimum": 1,
+          "default": 5
+        },
+        "retry_times": {
+          "type": "integer",
+          "description": "下载失败重试次数",
+          "minimum": 0,
+          "default": 3
+        },
+        "timeout_ms": {
+          "type": "integer",
+          "description": "单个文件下载超时时间（毫秒）",
+          "minimum": 1000,
+          "default": 30000
+        },
+        "chunk_size": {
+          "type": "integer",
+          "description": "分块下载大小（字节，可选）",
+          "minimum": 1024
+        }
+      },
+      "additionalProperties": false
+    },
+    "metadata": {
+      "type": "object",
+      "description": "构建元数据",
+      "properties": {
+        "total_files": {
+          "type": "integer",
+          "description": "文件总数",
+          "minimum": 0
+        },
+        "total_size": {
+          "type": "integer",
+          "description": "总大小（字节）",
+          "minimum": 0
+        },
+        "preload_files": {
+          "type": "integer",
+          "description": "预加载文件数",
+          "minimum": 0
+        },
+        "preload_size": {
+          "type": "integer",
+          "description": "预加载大小（字节）",
+          "minimum": 0
+        },
+        "groups": {
+          "type": "object",
+          "description": "分组统计",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "files": {
+                "type": "integer",
+                "description": "文件数",
+                "minimum": 0
+              },
+              "size": {
+                "type": "integer",
+                "description": "大小（字节）",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "generated_at": {
+          "type": "string",
+          "description": "生成时间（ISO 8601 格式）",
+          "format": "date-time"
+        },
+        "generator": {
+          "type": "string",
+          "description": "生成器信息",
+          "examples": ["project_builder.py v2.0"]
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "manifestSource": {
+      "type": "object",
+      "description": "Manifest 中的资源来源配置",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "版本号",
+          "examples": ["1.2.3", "1.0.0"]
+        },
+        "base_url": {
+          "oneOf": [
+            {
+              "type": "string",
+              "description": "CDN 地址"
+            },
+            {
+              "type": "array",
+              "description": "CDN 地址列表（fallback/负载均衡）",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            }
+          ]
+        }
+      },
+      "required": ["base_url"],
+      "additionalProperties": false
+    },
+    "manifestFile": {
+      "type": "object",
+      "description": "Manifest 中的文件条目",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/uuidAsset",
+          "description": "UUID 资产（有 path 且格式为 {uuid}-{hash}.{ext}）"
+        },
+        {
+          "$ref": "#/$defs/pathAsset",
+          "description": "路径资产（仅有 path）"
+        }
+      ]
+    },
+    "uuidAsset": {
+      "type": "object",
+      "description": "UUID 资产。path 格式：{uuid}-{hash}.{ext}",
+      "required": ["path", "hash", "ext"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "CDN 上的资源路径。格式：{uuid}-{hash}.{ext}",
+          "pattern": "^[A-Za-z0-9]{24}-[a-f0-9]+\\.[a-zA-Z0-9]+$",
+          "examples": ["O4j8fmPW9pXTQuVlwAbdDnYc-a1b2c3d4.lua"]
+        },
+        "uuid": {
+          "type": "string",
+          "description": "资源 UUID（24 字符 Base64，可从 path 解析）",
+          "pattern": "^[A-Za-z0-9]{24}$",
+          "examples": ["O4j8fmPW9pXTQuVlwAbdDnYc"]
+        },
+        "hash": {
+          "type": "string",
+          "description": "文件内容哈希",
+          "pattern": "^[a-f0-9]+$",
+          "examples": ["a1b2c3d4"]
+        },
+        "ext": {
+          "type": "string",
+          "description": "文件扩展名（含点号）",
+          "pattern": "^\\.[a-zA-Z0-9]+$",
+          "examples": [".lua", ".png", ".xml"]
+        },
+        "size": {
+          "type": "integer",
+          "description": "文件大小（字节）",
+          "minimum": 0
+        },
+        "source": {
+          "type": "string",
+          "description": "资源来源。默认为 'project'",
+          "default": "project",
+          "examples": ["project", "official", "pub-pixel_master"]
+        },
+        "groups": {
+          "type": "array",
+          "description": "资源所属分组",
+          "items": {
+            "type": "string"
+          },
+          "examples": [["core"], ["ui", "level_1"]]
+        },
+        "alias": {
+          "type": "string",
+          "description": "资源别名（可选）",
+          "examples": ["main-script", "game-logic"]
+        },
+        "fs_path": {
+          "type": "string",
+          "description": "虚拟文件系统挂载路径（可选，兼容旧版）",
+          "examples": ["AgentProject/Scripts/main.lua"]
+        },
+        "config": {
+          "type": "string",
+          "description": "关联的配置文件 UUID（如纹理的 .xml 配置）",
+          "pattern": "^[A-Za-z0-9]{24}$"
+        },
+        "refs": {
+          "type": "array",
+          "description": "该资源直接引用的其他资源 UUID（一级引用，仅本地资源）",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9]{24}$"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "pathAsset": {
+      "type": "object",
+      "description": "路径资产（第三方资源）",
+      "required": ["path", "source"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "资源路径",
+          "examples": ["textures/pixel-tileset.png", "fonts/custom.ttf"]
+        },
+        "hash": {
+          "type": "string",
+          "description": "文件哈希（可选，用于缓存控制 ?v={hash}）",
+          "pattern": "^[a-f0-9]+$"
+        },
+        "size": {
+          "type": "integer",
+          "description": "文件大小（字节）",
+          "minimum": 0
+        },
+        "source": {
+          "type": "string",
+          "description": "资源来源（必须指定）",
+          "examples": ["pub-pixel_master", "pub-john_doe"]
+        },
+        "groups": {
+          "type": "array",
+          "description": "资源所属分组",
+          "items": {
+            "type": "string"
+          }
+        },
+        "alias": {
+          "type": "string",
+          "description": "资源别名（可选）"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

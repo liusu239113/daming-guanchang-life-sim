@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://urhox.dev/schemas/version.schema.json",
+  "title": "UrhoX Version Index",
+  "description": "UrhoX 版本索引文件 (version.json)，指向 client/server 的 manifest",
+  "type": "object",
+  "required": ["format", "version", "client"],
+  "properties": {
+    "format": {
+      "type": "integer",
+      "description": "配置格式版本（解析方式版本）",
+      "minimum": 1,
+      "examples": [1]
+    },
+    "version": {
+      "type": "string",
+      "description": "项目版本号（semver 格式）",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "examples": ["1.0.0", "1.2.5"]
+    },
+    "build": {
+      "type": "integer",
+      "description": "构建号（自增）",
+      "minimum": 1,
+      "examples": [100, 256]
+    },
+    "client": {
+      "type": "string",
+      "description": "客户端 manifest 哈希。manifest 路径：manifest-{client}.json",
+      "pattern": "^[a-f0-9]+$",
+      "examples": ["a1b2c3d4"]
+    },
+    "server": {
+      "type": "string",
+      "description": "服务端 manifest 哈希。manifest 路径：manifest-{server}.json",
+      "pattern": "^[a-f0-9]+$",
+      "examples": ["e5f6g7h8"]
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "format": 1,
+      "version": "1.2.5",
+      "build": 100,
+      "client": "a1b2c3d4",
+      "server": "e5f6g7h8"
+    }
+  ]
+}

@@ -41,3 +41,7 @@ CLAUDE.md
 
 # Maker 默认忽略规则（自动补充；平台内容不应提交）
 .org.chromium.Chromium.??????
+
+# H5 复刻参考资料包（显式纳入版本控制，见 h5-reference/README.md）
+!h5-reference/
+!h5-reference/**
