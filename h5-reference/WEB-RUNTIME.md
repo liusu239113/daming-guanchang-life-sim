@@ -37,13 +37,37 @@
 
 | 项目 | 值 |
 |------|-----|
-| 引擎版本 | **1.34.15** |
-| 引擎 client hash | `3c445fc9` |
+| `latest.json` 版本 | **1.34.15**（client `3c445fc9`，2026-10-16） |
+| `stable.json` 版本 | **1.34.8**（client `2f2ba032`，2026-10-15） |
 | base_url | `https://tapcode-sce.spark.xd.com/src/engine/` |
-| 引擎清单 | `.../src/engine/1.34.15/manifest-3c445fc9.json` |
 
-> 注：`settings.json` 中的 tag 为 `stable`（非语义版本号）。
-> 本项目构建时锁定的是 `ef9e23e2`（见 `dist/1.0.59/engine-ef9e23e2.json`），与当前 stable 的 `3c445fc9` 不同 —— 说明引擎版本会随平台更新。
+### ⚠️ 关于本项目构建的 `ef9e23e2` —— 它不是引擎版本
+
+一个容易误读的点：`dist/1.0.59/engine-ef9e23e2.json` 的**文件名**里的 `ef9e23e2`
+**不是引擎版本号，也不是内容 hash**（实测其内容 md5 为 `70ca81fa`、sha256 为 `aaaf297d`）。
+
+该文件内容是：
+
+```json
+{ "tag": "stable", "base_url": "https://tapcode-sce.spark.xd.com/src/engine/" }
+```
+
+**关键机制**（还原自 `index.min.js`）：
+
+```js
+let verName = (engineSrc.tag || 'latest') + '.json';       // → "stable.json"
+if (engineSrc.version) verName = engineSrc.version + '/version.json';
+const engineVer = await fetchJson(engineUrl + verName);
+const manifest  = await fetchJson(
+    engineUrl + engineVer.version + '/manifest-' + engineVer.client + '.json');
+```
+
+→ 因为 `tag = "stable"`，加载时会读 **`stable.json`**，拿到**当时最新的 stable 引擎**。
+
+**结论**：本项目**不锁定引擎版本**，始终跟随 stable。所以：
+- 构建时的 `ef9e23e2` 只是一个构建标识，**线上取不到该版本目录**（实测 404）
+- 实际运行时用的是**当前 stable 引擎**（写作时为 1.34.8）
+- 新旧引擎兼容性**不构成问题** —— 因为压根不会去加载旧引擎
 
 ---
 
@@ -71,14 +95,37 @@ https://tapcode-sce.spark.xd.com/src/engine/assets/{uuid}-{hash}{ext}
 
 ### 运行时三件套（2026-10-18 实测）
 
-| 文件 | 大小 | 完整 URL | 实测 |
-|------|------|---------|------|
-| `UrhoXRuntime.js` | 338,323 B（0.32 MB） | `.../src/engine/assets/F_eHcSf-SM3QhZC0tLIFdqPF-2cee04d1.js` | ✅ 200 |
-| `UrhoXRuntime.wasm` | 40,840,396 B（**38.95 MB**） | `.../src/engine/assets/ANHo6ZWrXNgrQz58G-lCGaOB-ee10ffc9.wasm` | ✅ 200 |
-| `UrhoXRuntime.data` | 95,039,696 B（**90.64 MB**） | `.../src/engine/assets/BbTo8SDowugga3YXpnunSY6G-b6880fe6.data` | ✅ 200 |
-| `version.json` | 125 B | `.../src/engine/assets/AnaBaUzBLPaFI1X7JHm0jv0y-6577a09e.json` | — |
+**`stable` 引擎（1.34.8 / client `2f2ba032`）—— 本项目实际加载的就是这一套**
 
-> ⚠️ uuid 与 hash 随引擎版本变化，上表对应 **1.34.15**。换版本需重新读 manifest。
+| 文件 | 大小 | URL（`.../src/engine/assets/` 下） | 实测 |
+|------|------|-----------------------------------|------|
+| `UrhoXRuntime.js` | 338,146 B | `HY4oKWUE6ZrbSAE8X2T8-yjo-9854e03a.js` | ✅ 206 |
+| `UrhoXRuntime.wasm` | 40,634,534 B（38.75 MiB） | `GWC84cxRDByYUkf-Vap6ep82-d172cb60.wasm` | ✅ 200 |
+| `UrhoXRuntime.data` | 94,448,437 B（90.07 MiB） | `BWS1cZS6LOkyO4HAxy9Y2IJP-47f66509.data` | ✅ 200 |
+| `version.json` | 125 B | `GvajqRzvo61n-BMQ23DmpR-p-b4e18f6a.json` | — |
+
+**`latest` 引擎（1.34.15 / client `3c445fc9`）**
+
+| 文件 | 大小 | URL（`.../src/engine/assets/` 下） | 实测 |
+|------|------|-----------------------------------|------|
+| `UrhoXRuntime.js` | 338,323 B | `F_eHcSf-SM3QhZC0tLIFdqPF-2cee04d1.js` | ✅ 200 |
+| `UrhoXRuntime.wasm` | 40,840,396 B（38.95 MiB） | `ANHo6ZWrXNgrQz58G-lCGaOB-ee10ffc9.wasm` | ✅ 200 |
+| `UrhoXRuntime.data` | 95,039,696 B（90.64 MiB） | `BbTo8SDowugga3YXpnunSY6G-b6880fe6.data` | ✅ 200 |
+
+> ⚠️ uuid 与 hash 随引擎版本变化。换版本需重新读对应 `manifest-<client>.json`。
+
+### 历史引擎版本保留情况
+
+CDN **保留历史版本的 manifest**（实测 200），但**不保留版本目录下的 `latest.json`**：
+
+| 路径 | 实测 |
+|------|------|
+| `src/engine/1.31.35/manifest-df9e137f.json` | ✅ 200 |
+| `src/engine/1.34.8/manifest-2f2ba032.json` | ✅ 200 |
+| `src/engine/1.34.15/manifest-3c445fc9.json` | ✅ 200 |
+| `src/engine/1.31.35/version.json` | ✅ 200 |
+| `src/engine/1.34.0/version.json` | ❌ 404（该版本不存在） |
+| `src/engine/ef9e23e2/manifest-*.json` | ❌ 404（非版本目录） |
 
 ### 完整加载流程（还原自源码）
 
@@ -113,34 +160,50 @@ buildFileMap(manifest.files, engineUrl + 'assets/');
 dist/
 ├── index.html                           ← Web 入口（加载 index.min.js）
 ├── __preview-bridge.js                  ← 预览桥接
-├── latest.json                          ← 版本指针
+├── latest.json                          ← 版本指针（→ 1.0.59）
 ├── 1.x.x.json
 ├── env.json                             ← {"env":"production"}
-├── assets.7z                (64.7 MB)   ← 游戏资源包
+├── assets.7z                (62 MiB)    ← 游戏资源包
 └── 1.0.59/
-    ├── engine-ef9e23e2.json             ← 引擎 base_url 配置
-    ├── manifest-c1b5d01b.json   (621 个文件)  ← 客户端资源清单
+    ├── engine-ef9e23e2.json             ← 引擎 base_url 配置（tag=stable）
+    ├── manifest-c1b5d01b.json  (621 个文件)  ← 客户端资源清单
     ├── manifest-2d5b4caf.json           ← 服务端资源清单
-    ├── manifest-origin.json
+    ├── manifest-origin.json / .b2.json
     ├── version.json
     └── project.json
 ```
 
-**`engine-ef9e23e2.json` 内容**：
-```json
-{ "tag": "stable", "base_url": "https://tapcode-sce.spark.xd.com/src/engine/" }
+**游戏 manifest 结构**（`manifest-c1b5d01b.json`）：
+
+| 字段 | 值 |
+|------|-----|
+| `target` | `client` |
+| `project_id` | `p_eshc` |
+| `entry` | `main.lua` |
+| `asset_prefixes` | `["assets", "scripts"]` |
+| `files` | 621 项，每项含 `fs_path` / `uuid` / `hash` / `size` |
+| `metadata.total_size` | 277,688,321 B（约 265 MiB） |
+| `metadata.local_files` | 616（`remote_files`: 5） |
+| `sources` | `engine-res` / `official-res`，均 `tag=stable` |
+
+示例项：
+```
+Textures/war_horse_00_D.jpg  uuid=A1a4gdK9OwrcsiZHX10Ffm22  hash=680ccb14  409525 B
+UI/FuneralModal.lua          uuid=A2AxCdGBrAopGY-gktXNCC0C  hash=b725e6d0   32348 B
 ```
 
-**游戏 manifest 结构**（`manifest-c1b5d01b.json`）：
-- `files`: 621 项，每项含 `fs_path` / `uuid` / `hash` / `size`
-- `asset_prefixes`: `["assets", "scripts"]`
-- 示例项：
-  ```
-  Textures/war_horse_00_D.jpg  uuid=A1a4gdK9OwrcsiZHX10Ffm22  hash=680ccb14  409525 B
-  UI/FuneralModal.lua          uuid=A2AxCdGBrAopGY-gktXNCC0C  hash=b725e6d0   32348 B
-  ```
+### 已打包的 dist（可直接取用）
 
-> 游戏资源的**分发地址未公开**（探测 `src/engine/p_eshc/`、`projects/p_eshc/` 等均 404）。
+为便于本地实跑验证，已将 `dist/` 打包为两个 tar.gz：
+
+| 包 | 大小 | 内容 |
+|----|------|------|
+| `daming-dist-full.tar.gz` | 62 MiB | 完整 dist（含 `assets.7z`） |
+| `daming-dist-manifest.tar.gz` | 134 KiB | 仅清单（除 `assets.7z` 外全部） |
+
+> ⚠️ 打包时**已排除** `user_info.json` / `mac-token.json`（含登录凭证，不可外传）。
+
+> 游戏资源的**线上分发地址未公开**（探测 `src/engine/p_eshc/`、`projects/p_eshc/` 等均 404）。
 > 本地已有完整产物，但线上分发路径需向平台确认。
 
 ---
@@ -199,7 +262,6 @@ Commands:
 1. **自托管授权** —— 代码支持 ≠ 许可允许，需官方明确
 2. **游戏资源分发路径** —— manifest 的 621 个 uuid 文件从哪加载
 3. **Web 预览 URL** 与访问权限（登录/白名单）
-4. **打包方式** —— CLI 无此能力，是否只能走平台构建机
 
 ### 两条技术路线
 
@@ -213,16 +275,19 @@ Commands:
 ## 八、可直接向平台提的问题（精简版）
 
 > 我想在浏览器里用官方 WASM 运行时跑 Maker 工程（不自研渲染）。
-> 已自行查明：引擎 stable 为 **1.34.15**，运行时文件可从
-> `https://tapcode-sce.spark.xd.com/src/engine/assets/{uuid}-{hash}{ext}` 下载
-> （`UrhoXRuntime.js` 338KB / `.wasm` 38.95MB / `.data` 90.64MB），`dist/` 已是完整 Web 构建产物。
 >
-> 请确认四点：
+> **已自行查明，无需回答**：
+> - 引擎版本：`stable.json` → 1.34.8（client `2f2ba032`）；`latest.json` → 1.34.15
+> - 运行时三件套可从 `.../src/engine/assets/{uuid}-{hash}{ext}` 下载（实测 200）
+> - `engine-ef9e23e2.json` 的 tag 是 `stable`，即**不锁定引擎版本**，跟随 stable
+> - `dist/` 已是完整 Web 构建产物（621 文件 manifest + assets.7z 62 MiB）
+> - `UrhoXCLI` 只有模型工具，无打包命令
+>
+> **请确认三点**：
 > 1. 该工程的 **Web 预览/发布 URL**（`https://.../g/p_eshc/` 形式）？是否需要登录或白名单？
-> 2. **游戏资源包**（manifest 里 621 个 uuid 文件 + `assets.7z`）的分发地址？有无公开规律？
+> 2. **游戏资源包**（manifest 里 621 个 uuid 文件 + `assets.7z`）的线上分发地址？有无公开规律？
 > 3. `index.min.js` 中有 `isPublishGame` 时把 engineUrl 的 host 替换为 `location.host` 的分支
->    —— **是否官方允许自托管运行时**用于开发调试？有无授权条件？
-> 4. `UrhoXCLI` 只有模型工具、无打包命令，**Windows 版或替代打包方式**是否存在？
+>    —— **是否官方允许自托管运行时**用于开发调试（不对外分发）？有无授权条件？
 
 ---
 
