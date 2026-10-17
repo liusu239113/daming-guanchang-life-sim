@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明设身处地官场人生模拟 - 明亮现代主题
+-- 大明人生官场模拟 - 明亮现代主题
 -- 浅色暖白底色、干净简洁、现代扁平风格
 -- ============================================================================
 
@@ -98,7 +98,7 @@ Theme.SPEED_PAUSED = { 220, 80, 60, 255 }      -- 暂停色（红）
 Theme.IMG = {
     MENU_BG       = "image/edited_menu_bg_clean_20260510194159.png",
     BG_TEXTURE    = "image/bg_light_texture_20260510191243.png",
-    LOGO          = "image/logo_title_daming_guanchang_20260908054225.png",
+    LOGO          = "image/edited_logo_dr_v3_20260915053250.png",
     BTN_START     = "image/btn_start_20260510194730.png",
     BTN_CONTINUE  = "image/btn_load_20260510194725.png",
     BTN_SAVES     = "image/btn_archive_20260510194700.png",

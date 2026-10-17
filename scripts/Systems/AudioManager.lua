@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明设身处地官场人生模拟 - 音频管理器
+-- 大明人生官场模拟 - 音频管理器
 -- 管理 BGM 播放（含时代切换）和 SFX 触发
 -- ============================================================================
 
@@ -129,7 +129,7 @@ function AudioManager.GetCurrentBGMKey()
 end
 
 --- 播放任意音频文件（一次性，不循环），用于配音/特殊音效
----@param filePath string  资源路径，如 "audio/voice/funeral_cry_child_voice.ogg"
+---@param filePath string  资源路径，如 "audio/sfx/event_battle.ogg"
 function AudioManager.PlayFile(filePath)
     if not initialized_ then AudioManager.Init() end
     local sound = cache:GetResource("Sound", filePath)

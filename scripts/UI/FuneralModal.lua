@@ -1,14 +1,13 @@
 -- ============================================================================
--- 大明设身处地官场人生模拟 - 葬礼系统
+-- 大明人生官场模拟 - 葬礼系统
 -- 死亡触发葬礼弹窗：选择规模后播放仪式
--- 薄葬/厚葬：静态灵堂图 + 哭声 + 5秒
--- 广大祭葬：看广告解锁 → 视频动画 + 收份子钱
+-- 薄葬/厚葬：静态灵堂图，可直接点击跳过
+-- 广大祭葬：看广告解锁 → 静态仪式图 + 收份子钱，可直接点击跳过
 -- ============================================================================
 
 ---@diagnostic disable: undefined-global
 
 local UI           = require("urhox-libs/UI")
-local Video        = require("urhox-libs/Video")
 local Theme        = require("UI.Theme")
 local AudioManager = require("Systems.AudioManager")
 local AdSystem     = require("Systems.AdSystem")
@@ -68,22 +67,6 @@ local SCALES = {
 -- 工具函数
 -- ============================================================================
 
---- 根据逝者返回哭灵配音路径
----@param member table
----@return string
-local function GetVoicePath(member)
-    if not member then return "audio/voice/funeral_cry_adult_voice.ogg" end
-    if member.age < 15 then
-        return "audio/voice/funeral_cry_child_voice.ogg"
-    elseif member.age >= 60 then
-        return "audio/voice/funeral_cry_elder_voice.ogg"
-    elseif member.gender == "female" then
-        return "audio/voice/funeral_cry_female_voice.ogg"
-    else
-        return "audio/voice/funeral_cry_adult_voice.ogg"
-    end
-end
-
 --- 计算某规模的实际花费 (silver, cloth, fame)
 ---@param scale table
 ---@param clanRank number
@@ -99,15 +82,14 @@ end
 
 -- ============================================================================
 -- 普通葬礼仪式（薄葬 / 厚葬）
--- 静态灵堂图 + 哭灵配音 + 葬礼 BGM，5 秒后自动结束
+-- 静态灵堂图 + 葬礼 BGM，可直接点击跳过
 -- ============================================================================
 
 local function PlaySimpleCeremony(gameRoot, member, scaleName, fameReward, onComplete)
     local prevBgmKey = AudioManager.GetCurrentBGMKey()
 
-    -- 播放葬礼 BGM 和哭声
+    -- 播放葬礼 BGM
     AudioManager.PlayBGM("FUNERAL")
-    AudioManager.PlayFile(GetVoicePath(member))
 
     local memberName = member and member.name or "族人"
     local memberAge  = member and member.age  or 0
@@ -192,14 +174,7 @@ local function PlaySimpleCeremony(gameRoot, member, scaleName, fameReward, onCom
     GetGameScreen().RegisterCeremonyUpdate(function(dt)
         if finished then return false end
         elapsed = elapsed + dt
-        -- 更新进度条
-        if gameRoot then
-            local bar = gameRoot:FindById("funeralSimpleProgress")
-            if bar then
-                local pct = math.min(elapsed / DURATION, 1.0) * 100
-                bar:SetStyle({ width = math.floor(pct) .. "%" })
-            end
-        end
+        -- 兜底自动结束（玩家未点击时）
         if elapsed >= DURATION then
             Finish()
             return false
@@ -214,6 +189,10 @@ local function PlaySimpleCeremony(gameRoot, member, scaleName, fameReward, onCom
         position = "absolute", left = 0, top = 0, zIndex = 960,
         backgroundColor = { 0, 0, 0, 220 },
         justifyContent = "center", alignItems = "center",
+        onTap = function()
+            -- 可直接点击跳过，无需等待
+            Finish()
+        end,
         children = {
             UI.Panel {
                 width = "85%", maxWidth = 360,
@@ -241,18 +220,10 @@ local function PlaySimpleCeremony(gameRoot, member, scaleName, fameReward, onCom
                             },
                         },
                     },
-                    -- 进度条底
-                    UI.Panel {
-                        width = "80%", height = 4, borderRadius = 2,
-                        backgroundColor = { 60, 50, 40, 255 },
-                        marginTop = 8,
-                        children = {
-                            UI.Panel {
-                                id = "funeralSimpleProgress",
-                                width = "0%", height = "100%", borderRadius = 2,
-                                backgroundColor = { 180, 150, 80, 255 },
-                            },
-                        },
+                    -- 跳过提示
+                    UI.Label {
+                        text = "点击屏幕跳过",
+                        fontSize = 11, fontColor = { 100, 90, 75, 160 }, marginTop = 8,
                     },
                 },
             },
@@ -269,26 +240,16 @@ end
 local function PlayGrandCeremony(gameRoot, member, fameReward, fenziSilver, onComplete)
     local prevBgmKey = AudioManager.GetCurrentBGMKey()
     AudioManager.PlayBGM("FUNERAL")
-    -- 0.8秒后播哭灵配音
-    local voicePlayed = false
-    local voiceTimer  = 0.0
 
     local finished    = false
-    local elapsed     = 0.0   -- 必须在 Finish() 之前定义，Finish() 会引用
+    local elapsed     = 0.0   -- 兜底自动结束用
     ---@type table
     local overlayRef  = nil   -- 闭包引用，直接用于移除
-    ---@type table
-    local videoWidget = nil   -- VideoPlayer 引用，Finish 时销毁
 
     local function Finish()
         if finished then return end
         finished = true
         log:Write(LOG_INFO, "[FuneralModal][Grand] Finish called, elapsed=" .. elapsed)
-        -- 销毁 VideoPlayer，释放 GPU 显存
-        if videoWidget then
-            videoWidget:Destroy()
-            videoWidget = nil
-        end
         if overlayRef and gameRoot then
             gameRoot:RemoveChild(overlayRef)
             overlayRef = nil
@@ -367,24 +328,8 @@ local function PlayGrandCeremony(gameRoot, member, fameReward, fenziSilver, onCo
     GetGameScreen().RegisterCeremonyUpdate(function(dt)
         if finished then return false end
         elapsed = elapsed + dt
-        voiceTimer = voiceTimer + dt
-        if not voicePlayed and voiceTimer >= 0.8 then
-            voicePlayed = true
-            AudioManager.PlayFile(GetVoicePath(member))
-        end
-        -- 更新跳过提示文字
-        if overlayRef then
-            local hint = overlayRef:FindById("funeralGrandSkipHint")
-            if hint then
-                if elapsed < 3.0 then
-                    hint:SetText(math.ceil(3.0 - elapsed) .. "秒后可点击跳过")
-                else
-                    hint:SetText("点击屏幕跳过")
-                end
-            end
-        end
-        -- 15秒兜底自动结束（视频 onEnded 通常会先触发）
-        if elapsed >= 15.0 then
+        -- 30秒兜底自动结束（无人点击时）
+        if elapsed >= 30.0 then
             Finish()
             return false
         end
@@ -404,36 +349,28 @@ local function PlayGrandCeremony(gameRoot, member, fameReward, fenziSilver, onCo
         backgroundColor = { 0, 0, 0, 230 },
         justifyContent = "center", alignItems = "center",
         onTap = function()
-            if elapsed >= 3.0 then Finish() end
+            -- 可直接点击跳过，无需等待
+            Finish()
         end,
         children = {
             UI.Panel {
                 width = "85%", maxWidth = 360,
                 alignItems = "center", gap = 0,
                 children = {
-                    -- 视频区域（带金色边框）
+                    -- 仪式静态图（带金色边框）
                     UI.Panel {
                         width = "100%", borderRadius = 8,
                         borderWidth = 2, borderColor = { 180, 150, 60, 200 },
                         overflow = "hidden",
                         children = {
-                            -- 视频播放（Video.VideoPlayer，播完自动调 Finish）
-                            (function()
-                                videoWidget = Video.VideoPlayer {
-                                    src           = "video/funeral_grand.mp4",
-                                    width         = "100%",
-                                    height        = 260,
-                                    textureWidth  = 1280,
-                                    textureHeight = 720,
-                                    autoPlay      = true,
-                                    loop          = false,
-                                    muted         = false,
-                                    objectFit     = "cover",
-                                    onEnded       = function() Finish() end,
-                                }
-                                return videoWidget
-                            end)(),
-                            -- 金色标题牌（浮在视频上方）
+                            -- 静态仪式图
+                            UI.Panel {
+                                width = "100%",
+                                height = 260,
+                                backgroundImage = "image/cgt-20260523192031-z2d4j_last_frame.png",
+                                backgroundFit = "cover",
+                            },
+                            -- 金色标题牌（浮在图片上方）
                             UI.Panel {
                                 position = "absolute", top = 10, left = 0, right = 0,
                                 alignItems = "center",
@@ -473,10 +410,9 @@ local function PlayGrandCeremony(gameRoot, member, fameReward, fenziSilver, onCo
                             UI.Label { text = "声望+" .. fameReward, fontSize = 13, fontColor = { 212, 175, 55, 255 }, fontWeight = "bold" },
                         },
                     },
-                    -- 跳过提示（id 供 Update 更新文字）
+                    -- 跳过提示
                     UI.Label {
-                        id = "funeralGrandSkipHint",
-                        text = "3秒后可点击跳过",
+                        text = "点击屏幕跳过",
                         fontSize = 11, fontColor = { 100, 90, 75, 160 }, marginTop = 8,
                     },
                 },
@@ -607,7 +543,7 @@ function FuneralModal.ShowDialog(gameRoot, member, onComplete)
                                                 fontSize = 13, fontColor = { 120, 200, 120, 255 }, fontWeight = "bold",
                                             },
                                             UI.Label {
-                                                text = "视频仪式 + 份子钱银" .. fenziSilver .. " + 声望+" .. scaleCopy.fameReward,
+                                                text = "仪式大典 + 份子钱银" .. fenziSilver .. " + 声望+" .. scaleCopy.fameReward,
                                                 fontSize = 12, fontColor = { 160, 220, 160, 255 },
                                             },
                                         },

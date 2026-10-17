@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明设身处地官场人生模拟 - 名门品级（7级）专属事件池
+-- 大明人生官场模拟 - 名门品级（7级）专属事件池
 -- 设计理念：名门望族树大招风，面临朝堂倾轧、地方豪强觊觎
 -- ============================================================================
 
@@ -147,7 +147,94 @@ events[#events + 1] = {
     end,
 }
 
--- 4. 朝廷摊派
+-- 4. 天子赐匾 — 名门获御赐匾额，荣耀加身
+events[#events + 1] = {
+    id = "r7_imperial_plaque",
+    title = "天子赐匾",
+    rankRange = {7, 9},
+    weight = 8,
+    cooldownMonths = 18,
+    isDisaster = false,
+    check = function(s) return s.fame > 400 end,
+    execute = function(s, report)
+        local feastCost = math.ceil(40 + s.clanRank * 8)
+        report.events[#report.events + 1] = "圣上御笔亲题匾额，赐予家族！"
+        GameData.AddLog("天子御赐匾额，阖族荣光。")
+        return {
+            title = "天子赐匾",
+            desc = "家族声名上达天听，圣上龙颜大悦，御笔亲题「忠义传家」四字匾额，遣钦差送至府上。\n此乃天大的荣耀，然迎匾之礼若失体统，恐惹圣颜不悦；若大操大办，又需破费不少。",
+            choices = {
+                { text = "隆重迎匾，宴请四方（-" .. feastCost .. "银两，声望+40）", cost = {silver = feastCost},
+                  result = "族中张灯结彩，焚香沐浴，鼓乐齐鸣，阖族跪迎御匾入祠。四方宾客纷至沓来，观礼者挤满街巷。钦差回京复命，盛赞家族知礼守义，天颜甚悦。",
+                  effect = function()
+                    GameData.AddResource("fame", 40)
+                    GameData.AddLog("隆重迎匾入祠，朝廷嘉许，声威大振。")
+                  end },
+                { text = "简朴恭迎，诚心为上（声望+20）",
+                  result = "族长率全族老幼素衣跪迎，不设鼓乐，不摆宴席，唯有满腔赤诚。钦差见状动容，叹道「真忠义之家也」。礼数虽薄，诚意却重。",
+                  effect = function()
+                    GameData.AddResource("fame", 20)
+                    GameData.AddLog("简朴恭迎御匾，以诚敬之心感召乡里。")
+                  end },
+                { text = "拓印匾文分赠族学（-20银两，全族学识+3）", cost = {silver = 20},
+                  result = "族长命人精拓匾文数十份，分悬于族学、书院与各房子弟读书处，令后人日日瞻仰，不忘忠义之训。子弟见御笔而自励，学风为之一振。",
+                  effect = function()
+                    for _, m in ipairs(GameData.GetAliveMembers()) do
+                        m.study = math.min(100, m.study + 3)
+                    end
+                    GameData.AddLog("拓印御匾文分赠族学，子弟向学之风大盛。")
+                  end },
+            }
+        }
+    end,
+}
+
+-- 5. 士林文会 — 名门主持文会，结交士林
+events[#events + 1] = {
+    id = "r7_gentry_gathering",
+    title = "士林文会",
+    rankRange = {7, 9},
+    weight = 7,
+    cooldownMonths = 12,
+    isDisaster = false,
+    check = function(s) return s.fame > 300 and s.silver > 80 end,
+    execute = function(s, report)
+        local hostCost = math.ceil(30 + s.clanRank * 10)
+        report.events[#report.events + 1] = "士林名流联名，欲借家族园林举办文会。"
+        GameData.AddLog("士林文会之邀送达，盛会可期。")
+        return {
+            title = "士林文会",
+            desc = "江南士林名流联名来函，欲借家族园林举办一场文会，届时四方才俊云集，吟诗作赋、论道经史。\n主办者可得士林清望，然耗费亦不在少数。",
+            choices = {
+                { text = "出资主办，极尽地主之谊（-" .. hostCost .. "银两，声望+35）", cost = {silver = hostCost},
+                  result = "园林中曲水流觞、文采飞扬，三日方散。名士们留下诗篇数十首，传抄江南。家族崇文重教之名，自此为士林所公认。",
+                  effect = function()
+                    GameData.AddResource("fame", 35)
+                    for _, m in ipairs(GameData.GetAliveMembers()) do
+                        if m.state == "读书" then
+                            m.study = math.min(100, m.study + math.random(3, 6))
+                        end
+                    end
+                    GameData.AddLog("主办士林文会，崇文之名传遍江南。")
+                  end },
+                { text = "只遣子弟赴会，不担主办（声望+8）",
+                  result = "族中几位子弟携诗文赴会，与各方才俊切磋。虽未拔得头筹，却也算开了眼界，结交了几位知己。",
+                  effect = function()
+                    GameData.AddResource("fame", 8)
+                    GameData.AddLog("子弟赴文会切磋，略有收获。")
+                  end },
+                { text = "婉言谢绝（声望-6）",
+                  result = "族长以「族中事务繁多」为由婉拒。士林中人颇有微词，议论名门之家不识风雅、吝于结交。",
+                  effect = function()
+                    GameData.AddResource("fame", -6)
+                    GameData.AddLog("谢绝文会之邀，士林颇有微词。")
+                  end },
+            }
+        }
+    end,
+}
+
+-- 6. 朝廷摊派
 events[#events + 1] = {
     id = "r7_court_levy",
     title = "朝廷摊派",

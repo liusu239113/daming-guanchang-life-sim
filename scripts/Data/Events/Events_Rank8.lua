@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明设身处地官场人生模拟 - 豪阀品级（8级）专属事件池
+-- 大明人生官场模拟 - 豪阀品级（8级）专属事件池
 -- 设计理念：豪阀势大，招致朝廷猜忌、外敌虎视
 -- ============================================================================
 
@@ -194,6 +194,99 @@ events[#events + 1] = {
                 { text = "礼貌婉拒", effect = function()
                     GameData.AddLog("婉拒名士好意，各自珍重。")
                 end },
+            }
+        }
+    end,
+}
+
+-- 5. 盐引争夺 — 豪阀逐利盐政，暴利与风险并存
+events[#events + 1] = {
+    id = "r8_salt_license",
+    title = "盐引争夺",
+    rankRange = {8, 9},
+    weight = 8,
+    cooldownMonths = 12,
+    isDisaster = false,
+    check = function(s) return s.silver > 300 end,
+    execute = function(s, report)
+        local bidCost = math.ceil(120 + s.clanRank * 20)
+        report.events[#report.events + 1] = "盐运司放出新一批盐引，各方豪族竞相争夺！"
+        GameData.AddLog("盐引竞标在即，豪族皆蠢蠢欲动。")
+        return {
+            title = "盐引争夺",
+            desc = "盐运司放出新一批盐引，持引者可贩盐获利，一本万利。\n各方豪族闻风而动，竞标之价水涨船高。\n家族若要拿下这批盐引，需备下重金竞标。",
+            choices = {
+                { text = "重金竞标盐引（-" .. bidCost .. "银两）", cost = {silver = bidCost},
+                  result = "竞标之日，家族以重金力压群豪，盐引终于到手。此后盐船往来淮扬之间，是坐收暴利还是血本无归，全看天时与经营。",
+                  effect = function()
+                    if math.random() < 0.65 then
+                        local profit = bidCost * 2
+                        GameData.AddResource("silver", profit)
+                        GameData.AddResource("fame", 20)
+                        GameData.AddLog("竞得盐引，贩盐获利" .. profit .. "银两。")
+                    else
+                        local loss = math.ceil(bidCost * 0.5)
+                        GameData.AddResource("silver", -loss)
+                        GameData.AddResource("fame", -5)
+                        GameData.AddLog("盐引经营失利，亏损" .. loss .. "银两。")
+                    end
+                  end },
+                { text = "联合商帮分摊风险（-100银两，声望+10）", cost = {silver = 100},
+                  result = "族长邀集几家相熟商帮共襄此举，风险共担、利分三成。虽所得不丰，却也稳妥，且在商界结下善缘。",
+                  effect = function()
+                    GameData.AddResource("silver", math.random(60, 120))
+                    GameData.AddResource("fame", 10)
+                    GameData.AddLog("联合商帮共营盐务，稳中取利。")
+                  end },
+                { text = "按兵不动，静观其变",
+                  result = "族长深谙「盐政如虎口」之理，按兵不动。旁人为盐引争得头破血流，家族却在旁静观，不失为明智之举。",
+                  effect = function()
+                    GameData.AddLog("按兵不动，避开盐政风波。")
+                  end },
+            }
+        }
+    end,
+}
+
+-- 6. 旁支请立 — 旁支人丁兴旺，请求另立祠堂
+events[#events + 1] = {
+    id = "r8_branch_shrine",
+    title = "旁支请立",
+    rankRange = {8, 9},
+    weight = 7,
+    cooldownMonths = 24,
+    isDisaster = false,
+    check = function(s) return #GameData.GetAliveMembers() >= 20 and s.silver > 150 end,
+    execute = function(s, report)
+        local shrineCost = math.ceil(100 + s.clanRank * 20)
+        local branchCount = math.max(2, math.floor(#GameData.GetAliveMembers() / 8))
+        report.events[#report.events + 1] = "旁支人丁兴旺，联名请求另立分祠。"
+        GameData.AddLog("旁支诸房联名上书，请立分祠。")
+        return {
+            title = "旁支请立",
+            desc = "家族开枝散叶，" .. branchCount .. "房旁支人丁兴旺，联名上书请求拨地另立分祠，各奉本房先祖。\n此事若准，族中格局将为之一变；若不允，恐伤同宗和气。",
+            choices = {
+                { text = "准许并拨款建祠（-" .. shrineCost .. "银两，声望+25）", cost = {silver = shrineCost},
+                  result = "族长择吉日划地，拨银建祠。" .. branchCount .. "座分祠次第落成，各房欢欣，皆赞族长胸襟开阔、不忘同宗。阖族上下一心，气象一新。",
+                  effect = function()
+                    GameData.AddResource("fame", 25)
+                    for _, m in ipairs(GameData.GetAliveMembers()) do
+                        m.health = math.min(100, m.health + 2)
+                    end
+                    GameData.AddLog("拨款建分祠" .. branchCount .. "座，各房归心。")
+                  end },
+                { text = "划地自建，族中不拨款（-40银两，声望+6）", cost = {silver = 40},
+                  result = "族长只拨了几亩薄地，余者令各房自筹。旁支虽勉强建成祠堂，心中却难免存了几分芥蒂。",
+                  effect = function()
+                    GameData.AddResource("fame", 6)
+                    GameData.AddLog("划地令旁支自建分祠，各房勉强应下。")
+                  end },
+                { text = "严词拒绝，维护大宗（声望-20）",
+                  result = "族长以「大宗不可分」为由严词拒绝，将请愿书掷于阶下。各房噤若寒蝉，不敢再言。然族中裂痕已生，人心暗浮动。",
+                  effect = function()
+                    GameData.AddResource("fame", -20)
+                    GameData.AddLog("严拒立祠之请，各房心有不平。")
+                  end },
             }
         }
     end,
