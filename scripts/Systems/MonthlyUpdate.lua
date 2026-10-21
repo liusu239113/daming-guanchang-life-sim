@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明人生官场模拟 - 月度结算系统
+-- 大明家族人生模拟 - 月度结算系统
 -- 每月自动结算：资源产出、口粮消耗、族人成长、随机事件
 -- ============================================================================
 
@@ -79,7 +79,7 @@ function MonthlyUpdate.Execute()
     -- 6.5 族人际遇
     MonthlyUpdate.ProcessEncounters(report, ruleEffects)
 
-    -- 7. 科举/从军进度
+    -- 7. 文脉/从军进度
     MonthlyUpdate.ProcessCareer(report, ruleEffects)
 
     -- 7.5 书院/武馆成长
@@ -252,7 +252,7 @@ function MonthlyUpdate.ProcessIndustries(report, ruleEffects)
         if ind.assignedMemberId then
             local member = GameData.GetMember(ind.assignedMemberId)
             if member and member.alive then
-                -- 兼职管理（读书/从军/经商/为官等非"在家"状态）加成降低
+                -- 兼职管理（读书/从军/经商/讲学等非"在家"状态）加成降低
                 local isPartTime = member.state ~= "在家" and member.state ~= "生病"
                 manageMul = isPartTime and 1.15 or 1.3
                 -- 天赋加成
@@ -613,10 +613,10 @@ function MonthlyUpdate.ProcessTax(report)
         -- 难度影响税率
         taxRate = taxRate * difficulty.taxMul
 
-        -- 官员减税：族中最高官职提供税赋减免
+        -- 教职减免：族中最高教职可减轻族中耗用
         local taxReduceMax = 0.0
         for _, m in ipairs(GameData.GetAliveMembers()) do
-            if m.state == "为官" and m.officialRank then
+            if m.state == "讲学" and m.officialRank then
                 for _, rank in ipairs(MemberData.OFFICIAL_RANKS) do
                     if rank.id == m.officialRank and rank.taxReduce > taxReduceMax then
                         taxReduceMax = rank.taxReduce
@@ -648,18 +648,18 @@ function MonthlyUpdate.ProcessGrowth(report, ruleEffects)
 end
 
 -- ============================================================================
--- 职业进度（科举/从军）
+-- 职业进度（文脉/从军）
 -- ============================================================================
 
 function MonthlyUpdate.ProcessCareer(report, ruleEffects)
     local s = GameData.state
 
-    -- 文官身份月俸禄（声望/银两）
+    -- 文名在身者的月产出（声望/银两）
     local CIVIL_INCOME = {
-        ["秀才"]  = { fame = 2, silver = 0 },
-        ["举人"]  = { fame = 5, silver = 2 },
-        ["进士"]  = { fame = 10, silver = 5 },
-        ["监生"]  = { fame = 2, silver = 0 },
+        ["书生"]  = { fame = 2, silver = 0 },
+        ["才俊"]  = { fame = 5, silver = 2 },
+        ["名士"]  = { fame = 10, silver = 5 },
+        ["附读"]  = { fame = 2, silver = 0 },
     }
     for _, m in ipairs(GameData.GetAliveMembers()) do
         local inc = CIVIL_INCOME[m.identity]
@@ -673,31 +673,31 @@ function MonthlyUpdate.ProcessCareer(report, ruleEffects)
         end
     end
 
-    -- 为官族人月处理（俸禄、声望、任期、贬谪）
-    for _, m in ipairs(GameData.GetMembersByState("为官")) do
+    -- 讲学族人月处理（束脩、声望、任期、解聘）
+    for _, m in ipairs(GameData.GetMembersByState("讲学")) do
         if m.officialRank then
             local rankInfo = nil
             for _, r in ipairs(MemberData.OFFICIAL_RANKS) do
                 if r.id == m.officialRank then rankInfo = r; break end
             end
             if rankInfo then
-                -- 俸禄
+                -- 束脩
                 report.incomes.silver = report.incomes.silver + rankInfo.silver
                 report.incomes.fame = report.incomes.fame + rankInfo.fame
-                -- 布政使月产声望
+                -- 宗师月产声望
                 if rankInfo.famePerMonth then
                     report.incomes.fame = report.incomes.fame + rankInfo.famePerMonth
                 end
                 -- 任期累计
                 m.officialTenure = (m.officialTenure or 0) + 1
-                -- 贬谪风险（每月3%）
+                -- 解聘风险（每月3%）
                 if math.random() < (rankInfo.demotionRate or 0.03) then
                     m.state = "在家"
                     local oldRank = rankInfo.name
                     m.officialRank = nil
                     m.officialTenure = nil
-                    report.events[#report.events + 1] = m.name .. "因朝廷变故，被免去" .. oldRank .. "之职。"
-                    GameData.AddLog(m.name .. "被免去" .. oldRank .. "之职，返乡赋闲。")
+                    report.events[#report.events + 1] = m.name .. "因书院变故，卸去" .. oldRank .. "之职。"
+                    GameData.AddLog(m.name .. "卸去" .. oldRank .. "之职，归家闲居。")
                     report.incomes.fame = math.max(0, report.incomes.fame - 5)
                 end
             end
@@ -1079,7 +1079,7 @@ function MonthlyUpdate.ProcessEncounters(report, ruleEffects)
                 -- 获得赏银
                 local silverBonus = math.random(10, 30)
                 GameData.AddResource("silver", silverBonus)
-                report.events[#report.events + 1] = m.name .. "获朝廷赏银" .. silverBonus .. "两。"
+                report.events[#report.events + 1] = m.name .. "获官府赏银" .. silverBonus .. "两。"
                 GameData.AddLog(m.name .. "获赏银" .. silverBonus .. "两。")
             else
                 -- 战友情谊：招募一名流民加入
@@ -1156,7 +1156,7 @@ function MonthlyUpdate.CheckHistoryEvent(report)
                 for _, m in ipairs(GameData.GetAliveMembers()) do
                     if m.identity == "官员" and math.random() < 0.2 then
                         m.state = "在家"; m.identity = "族人"
-                        GameData.AddLog(m.name .. "受朝廷大案牵连，被罢官归乡。")
+                        GameData.AddLog(m.name .. "受乡里大案牵连，卸职归家。")
                     end
                 end
                 GameData.AddResource("fame", -math.random(5, 10))
@@ -1216,7 +1216,7 @@ function MonthlyUpdate.CheckHistoryEvent(report)
                 for _, m in ipairs(GameData.GetAliveMembers()) do
                     if m.gender == "male" and m.age >= 16 and m.age <= 40 and m.state == "在家" and drafted < 2 and math.random() < 0.3 then
                         m.state = "从军"; m.identity = "士兵"; m.militaryRank = "士兵"
-                        GameData.AddLog(m.name .. "被朝廷征召入伍。")
+                        GameData.AddLog(m.name .. "被官府征召入伍。")
                         drafted = drafted + 1
                     end
                 end
@@ -1285,14 +1285,14 @@ function MonthlyUpdate.CheckHistoryEvent(report)
                 GameData.AddResource("grain", -20)
                 GameData.AddResource("fame", -10)
             elseif eff == "game_end" then
-                -- 甲申之变，游戏终局触发
+                -- 天倾之变，游戏终局触发
                 s.gameEnded = true
                 s.pendingEvents[#s.pendingEvents + 1] = {
-                    title = "甲申之变",
-                    desc = "李自成攻入北京，崇祯帝自缢煤山，大明覆亡！\n你的宗族该何去何从？",
+                    title = "天倾之变",
+                    desc = "李自承攻入北都，崇贞帝自缢梅山，大明覆亡！\n你的宗族该何去何从？",
                     choices = {
                         { text = "南渡投奔南明", effect = function() GameData.AddLog("宗族南渡，投奔南明，艰难延续。"); s.endingChoice = "南渡" end },
-                        { text = "剃发降清", effect = function() GameData.AddLog("宗族降清，虽保全性命，族望尽失。"); GameData.AddResource("fame", -30); s.endingChoice = "降清" end },
+                        { text = "剃发归北", effect = function() GameData.AddLog("宗族归北，虽保全性命，族望尽失。"); GameData.AddResource("fame", -30); s.endingChoice = "归北" end },
                         { text = "死节殉国", effect = function() GameData.AddLog("宗族死节殉国，忠义千秋！"); GameData.AddResource("fame", 50); s.endingChoice = "殉国" end },
                     },
                     isEnding = true,
@@ -1326,7 +1326,7 @@ function MonthlyUpdate.BuildYearEndSummary(report, s)
     local aliveNow = #GameData.GetAliveMembers()
     local yearLabel = EraSystem.GetYearLabel(s.year)
 
-    -- 通过全局计数器差值得到年度出生/死亡/科举/军功
+    -- 通过全局计数器差值得到年度出生/死亡/文脉/军功
     local yearBirths = s.totalBirths - (snap.totalBirths or s.totalBirths)
     local yearDeaths = s.totalDeaths - (snap.totalDeaths or s.totalDeaths)
     local yearExams = s.totalExamPasses - (snap.totalExamPasses or s.totalExamPasses)

@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明人生官场模拟 - 家族内斗系统 (C3)
+-- 大明家族人生模拟 - 家族内斗系统 (C3)
 -- 品级≥7触发的家族内部冲突事件池
 -- 特点：族人对抗、可触发3D战斗、深层决策、长期后果
 -- ============================================================================
@@ -755,7 +755,7 @@ events[#events + 1] = {
                     GameData.AddResource("fame", fameWin)
                     heir2.alive = false
                     heir2.deathCause = "出走"
-                    GameData.AddLog("族长裁定" .. heir1.name .. "为正统继承人。"
+                    GameData.AddLog("族长裁定" .. heir1.name .. "为嫡系继承人。"
                         .. heir2.name .. "不服，率亲信出走。")
                     -- heir2出走时带走部分资产
                     GameData.AddResource("silver", -math.floor(silverCost * 0.3))

@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明人生官场模拟 - 模态对话框集合
+-- 大明家族人生模拟 - 模态对话框集合
 -- 从 GameScreen.lua 提取，包含所有弹窗 UI
 -- 使用注入模式：Init(GameScreen) 将 Show* 方法挂载到 GameScreen 上
 -- ============================================================================
@@ -201,10 +201,10 @@ function GameScreen.ShowMemberDetail(member)
 
     -- 身份效果说明（功名/军衔带来的月收益）
     local IDENTITY_EFFECTS = {
-        ["秀才"]  = { color = { 80, 100, 180, 255 }, desc = "功名在身，每月+2声望", icon = "文" },
-        ["举人"]  = { color = { 80, 100, 180, 255 }, desc = "举人功名，每月+5声望 +2银两", icon = "文" },
-        ["进士"]  = { color = { 80, 100, 180, 255 }, desc = "进士及第，每月+10声望 +5银两", icon = "文" },
-        ["监生"]  = { color = { 80, 100, 180, 255 }, desc = "监生资格，每月+2声望", icon = "文" },
+        ["书生"]  = { color = { 80, 100, 180, 255 }, desc = "功名在身，每月+2声望", icon = "文" },
+        ["才俊"]  = { color = { 80, 100, 180, 255 }, desc = "举人功名，每月+5声望 +2银两", icon = "文" },
+        ["名士"]  = { color = { 80, 100, 180, 255 }, desc = "进士及第，每月+10声望 +5银两", icon = "文" },
+        ["附读"]  = { color = { 80, 100, 180, 255 }, desc = "监生资格，每月+2声望", icon = "文" },
         ["士兵"]  = { color = { 180, 60, 60, 255 }, desc = "军中效力，每月领取军饷", icon = "武" },
         ["把总"]  = { color = { 180, 60, 60, 255 }, desc = "把总军衔，每月+8银两军饷", icon = "武" },
         ["守备"]  = { color = { 180, 60, 60, 255 }, desc = "守备军衔，每月+15银两军饷", icon = "武" },
@@ -929,7 +929,7 @@ function GameScreen.ShowYearEndSummary(summary)
         devItems[#devItems + 1] = StatRow("寨", "新建寨堡", "+" .. summary.fortChange .. "座", Theme.GREEN)
     end
     if summary.examPasses > 0 then
-        devItems[#devItems + 1] = StatRow("榜", "科举登第", summary.examPasses .. "人", Theme.FAME_COLOR or Theme.GOLD)
+        devItems[#devItems + 1] = StatRow("榜", "文会登第", summary.examPasses .. "人", Theme.FAME_COLOR or Theme.GOLD)
     end
     if summary.militaryMerits > 0 then
         devItems[#devItems + 1] = StatRow("勋", "军功立勋", summary.militaryMerits .. "次", Theme.RED)
@@ -1570,10 +1570,10 @@ function GameScreen.ShowEndingScreen()
     if hiddenEndingTitle then
         modalTitle = hiddenEndingTitle .. " · 隐藏结局"
         endDesc = "你的宗族在大明的风云变幻中走出了一条独特的道路。"
-    elseif s.endingChoice == "resist" then endDesc = "甲申之变，天崩地裂。你的宗族选择了抵抗，以血肉之躯捍卫家园。"
-    elseif s.endingChoice == "flee" then endDesc = "甲申之变，天崩地裂。你的宗族选择了南迁避难，颠沛流离，但血脉得以延续。"
-    elseif s.endingChoice == "surrender" then endDesc = "甲申之变，天崩地裂。你的宗族选择了归顺新朝，保全了眼前的性命与财产。"
-    else endDesc = "甲申之变，大明覆亡。你的宗族在这二百七十六年间留下了自己的痕迹。"
+    elseif s.endingChoice == "resist" then endDesc = "天倾之变，天崩地裂。你的宗族选择了抵抗，以血肉之躯捍卫家园。"
+    elseif s.endingChoice == "flee" then endDesc = "天倾之变，天崩地裂。你的宗族选择了南迁避难，颠沛流离，但血脉得以延续。"
+    elseif s.endingChoice == "surrender" then endDesc = "天倾之变，天崩地裂。你的宗族选择了归顺新朝，保全了眼前的性命与财产。"
+    else endDesc = "天倾之变，大明覆亡。你的宗族在这二百七十六年间留下了自己的痕迹。"
     end
 
     -- 已解锁隐藏结局列表
@@ -1621,7 +1621,7 @@ function GameScreen.ShowEndingScreen()
                             UI.Label { text = "传承：" .. s.totalMonths .. "个月", fontSize = 14, fontColor = Theme.TEXT_SECONDARY },
                             UI.Label { text = "存活族人：" .. aliveCount .. "人（共" .. totalBorn .. "人）", fontSize = 14, fontColor = Theme.TEXT_SECONDARY },
                             UI.Label { text = "宗族品级：" .. GameData.GetClanRankName(), fontSize = 14, fontColor = Theme.TEXT_SECONDARY },
-                            UI.Label { text = "科举通过：" .. (s.totalExamPasses or 0) .. "次", fontSize = 14, fontColor = Theme.TEXT_SECONDARY },
+                            UI.Label { text = "考校通过：" .. (s.totalExamPasses or 0) .. "次", fontSize = 14, fontColor = Theme.TEXT_SECONDARY },
                             UI.Label { text = "寨堡：" .. s.fortCount .. "座", fontSize = 14, fontColor = Theme.TEXT_SECONDARY },
                             UI.Label { text = "剩余银两：" .. s.silver, fontSize = 14, fontColor = Theme.TEXT_SECONDARY },
                         },
@@ -2289,7 +2289,7 @@ function GameScreen.ShowPrayDialog()
 end
 
 -- ============================================================================
--- 教坊司·花魁大赛（世家/品级5解锁）
+-- 乐坊司·花魁大赛（世家/品级5解锁）
 -- 选派族中女子参赛，三轮竞技对决，争夺花魁桂冠
 -- ============================================================================
 
@@ -2300,18 +2300,18 @@ function GameScreen.ShowCourtesanDialog()
     -- 冷却：每半年一次
     if s.lastCourtesanMonth and (s.totalMonths - s.lastCourtesanMonth) < 6 then
         local remain = 6 - (s.totalMonths - s.lastCourtesanMonth)
-        GameScreen.ShowResultPopup("教坊司·花魁", "距下次花魁大赛尚需" .. remain .. "个月\n盛事不可仓促")
+        GameScreen.ShowResultPopup("乐坊司·花魁", "距下次花魁大赛尚需" .. remain .. "个月\n盛事不可仓促")
         return
     end
 
-    local modal = UI.Modal { title = "教坊司 · 花魁大赛", size = "md" }
+    local modal = UI.Modal { title = "乐坊司 · 花魁大赛", size = "md" }
     local entryFee = 50 -- 报名费
 
     -- AI选手名字库
     local aiNames = {
-        "柳如烟", "苏小小", "李师师", "陈圆圆", "董小宛",
-        "顾横波", "卞玉京", "马湘兰", "寇白门", "柳如是",
-        "赵飞燕", "花蕊夫人", "鱼玄机", "薛涛", "关盼盼",
+        "柳如烟", "苏筱筱", "李诗诗", "陈圆缘", "董小婉",
+        "顾横坡", "卞玉菁", "马湘澜", "寇白眉", "柳如诗",
+        "赵飞羽", "花蕊娘", "鱼玄姬", "薛桃", "关盼儿",
     }
 
     -- 生成AI选手
@@ -2370,7 +2370,7 @@ function GameScreen.ShowCourtesanDialog()
                 width = "100%", padding = 8, borderRadius = 6,
                 backgroundGradient = { direction = "to-right", from = { 230, 120, 160, 40 }, to = { 0, 0, 0, 0 } },
                 children = {
-                    UI.Label { text = "教坊司举办花魁大赛，四方佳丽齐聚", fontSize = 14, fontColor = { 200, 100, 140, 255 }, fontWeight = "bold" },
+                    UI.Label { text = "乐坊司举办花魁大赛，四方佳丽齐聚", fontSize = 14, fontColor = { 200, 100, 140, 255 }, fontWeight = "bold" },
                     UI.Label { text = "选派族中女子参赛，报名费 银" .. entryFee, fontSize = 12, fontColor = Theme.TEXT_MUTED, marginTop = 2 },
                 },
             },
@@ -2735,27 +2735,27 @@ function GameScreen.ShowCourtesanDialog()
 end
 
 -- ============================================================================
--- 天子诰封对话框（勋贵/品级6解锁）
--- 朝廷差事任务链：接受朝廷委派，完成差事换取皇恩
+-- 乡贤嘉奖对话框（勋贵/品级6解锁）
+-- 乡里事务任务链：接受乡里托付，完成事务换取德望
 -- ============================================================================
 
 function GameScreen.ShowImperialSealDialog()
     local s = GameData.state
     if not s then return end
 
-    -- 初始化皇恩值
+    -- 初始化德望值
     if not s.imperialFavor then s.imperialFavor = 0 end
 
     -- 冷却：每6个月一次（比之前12个月缩短，因为现在需要积累）
     if s.lastSealMonth and (s.totalMonths - s.lastSealMonth) < 6 then
         local remain = 6 - (s.totalMonths - s.lastSealMonth)
-        GameScreen.ShowResultPopup("天子诰封", "距下次朝廷差事尚需" .. remain .. "个月\n圣意已达，不可频求")
+        GameScreen.ShowResultPopup("乡贤嘉奖", "距下次乡里事务尚需" .. remain .. "个月\n乡望已定，不可频求")
         return
     end
 
-    local modal = UI.Modal { title = "天子诰封", size = "md" }
+    local modal = UI.Modal { title = "乡贤嘉奖", size = "md" }
 
-    -- 皇恩封赏阶梯（累计皇恩值兑换永久奖励）
+    -- 德望褒奖阶梯（累计德望值兑换永久奖励）
     local sealTiers = {
         { favor = 30,  name = "义民旌表", desc = "赐匾入祠，乡里敬仰",
           reward = "银+50，全族健康+3", claimed = false,
@@ -2765,8 +2765,8 @@ function GameScreen.ShowImperialSealDialog()
                   m.health = math.min(100, m.health + GrowthSystem.DiminishedGain(m.health, 3))
               end
           end },
-        { favor = 80,  name = "乡贤敕封", desc = "敕封乡贤，建坊立碑",
-          reward = "银+100，获得【官府印信】×2，全族学识+2", claimed = false,
+        { favor = 80,  name = "乡贤立碑", desc = "乡里公议，建坊立碑",
+          reward = "银+100，获得【乡约印信】×2，全族学识+2", claimed = false,
           apply = function()
               GameData.AddResource("silver", 100); GameData.AddItem("seal", 2)
               for _, m in ipairs(GameData.GetAliveMembers()) do
@@ -2774,7 +2774,7 @@ function GameScreen.ShowImperialSealDialog()
                   m.study = math.min(100, m.study + gain)
               end
           end },
-        { favor = 150, name = "恩荣诰命", desc = "诰命加身，荫及子孙",
+        { favor = 150, name = "文宗题名", desc = "宗师题名，荫及子孙",
           reward = "银+200，获得【传家宝】，全族属性+4", claimed = false,
           apply = function()
               GameData.AddResource("silver", 200); GameData.AddItem("heirloom", 1)
@@ -2784,7 +2784,7 @@ function GameScreen.ShowImperialSealDialog()
                   m.health = math.min(100, m.health + 4)
               end
           end },
-        { favor = 250, name = "世袭罔替", desc = "世代承袭，与国同休",
+        { favor = 250, name = "百世流芳", desc = "德泽绵长，百世流芳",
           reward = "银+500，获得【传家宝】×2、【兵法残卷】×2，全族属性+6", claimed = false,
           apply = function()
               GameData.AddResource("silver", 500)
@@ -2805,22 +2805,22 @@ function GameScreen.ShowImperialSealDialog()
 
     -- 差事任务池（根据当前资源动态生成可完成的任务）
     local allMissions = {
-        { name = "运粮赈灾", desc = "北方水患，朝廷急调粮草赈济灾民",
+        { name = "运粮赈灾", desc = "北方水患，乡里公议调粮赈济灾民",
           require = "粮食≥60", check = function() return s.grain >= 60 end,
           cost = function() GameData.SpendResources(0, 60, 0, 0) end,
           favor = 12, bonusDesc = "银+25，声望+8",
           bonus = function() GameData.AddResource("silver", 25); GameData.AddResource("fame", 8) end },
-        { name = "筹银修城", desc = "边关城墙年久失修，朝廷令各族捐资",
+        { name = "筹银修城", desc = "乡里寨墙年久失修，公议各族捐资",
           require = "银两≥80", check = function() return s.silver >= 80 end,
           cost = function() GameData.SpendResources(80, 0, 0, 0) end,
           favor = 15, bonusDesc = "粮+40，声望+10",
           bonus = function() GameData.AddResource("grain", 40); GameData.AddResource("fame", 10) end },
-        { name = "献布纳贡", desc = "宫廷大典在即，征调各地精美布匹",
+        { name = "献布纳贡", desc = "乡里大典在即，征调各家精美布匹",
           require = "布匹≥30", check = function() return s.cloth >= 30 end,
           cost = function() GameData.SpendResources(0, 0, 30, 0) end,
           favor = 10, bonusDesc = "银+35，获得【玉石珍玩】",
           bonus = function() GameData.AddResource("silver", 35); GameData.AddItem("jade", 1) end },
-        { name = "练兵报国", desc = "朝廷遴选壮士充实禁军",
+        { name = "团练乡勇", desc = "乡里遴选壮士充实乡勇",
           require = "族中有武艺≥40的族人3名",
           check = function()
               local count = 0
@@ -2843,7 +2843,7 @@ function GameScreen.ShowImperialSealDialog()
               GameData.AddResource("silver", 40)
               GameData.AddItem("weapon", 1); GameData.AddItem("scroll", 1)
           end },
-        { name = "呈献才子", desc = "翰林院选拔文才，荐举各地饱学之士",
+        { name = "荐举才俊", desc = "书院选拔文才，荐举各地饱学之士",
           require = "族中有学识≥50的族人2名",
           check = function()
               local count = 0
@@ -2875,7 +2875,7 @@ function GameScreen.ShowImperialSealDialog()
                   m.health = math.min(100, m.health + GrowthSystem.DiminishedGain(m.health, 4))
               end
           end },
-        { name = "捐资修庙", desc = "皇帝下旨修缮京师大庙，广征善款",
+        { name = "捐资修庙", desc = "皇帝下旨修缮京畿大庙，广征善款",
           require = "银两≥50且粮食≥30", check = function() return s.silver >= 50 and s.grain >= 30 end,
           cost = function() GameData.SpendResources(50, 30, 0, 0) end,
           favor = 13, bonusDesc = "声望+12，全族学识+1",
@@ -2906,7 +2906,7 @@ function GameScreen.ShowImperialSealDialog()
     local function showMain()
         local children = {}
 
-        -- 皇恩进度条
+        -- 德望进度条
         local nextTier = nil
         for _, tier in ipairs(sealTiers) do
             if not tier.claimed then nextTier = tier; break end
@@ -2919,7 +2919,7 @@ function GameScreen.ShowImperialSealDialog()
                 UI.Panel {
                     width = "100%", flexDirection = "row", justifyContent = "space-between", alignItems = "center",
                     children = {
-                        UI.Label { text = "皇恩值", fontSize = 14, fontColor = Theme.GOLD, fontWeight = "bold" },
+                        UI.Label { text = "德望值", fontSize = 14, fontColor = Theme.GOLD, fontWeight = "bold" },
                         UI.Label { text = s.imperialFavor .. (nextTier and ("/" .. nextTier.favor) or " (已满)"),
                             fontSize = 16, fontColor = Theme.GOLD, fontWeight = "bold" },
                     },
@@ -2956,7 +2956,7 @@ function GameScreen.ShowImperialSealDialog()
                             width = "100%", flexDirection = "row", justifyContent = "space-between", alignItems = "center",
                             children = {
                                 UI.Label { text = "可领取：" .. tier.name, fontSize = 15, fontColor = Theme.GOLD, fontWeight = "bold" },
-                                UI.Label { text = "皇恩" .. tier.favor, fontSize = 12, fontColor = Theme.GOLD_DARK },
+                                UI.Label { text = "德望" .. tier.favor, fontSize = 12, fontColor = Theme.GOLD_DARK },
                             },
                         },
                         UI.Label { text = tier.desc, fontSize = 12, fontColor = Theme.TEXT_SECONDARY },
@@ -2970,8 +2970,8 @@ function GameScreen.ShowImperialSealDialog()
                                 tier.apply()
                                 s.claimedSeals[tier.name] = true
                                 tier.claimed = true
-                                GameData.AddLog("天子诰封：荣获" .. tier.name .. " - " .. tier.reward)
-                                GameScreen.ShowResultPopup("天子诰封 · " .. tier.name, tier.desc .. "\n\n" .. tier.reward)
+                                GameData.AddLog("乡贤嘉奖：荣获" .. tier.name .. " - " .. tier.reward)
+                                GameScreen.ShowResultPopup("乡贤嘉奖 · " .. tier.name, tier.desc .. "\n\n" .. tier.reward)
                                 GameScreen.RefreshAll()
                             end,
                             children = { UI.Label { text = "领取封赏", fontSize = 14, fontColor = { 255, 255, 255, 255 }, fontWeight = "bold" } },
@@ -2987,8 +2987,8 @@ function GameScreen.ShowImperialSealDialog()
         children[#children + 1] = UI.Panel {
             width = "100%", flexDirection = "row", justifyContent = "space-between", alignItems = "center",
             children = {
-                UI.Label { text = "朝廷差事", fontSize = 15, fontColor = Theme.GOLD, fontWeight = "bold" },
-                UI.Label { text = "完成差事积累皇恩", fontSize = 11, fontColor = Theme.TEXT_MUTED },
+                UI.Label { text = "乡里事务", fontSize = 15, fontColor = Theme.GOLD, fontWeight = "bold" },
+                UI.Label { text = "完成乡里事务积累德望", fontSize = 11, fontColor = Theme.TEXT_MUTED },
             },
         }
 
@@ -3004,7 +3004,7 @@ function GameScreen.ShowImperialSealDialog()
                         width = "100%", flexDirection = "row", justifyContent = "space-between", alignItems = "center",
                         children = {
                             UI.Label { text = mission.name, fontSize = 15, fontColor = Theme.TEXT_PRIMARY, fontWeight = "bold" },
-                            UI.Label { text = "皇恩+" .. mission.favor, fontSize = 13, fontColor = Theme.GOLD, fontWeight = "bold" },
+                            UI.Label { text = "德望+" .. mission.favor, fontSize = 13, fontColor = Theme.GOLD, fontWeight = "bold" },
                         },
                     },
                     UI.Label { text = mission.desc, fontSize = 12, fontColor = Theme.TEXT_MUTED, whiteSpace = "normal" },
@@ -3025,10 +3025,10 @@ function GameScreen.ShowImperialSealDialog()
                             mission.bonus()
                             s.imperialFavor = s.imperialFavor + mission.favor
                             s.lastSealMonth = s.totalMonths
-                            GameData.AddLog("天子诰封·" .. mission.name .. "：皇恩+" .. mission.favor .. "，" .. mission.bonusDesc)
+                            GameData.AddLog("乡贤嘉奖·" .. mission.name .. "：德望+" .. mission.favor .. "，" .. mission.bonusDesc)
                             modal:Close()
                             GameScreen.ShowResultPopup("差事完成 · " .. mission.name,
-                                "皇恩+" .. mission.favor .. "\n" .. mission.bonusDesc .. "\n\n累计皇恩：" .. s.imperialFavor)
+                                "德望+" .. mission.favor .. "\n" .. mission.bonusDesc .. "\n\n累计德望：" .. s.imperialFavor)
                             GameScreen.RefreshAll()
                         end,
                         children = { UI.Label { text = "承办差事", fontSize = 14, fontColor = { 255, 255, 255, 255 }, fontWeight = "bold" } },
@@ -3056,7 +3056,7 @@ function GameScreen.ShowImperialSealDialog()
                                 fontColor = tier.claimed and Theme.TEXT_MUTED or (reached and Theme.GOLD or Theme.TEXT_PRIMARY) },
                         },
                     },
-                    UI.Label { text = "皇恩" .. tier.favor, fontSize = 11, fontColor = Theme.TEXT_MUTED },
+                    UI.Label { text = "德望" .. tier.favor, fontSize = 11, fontColor = Theme.TEXT_MUTED },
                 },
             }
         end

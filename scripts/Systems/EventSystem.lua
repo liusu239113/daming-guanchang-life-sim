@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明人生官场模拟 - 随机事件系统
+-- 大明家族人生模拟 - 随机事件系统
 -- 管理所有随机事件的定义与触发逻辑
 -- ============================================================================
 
@@ -747,7 +747,7 @@ EventSystem.RANDOM_EVENTS = {
         weight = 5,
         check = function(s)
             for _, m in ipairs(GameData.GetAliveMembers()) do
-                if m.identity == "秀才" or m.identity == "举人" or m.identity == "监生" then return true end
+                if m.identity == "书生" or m.identity == "才俊" or m.identity == "附读" then return true end
             end
             return false
         end,
@@ -790,9 +790,9 @@ EventSystem.RANDOM_EVENTS = {
         check = function(s) return EraSystem.CanTriggerEvent(s.year, "tax_increase") end,
         execute = function(s, report)
             local taxAmount = math.random(10, 25)
-            report.events[#report.events + 1] = "朝廷加征三饷，额外征银" .. taxAmount .. "两。"
-            GameData.AddLog("朝廷加征辽饷、剿饷、练饷。")
-            return { title = "官府加税", desc = "朝廷为应对内忧外患，加征三饷，额外征银" .. taxAmount .. "两！",
+            report.events[#report.events + 1] = "官府加征三课，额外征银" .. taxAmount .. "两。"
+            GameData.AddLog("官府加征边课、平寇课、练勇课。")
+            return { title = "官府加税", desc = "官府为应对内忧外患，加征三课，额外征银" .. taxAmount .. "两！",
                      choices = {
                          { text = "忍痛缴纳", effect = function() GameData.AddResource("silver", -taxAmount) end },
                          { text = "拖延推诿（-声望5）", effect = function() GameData.AddResource("silver", -math.ceil(taxAmount * 0.5)); GameData.AddResource("fame", -5) end },
@@ -814,7 +814,7 @@ EventSystem.RANDOM_EVENTS = {
             local target = males[math.random(1, #males)]
             report.events[#report.events + 1] = "官府征兵，" .. target.name .. "被点名应征。"
             GameData.AddLog("官府征兵，" .. target.name .. "被征召。")
-            return { title = "辽东征兵", desc = "官府下达征兵令，" .. target.name .. "（" .. target.age .. "岁）被点名应征！",
+            return { title = "辽北征兵", desc = "官府下达征兵令，" .. target.name .. "（" .. target.age .. "岁）被点名应征！",
                      choices = {
                          { text = "服从征召", effect = function()
                              target.state = "从军"; target.identity = "士兵"; target.militaryRank = "士兵"
@@ -1052,7 +1052,7 @@ EventSystem.RANDOM_EVENTS = {
         check = function(s) return EraSystem.CanTriggerEvent(s.year, "rebel_recruit") end,
         execute = function(s, report)
             report.events[#report.events + 1] = "有叛军势力派人来招揽。"
-            return { title = "叛军招揽", desc = "李自成麾下一名将领派人秘密来访，许诺你族若归顺可封官进爵。这是一步险棋……",
+            return { title = "叛军招揽", desc = "李自承麾下一名将领派人秘密来访，许诺你族若归顺可封官进爵。这是一步险棋……",
                      choices = {
                          { text = "严辞拒绝（+8声望）", effect = function()
                              GameData.AddResource("fame", 8)
@@ -1159,7 +1159,7 @@ function EventSystem.ProcessRandomEvents(report)
     local disasterEvents = {
         ["旱灾降临"] = true, ["水灾泛滥"] = true, ["蝗灾肆虐"] = true,
         ["瘟疫蔓延"] = true, ["流寇过境"] = true, ["官府加税"] = true,
-        ["辽东征兵"] = true, ["大军过境征粮"] = true, ["匪帮勒索"] = true,
+        ["辽北征兵"] = true, ["大军过境征粮"] = true, ["匪帮勒索"] = true,
         ["叛军招揽"] = true,
     }
 

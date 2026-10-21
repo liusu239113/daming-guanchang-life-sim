@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明人生官场模拟 - 事件注册中心
+-- 大明家族人生模拟 - 事件注册中心
 -- 统一管理6级事件池，提供按品阶过滤、冷却去重、身份匹配的事件选取
 -- ============================================================================
 
@@ -30,7 +30,7 @@ function EventRegistry.Init()
         require("Data.Events.Events_Rank7"),  -- 名门
         require("Data.Events.Events_Rank8"),  -- 豪阀
         require("Data.Events.Events_Rank9"),  -- 国柱
-        require("Data.Events.Events_CourtMissions"),  -- 朝廷差事（C2）
+        require("Data.Events.Events_CourtMissions"),  -- 乡里事务（C2）
         require("Data.Events.Events_FamilyConflict"),  -- 家族内斗（C3）
         require("Data.Events.Events_RivalAttack"),     -- 敌对势力进攻（C4）
     }

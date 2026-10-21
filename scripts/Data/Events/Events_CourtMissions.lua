@@ -1,6 +1,6 @@
 -- ============================================================================
--- 大明人生官场模拟 - 朝廷差事系统 (C2)
--- 品级≥6触发的朝廷差事事件池
+-- 大明家族人生模拟 - 乡里事务系统 (C2)
+-- 品级≥6触发的乡里事务事件池
 -- 特点：3选项深度策略、可触发战斗、连锁后果、动态数值
 -- ============================================================================
 
@@ -44,7 +44,7 @@ local function GetFighterNames(fighters, count)
     return names
 end
 
---- 获取族中官员（知县/知府/布政使）
+--- 获取族中官员（知县/知府/宣政使）
 local function GetOfficials()
     local officials = {}
     for _, m in ipairs(GameData.GetAliveMembers()) do
@@ -59,8 +59,8 @@ end
 local function GetScholars()
     local scholars = {}
     for _, m in ipairs(GameData.GetAliveMembers()) do
-        if m.state == "读书" or m.identity == "秀才" or m.identity == "举人"
-           or m.identity == "进士" then
+        if m.state == "读书" or m.identity == "书生" or m.identity == "才俊"
+           or m.identity == "名士" then
             scholars[#scholars + 1] = m
         end
     end
@@ -68,11 +68,11 @@ local function GetScholars()
 end
 
 -- ============================================================================
--- 1. 剿匪征令 —— 朝廷下令剿灭地方匪患，可触发3D战斗
+-- 1. 乡勇清剿 —— 乡里公议清剿匪患，可触发3D战斗
 -- ============================================================================
 events[#events + 1] = {
     id = "court_bandit_suppression",
-    title = "剿匪征令",
+    title = "乡勇清剿",
     rankRange = {6, 9},
     weight = 10,
     cooldownMonths = 8,
@@ -93,16 +93,16 @@ events[#events + 1] = {
         local fameReward = math.floor(25 * scale)
         local fameLoss = math.floor(15 * scale)
 
-        report.events[#report.events + 1] = "朝廷下令剿灭地方匪患。"
-        GameData.AddLog("接朝廷剿匪征令，须限期平定匪患。")
+        report.events[#report.events + 1] = "乡里公议集资清剿匪患。"
+        GameData.AddLog("乡里推我族牵头，须限期平定匪患。")
 
         local banditNames = {"黑风寨", "青狼山", "白莲余孽", "红巾残部", "九连山匪帮"}
         local banditName = banditNames[math.random(1, #banditNames)]
 
         return {
-            title = "剿匪征令",
-            desc = "兵部行文至本族：" .. banditName .. "盘踞山林，劫掠商旅，为祸一方。"
-                .. "朝廷责令地方勋贵限期剿灭，违令者以通匪论处。\n\n"
+            title = "乡勇清剿",
+            desc = "武曹行文至本族：" .. banditName .. "盘踞山林，劫掠商旅，为祸一方。"
+                .. "乡中耆老联名恳请我族牵头清剿，推诿者恐失乡望。\n\n"
                 .. "族中可战之人：" .. nameStr .. "（武艺最高者" .. (allFighters[1] and allFighters[1].martial or 0) .. "）",
             choices = {
                 -- 选项1：亲自出兵剿匪（3D战斗）
@@ -148,7 +148,7 @@ events[#events + 1] = {
                     local rival = {
                         id = 0, name = banditName, surname = surname,
                         tierId = tier.id, tierName = tier.name,
-                        tierColor = tier.color, tierDesc = "朝廷差事",
+                        tierColor = tier.color, tierDesc = "乡里事务",
                         members = members, soldiers = soldiers,
                         rewards = {
                             silver = math.floor(20 * rewardMul * scale),
@@ -173,7 +173,7 @@ events[#events + 1] = {
                                 GameData.AddResource("silver", rivalData.rewards.silver)
                                 GameData.AddResource("grain", rivalData.rewards.grain)
                                 GameData.AddResource("fame", rivalData.rewards.fame)
-                                GameData.AddLog("剿灭" .. banditName .. "！朝廷嘉奖银" ..
+                                GameData.AddLog("剿灭" .. banditName .. "！乡里酬谢银" ..
                                     rivalData.rewards.silver .. "两、声望+" .. rivalData.rewards.fame)
                             else
                                 GameData.AddResource("silver", -defeatPenalty.silver)
@@ -207,11 +207,11 @@ events[#events + 1] = {
                     if s.silver < hireCost then
                         GameData.AddResource("silver", -math.floor(hireCost * 0.5))
                         GameData.AddResource("fame", -fameLoss)
-                        GameData.AddLog("银两不足，镖师半途而废，匪患未清，朝廷问责。")
+                        GameData.AddLog("银两不足，镖师半途而废，匪患未清，乡邻颇有怨言。")
                     else
                         GameData.AddResource("silver", -hireCost)
                         GameData.AddResource("fame", math.floor(fameReward * 0.5))
-                        GameData.AddLog("镖师代为剿匪，虽非亲力亲为，朝廷亦算交差。")
+                        GameData.AddLog("镖师代为剿匪，虽非亲力亲为，乡里亦认这份情。")
                     end
                 end },
                 -- 选项3：贿赂上官周旋
@@ -226,11 +226,11 @@ events[#events + 1] = {
 }
 
 -- ============================================================================
--- 2. 河工督办 —— 朝廷委派督办河工，涉及大量资源调配
+-- 2. 河渠修缮 —— 乡里公推主持河工，涉及大量资源调配
 -- ============================================================================
 events[#events + 1] = {
     id = "court_river_project",
-    title = "河工督办",
+    title = "河渠修缮",
     rankRange = {6, 9},
     weight = 9,
     cooldownMonths = 10,
@@ -248,15 +248,15 @@ events[#events + 1] = {
         local fameMid = math.floor(15 * scale)
         local profitCut = math.floor(25 * scale)
 
-        report.events[#report.events + 1] = "朝廷委派督办黄河河工。"
+        report.events[#report.events + 1] = "乡里公推我族主持河渠修缮。"
         GameData.AddLog("奉旨督办河工，责任重大。")
 
         return {
-            title = "河工督办",
-            desc = "黄河连年决堤，殃及数省，朝廷拨下巨款修筑堤坝，特命本族督办此事。"
+            title = "河渠修缮",
+            desc = "大河连年决堤，殃及数县，乡里凑出公帑修筑堤坝，公推本族主持此事。"
                 .. "河工乃国之大计，办好则功在社稷，然其中猫腻极多——"
                 .. "工料采购、民夫征发、银款调拨，每一环节皆有油水可揩。\n\n"
-                .. "如何行事，关系家族声望与朝廷信任。",
+                .. "如何行事，关系家族声望与乡邻信服。",
             choices = {
                 -- 选项1：廉洁奉公
                 { text = "清廉督办，自掏腰包补缺（-" .. investHigh .. "银-" .. grainCost .. "粮）",
@@ -265,15 +265,15 @@ events[#events + 1] = {
                     GameData.AddResource("grain", -grainCost)
                     GameData.AddResource("fame", fameHigh)
                     GameData.AddLog("河工督办清廉如水，堤坝坚固，朝野交口称赞。声望+" .. fameHigh)
-                    -- 连锁：后续可能获朝廷嘉奖
+                    -- 连锁：后续可能获乡里嘉奖
                     if math.random(100) <= 40 then
                         s.pendingEvents[#s.pendingEvents + 1] = {
-                            title = "朝廷嘉奖",
-                            desc = "河工告竣，堤坝坚固，经秋汛而不溃。朝廷论功行赏，特赐御书匾额、赏银百两。",
+                            title = "乡里嘉奖",
+                            desc = "河工告竣，堤坝坚固，经秋汛而不溃。乡里感念功德，特赠「泽被桑梓」匾额、酬银百两。",
                             choices = { { text = "谢恩", effect = function()
                                 GameData.AddResource("silver", math.floor(60 * scale))
                                 GameData.AddResource("fame", math.floor(20 * scale))
-                                GameData.AddLog("河工有功，获朝廷赏赐银两及匾额。")
+                                GameData.AddLog("河工有功，获乡里酬谢银两及匾额。")
                             end } }
                         }
                     end
@@ -295,11 +295,11 @@ events[#events + 1] = {
                         local famePenalty = math.floor(30 * scale)
                         GameData.AddResource("silver", -penalty)
                         GameData.AddResource("fame", -famePenalty)
-                        GameData.AddLog("克扣工料事发！朝廷严惩，罚银" .. penalty .. "两、声望-" .. famePenalty)
+                        GameData.AddLog("克扣工料事发！乡里哗然，罚银" .. penalty .. "两、声望-" .. famePenalty)
                         s.pendingEvents[#s.pendingEvents + 1] = {
                             title = "河工弊案",
-                            desc = "御史弹劾河工贪墨，所修堤坝偷工减料、遇汛即溃。"
-                                .. "朝廷震怒，下旨严查。族人被罚银"
+                            desc = "乡老查出河工贪墨，所修堤坝偷工减料、遇汛即溃。"
+                                .. "乡老联名上告，严查到底。族人被罚银"
                                 .. penalty .. "两，声望大损。",
                             choices = { { text = "咎由自取", effect = function() end } }
                         }
@@ -314,11 +314,11 @@ events[#events + 1] = {
 }
 
 -- ============================================================================
--- 3. 平叛勤王 —— 朝廷急诏勤王平叛，高风险高回报
+-- 3. 护乡御寇 —— 乡里急请护乡御寇，高风险高回报
 -- ============================================================================
 events[#events + 1] = {
     id = "court_quell_rebellion",
-    title = "平叛勤王",
+    title = "护乡御寇",
     rankRange = {7, 9},
     weight = 8,
     cooldownMonths = 12,
@@ -339,24 +339,24 @@ events[#events + 1] = {
         local fameWin = math.floor(50 * scale)
         local fameLoss = math.floor(25 * scale)
 
-        local rebels = {"藩王谋逆", "流民起义", "边将叛乱", "白莲教叛", "矿工暴动"}
+        local rebels = {"豪强作乱", "流民举事", "山匪聚众", "邪教惑众", "矿工暴动"}
         local rebelName = rebels[math.random(1, #rebels)]
 
-        report.events[#report.events + 1] = rebelName .. "！朝廷急诏勤王。"
-        GameData.AddLog("天下大变——" .. rebelName .. "，朝廷急诏各地勤王。")
+        report.events[#report.events + 1] = rebelName .. "！乡里急请我族主持防务。"
+        GameData.AddLog("变乱骤起——" .. rebelName .. "，乡里急请各地大户护乡。")
 
         return {
-            title = "平叛勤王",
-            desc = rebelName .. "！叛军势大，连下数城。朝廷急诏天下勋贵出兵平叛。\n\n"
-                .. "此乃赌上身家性命的大事——勤王有功则封侯拜将、荣耀无上；"
+            title = "护乡御寇",
+            desc = rebelName .. "！乱军势大，连破数寨。乡里急请各地大户出资出兵，共保桑梓。\n\n"
+                .. "此乃赌上身家性命的大事——护乡有功则名重一方、荣耀无上；"
                 .. "若叛军势不可挡，则族人性命堪忧。\n\n"
                 .. "可用之将：" .. nameStr,
             choices = {
-                -- 选项1：倾力勤王（触发高难度战斗）
-                { text = "倾力勤王、以命报国（战斗，高难度）", effect = function()
+                -- 选项1：倾力护乡（触发高难度战斗）
+                { text = "倾力护乡、以命相搏（战斗，高难度）", effect = function()
                     if #allFighters == 0 then
                         GameData.AddResource("fame", -fameLoss)
-                        GameData.AddLog("族中无人可战，勤王令未能奉行，朝廷记过。")
+                        GameData.AddLog("族中无人可战，护乡之请未能应承，乡邻失望。")
                         return
                     end
                     local RivalClans = require("Data.RivalClans")
@@ -388,7 +388,7 @@ events[#events + 1] = {
                     local rival = {
                         id = 0, name = "叛军", surname = surname,
                         tierId = tier.id, tierName = tier.name,
-                        tierColor = tier.color, tierDesc = "勤王平叛",
+                        tierColor = tier.color, tierDesc = "护乡御寇",
                         members = members, soldiers = soldiers,
                         rewards = {
                             silver = math.floor(40 * scale),
@@ -410,16 +410,16 @@ events[#events + 1] = {
                                 GameData.AddResource("silver", rivalData.rewards.silver)
                                 GameData.AddResource("grain", rivalData.rewards.grain)
                                 GameData.AddResource("fame", rivalData.rewards.fame)
-                                GameData.AddLog("勤王平叛大捷！朝廷论功行赏，声望+" .. rivalData.rewards.fame)
+                                GameData.AddLog("护乡大捷！乡里论功行赏，声望+" .. rivalData.rewards.fame)
                                 -- 连锁嘉奖
                                 s.pendingEvents[#s.pendingEvents + 1] = {
-                                    title = "勤王封赏",
-                                    desc = "平叛大功告成，朝廷隆恩浩荡！天子亲赐锦袍玉带，赏银百两，加封世袭爵位。\n\n"
+                                    title = "护乡嘉奖",
+                                    desc = "护乡大功告成，乡邻感念不已！耆老亲赠「义卫乡里」金匾，酬银百两，并许以乡约主事之名。\n\n"
                                         .. "此一战定乾坤，家族声威达到顶峰。",
                                     choices = { { text = "谢主隆恩", effect = function()
                                         GameData.AddResource("silver", math.floor(80 * scale))
                                         GameData.AddResource("fame", math.floor(30 * scale))
-                                        GameData.AddLog("勤王封赏！获赐银两及爵位。")
+                                        GameData.AddLog("护乡嘉奖！获赐银两及乡望。")
                                     end } }
                                 }
                             else
@@ -427,7 +427,7 @@ events[#events + 1] = {
                                 GameData.AddResource("grain", -defeatPenalty.grain)
                                 GameData.AddResource("cloth", -defeatPenalty.cloth)
                                 GameData.AddResource("fame", -defeatPenalty.fame)
-                                GameData.AddLog("勤王失利！损失惨重，朝廷问罪。")
+                                GameData.AddLog("护乡失利！损失惨重，乡邻责难。")
                             end
                             -- 高伤亡
                             for _, memberId in ipairs(deployedIds) do
@@ -458,7 +458,7 @@ events[#events + 1] = {
                     GameData.AddResource("silver", -silverCost)
                     GameData.AddResource("grain", -grainCost)
                     GameData.AddResource("fame", math.floor(fameWin * 0.4))
-                    GameData.AddLog("捐银助饷勤王，未亲赴前线，朝廷略有不满。")
+                    GameData.AddLog("只捐银不派人，未亲赴前线，乡邻略有不满。")
                 end },
                 -- 选项3：称病观望
                 { text = "称病不出、静观其变（声望-" .. fameLoss .. "）",
@@ -468,7 +468,7 @@ events[#events + 1] = {
                     if math.random(100) <= 50 then
                         local fine = math.floor(40 * scale)
                         GameData.AddResource("silver", -fine)
-                        GameData.AddLog("称病不出被查实，朝廷罚银" .. fine .. "两、声望大损。")
+                        GameData.AddLog("称病不出被人识破，乡里罚银" .. fine .. "两、声望大损。")
                     else
                         GameData.AddLog("称病避战，暂未被追究，然名声有损。")
                     end
@@ -479,11 +479,11 @@ events[#events + 1] = {
 }
 
 -- ============================================================================
--- 4. 赈灾使命 —— 朝廷命族督办赈灾，考验人品与能力
+-- 4. 乡里赈济 —— 乡里公推我族主持赈济，考验人品与能力
 -- ============================================================================
 events[#events + 1] = {
     id = "court_famine_relief",
-    title = "赈灾使命",
+    title = "乡里赈济",
     rankRange = {6, 9},
     weight = 9,
     cooldownMonths = 8,
@@ -502,15 +502,15 @@ events[#events + 1] = {
         local fameMid = math.floor(12 * scale)
         local profit = math.floor(35 * scale)
 
-        report.events[#report.events + 1] = "朝廷委派督办赈灾。"
-        GameData.AddLog("奉旨督办赈灾事宜。")
+        report.events[#report.events + 1] = "乡里公推我族主持赈济。"
+        GameData.AddLog("受乡里之托，主持赈济事宜。")
 
         local disasterAreas = {"河南", "山东", "湖广", "江西", "陕西"}
         local area = disasterAreas[math.random(1, #disasterAreas)]
 
         return {
-            title = "赈灾使命",
-            desc = area .. "大灾，饥民百万。朝廷命本族督办赈济事宜，拨下赈银粮米若干。\n\n"
+            title = "乡里赈济",
+            desc = area .. "大灾，饥民遍野。乡里公推本族主持赈济事宜，凑出赈银粮米若干。\n\n"
                 .. "灾区哀鸿遍野，然赈灾之银亦是一笔巨款——"
                 .. "清廉者倾囊相助可得万民颂扬，贪墨者中饱私囊亦多有先例。\n\n"
                 .. "当如何行事，全凭良心。",
@@ -560,10 +560,10 @@ events[#events + 1] = {
                         local famePenalty = math.floor(40 * scale)
                         GameData.AddResource("silver", -penalty)
                         GameData.AddResource("fame", -famePenalty)
-                        GameData.AddLog("侵吞赈银事发！御史弹劾，罚银" .. penalty .. "两、声望-" .. famePenalty)
+                        GameData.AddLog("侵吞赈银事发！乡老联名上告，罚银" .. penalty .. "两、声望-" .. famePenalty)
                         s.pendingEvents[#s.pendingEvents + 1] = {
                             title = "赈灾贪墨案",
-                            desc = "赈灾贪墨之事败露，御史上奏弹劾。天子震怒，"
+                            desc = "赈灾贪墨之事败露，乡老联名上告，官府震怒，"
                                 .. "下旨严惩——族人被罚没家产、革去功名。\n\n"
                                 .. "罚银" .. penalty .. "两，声望-" .. famePenalty,
                             choices = { { text = "自食恶果", effect = function() end } }
@@ -579,11 +579,11 @@ events[#events + 1] = {
 }
 
 -- ============================================================================
--- 5. 税赋稽查 —— 朝廷派税官稽查地方税赋
+-- 5. 族产核账 —— 族老请来账房稽查族产账目
 -- ============================================================================
 events[#events + 1] = {
     id = "court_tax_audit",
-    title = "税赋稽查",
+    title = "族产核账",
     rankRange = {6, 9},
     weight = 8,
     cooldownMonths = 8,
@@ -601,12 +601,12 @@ events[#events + 1] = {
         local fameGain = math.floor(15 * scale)
         local fameLoss = math.floor(10 * scale)
 
-        report.events[#report.events + 1] = "朝廷税官前来稽查税赋。"
+        report.events[#report.events + 1] = "族老请来账房稽查族产账目。"
         GameData.AddLog("税官登门，稽查本族产业税赋。")
 
         return {
-            title = "税赋稽查",
-            desc = "户部派遣税官稽查地方税赋，本族产业" .. indCount
+            title = "族产核账",
+            desc = "度支曹派遣税官稽查地方税赋，本族产业" .. indCount
                 .. "处，乃重点稽查对象。\n\n"
                 .. "税官明查暗访，逐一核对账册。据初步核算，应补税银约" .. taxBase .. "两。\n\n"
                 .. "然税官亦非铁面无私之人...",
@@ -653,11 +653,11 @@ events[#events + 1] = {
 }
 
 -- ============================================================================
--- 6. 外交斡旋 —— 朝廷命族出使邻邦
+-- 6. 商路斡旋 —— 乡里托族中出面与邻郡通商
 -- ============================================================================
 events[#events + 1] = {
     id = "court_diplomacy",
-    title = "外交斡旋",
+    title = "商路斡旋",
     rankRange = {7, 9},
     weight = 7,
     cooldownMonths = 12,
@@ -677,17 +677,17 @@ events[#events + 1] = {
         local fameWin = math.floor(35 * scale)
         local tradeProfit = math.floor(45 * scale)
 
-        report.events[#report.events + 1] = "朝廷命族中" .. envoy.name .. "出使邻邦。"
-        GameData.AddLog(envoy.name .. "奉旨出使番邦。")
+        report.events[#report.events + 1] = "乡里托族中" .. envoy.name .. "赴邻郡通商。"
+        GameData.AddLog(envoy.name .. "启程赴邻郡通商。")
 
         local nations = {"安南", "暹罗", "琉球", "日本", "朝鲜"}
         local nation = nations[math.random(1, #nations)]
 
         return {
-            title = "外交斡旋",
-            desc = "朝廷命族中" .. envoy.name .. "（学识" .. (envoy.knowledge or 0)
+            title = "商路斡旋",
+            desc = "乡里托族中" .. envoy.name .. "（学识" .. (envoy.knowledge or 0)
                 .. "）为使臣出使" .. nation .. "。\n\n"
-                .. "出使番邦路途遥远、险阻重重，然若斡旋得力，不仅朝廷记功，"
+                .. "远赴邻郡路途遥远、险阻重重，然若斡旋得力，不仅乡里称便，"
                 .. "更可为族中开辟海外商路。\n\n"
                 .. "使团规格直接影响出使成败。",
             choices = {
@@ -721,14 +721,14 @@ events[#events + 1] = {
                         GameData.AddLog(envoy.name .. "轻装出使" .. nation .. "，不辱使命。")
                     else
                         GameData.AddResource("fame", -5)
-                        GameData.AddLog(envoy.name .. "出使未果，番邦轻慢使节。")
+                        GameData.AddLog(envoy.name .. "通商未果，邻郡轻慢来使。")
                     end
                 end },
                 -- 选项3：推辞不去
                 { text = "以故推辞不去（声望-" .. math.floor(fameWin * 0.4) .. "）",
                   effect = function()
                     GameData.AddResource("fame", -math.floor(fameWin * 0.4))
-                    GameData.AddLog("推辞出使之命，朝廷颇有不满。")
+                    GameData.AddLog("推辞通商之托，乡邻颇有不满。")
                 end },
             }
         }
@@ -736,11 +736,11 @@ events[#events + 1] = {
 }
 
 -- ============================================================================
--- 7. 宫廷密谋 —— 朝中权臣拉拢，涉及站队风险
+-- 7. 文坛争鸣 —— 两大文脉流派拉拢，涉及站队风险
 -- ============================================================================
 events[#events + 1] = {
     id = "court_power_struggle",
-    title = "宫廷密谋",
+    title = "文坛争鸣",
     rankRange = {7, 9},
     weight = 8,
     cooldownMonths = 10,
@@ -755,9 +755,9 @@ events[#events + 1] = {
         local fameSwing = math.floor(35 * scale)
 
         local factions = {
-            { name = "内阁首辅", reward = "silver", amt = math.floor(80 * scale) },
-            { name = "司礼监太监", reward = "fame", amt = math.floor(40 * scale) },
-            { name = "锦衣卫指挥使", reward = "grain", amt = math.floor(50 * scale) },
+            { name = "宗文书院山长", reward = "silver", amt = math.floor(80 * scale) },
+            { name = "江南诗社盟主", reward = "fame", amt = math.floor(40 * scale) },
+            { name = "织造行会首", reward = "grain", amt = math.floor(50 * scale) },
         }
         local factionA = factions[math.random(1, #factions)]
         local factionB = factions[math.random(1, #factions)]
@@ -765,51 +765,51 @@ events[#events + 1] = {
             factionB = factions[math.random(1, #factions)]
         end
 
-        report.events[#report.events + 1] = "朝中两派争权，试图拉拢本族。"
-        GameData.AddLog("朝中" .. factionA.name .. "与" .. factionB.name .. "争权，族人被迫抉择。")
+        report.events[#report.events + 1] = "文坛两大流派相互攻讦，试图拉拢本族。"
+        GameData.AddLog(factionA.name .. "与" .. factionB.name .. "争鸣，族人被迫抉择。")
 
         return {
-            title = "宫廷密谋",
-            desc = "朝中" .. factionA.name .. "与" .. factionB.name
-                .. "势同水火，各自密遣心腹前来拉拢。\n\n"
-                .. "站" .. factionA.name .. "可得" .. factionA.reward .. "+"
+            title = "文坛争鸣",
+            desc = factionA.name .. "与" .. factionB.name
+                .. "各执一说、势同水火，皆遣人登门求我族表态。\n\n"
+                .. "附议" .. factionA.name .. "可得" .. factionA.reward .. "+"
                 .. factionA.amt .. "；\n"
-                .. "站" .. factionB.name .. "可得" .. factionB.reward .. "+"
+                .. "附议" .. factionB.name .. "可得" .. factionB.reward .. "+"
                 .. factionB.amt .. "。\n\n"
-                .. "但押错宝的代价极为惨重——失势一方的党羽必遭清洗。",
+                .. "但站错一边的代价不小——落败一方的门生故旧难免受牵连。",
             choices = {
                 -- 选项1：站A方
-                { text = "支持" .. factionA.name, effect = function()
+                { text = "附议" .. factionA.name, effect = function()
                     -- 55%概率A方获胜
                     if math.random(100) <= 55 then
                         GameData.AddResource(factionA.reward, factionA.amt)
                         GameData.AddResource("fame", math.floor(fameSwing * 0.8))
-                        GameData.AddLog("支持" .. factionA.name .. "得势！获" .. factionA.reward
+                        GameData.AddLog("附议" .. factionA.name .. "得势！获" .. factionA.reward
                             .. "+" .. factionA.amt .. "，声望大增。")
                     else
                         GameData.AddResource("silver", -bribeSilver)
                         GameData.AddResource("fame", -fameSwing)
-                        GameData.AddLog(factionA.name .. "失势！本族遭株连，损失惨重。")
+                        GameData.AddLog(factionA.name .. "落败！本族受牵连，损失惨重。")
                     end
                 end },
                 -- 选项2：站B方
-                { text = "支持" .. factionB.name, effect = function()
+                { text = "附议" .. factionB.name, effect = function()
                     -- 45%概率B方获胜
                     if math.random(100) <= 45 then
                         GameData.AddResource(factionB.reward, factionB.amt)
                         GameData.AddResource("fame", math.floor(fameSwing * 0.8))
-                        GameData.AddLog("支持" .. factionB.name .. "得势！获" .. factionB.reward
+                        GameData.AddLog("附议" .. factionB.name .. "得势！获" .. factionB.reward
                             .. "+" .. factionB.amt .. "，声望大增。")
                     else
                         GameData.AddResource("silver", -bribeSilver)
                         GameData.AddResource("fame", -fameSwing)
-                        GameData.AddLog(factionB.name .. "失势！本族遭株连，损失惨重。")
+                        GameData.AddLog(factionB.name .. "落败！本族受牵连，损失惨重。")
                     end
                 end },
                 -- 选项3：两不相帮
-                { text = "韬光养晦、两不相帮", effect = function()
+                { text = "置身事外、两不相帮", effect = function()
                     GameData.AddResource("fame", -math.floor(fameSwing * 0.2))
-                    GameData.AddLog("不参与朝争，虽未得利亦未遭祸，但两方皆有微词。")
+                    GameData.AddLog("不参与文坛之争，虽未得利亦未遭祸，但两方皆有微词。")
                 end },
             }
         }
@@ -817,11 +817,11 @@ events[#events + 1] = {
 }
 
 -- ============================================================================
--- 8. 修撰国史 —— 朝廷命族参与修史
+-- 8. 编修族谱 —— 族中公议重修族谱
 -- ============================================================================
 events[#events + 1] = {
     id = "court_compile_history",
-    title = "修撰国史",
+    title = "编修族谱",
     rankRange = {6, 9},
     weight = 7,
     cooldownMonths = 12,
@@ -845,16 +845,16 @@ events[#events + 1] = {
         local fameHigh = math.floor(40 * scale)
         local fameMid = math.floor(18 * scale)
 
-        report.events[#report.events + 1] = bestScholar.name .. "受命参与修撰国史。"
-        GameData.AddLog(bestScholar.name .. "入翰林院参与修史。")
+        report.events[#report.events + 1] = bestScholar.name .. "受命主持编修族谱。"
+        GameData.AddLog(bestScholar.name .. "入书院主持修谱。")
 
         return {
-            title = "修撰国史",
-            desc = "朝廷开馆修史，征召天下饱学之士。族中"
+            title = "编修族谱",
+            desc = "族中开馆修谱，遍邀饱学之士共襄盛举。族中"
                 .. bestScholar.name .. "（学识" .. (bestScholar.knowledge or 0)
                 .. "）以才学出众被征召入馆。\n\n"
-                .. "修史乃文人至高荣耀，然旷日持久、耗时数年。"
-                .. "可投入多少资源支持修史，决定了成果的质量。",
+                .. "修谱乃一族至高盛事，然旷日持久、耗时经年。"
+                .. "可投入多少资源支持修谱，决定了成果的质量。",
             choices = {
                 -- 选项1：全力支持
                 { text = "捐资购书、全力支持修史（-" .. silverCost .. "银两）",
@@ -864,12 +864,12 @@ events[#events + 1] = {
                     local knowledge = bestScholar.knowledge or 50
                     if knowledge >= 80 then
                         GameData.AddResource("fame", fameHigh)
-                        GameData.AddLog(bestScholar.name .. "修史成书，文采斐然、传诵天下！声望+" .. fameHigh)
+                        GameData.AddLog(bestScholar.name .. "修谱成书，文采斐然、传诵乡里！声望+" .. fameHigh)
                         -- 提升族人学识
                         bestScholar.knowledge = math.min(100, (bestScholar.knowledge or 0) + 5)
                     else
                         GameData.AddResource("fame", math.floor(fameHigh * 0.6))
-                        GameData.AddLog(bestScholar.name .. "参与修史，虽非主笔亦有贡献。")
+                        GameData.AddLog(bestScholar.name .. "参与修谱，虽非主笔亦有贡献。")
                         bestScholar.knowledge = math.min(100, (bestScholar.knowledge or 0) + 3)
                     end
                 end },
@@ -900,11 +900,11 @@ events[#events + 1] = {
 }
 
 -- ============================================================================
--- 9. 护送贡品 —— 护送贡品进京，途中可能遭劫
+-- 9. 押运商货 —— 押运大宗商货上路，途中可能遭劫
 -- ============================================================================
 events[#events + 1] = {
     id = "court_escort_tribute",
-    title = "护送贡品",
+    title = "押运商货",
     rankRange = {6, 9},
     weight = 8,
     cooldownMonths = 8,
@@ -924,15 +924,15 @@ events[#events + 1] = {
         local fameReward = math.floor(25 * scale)
         local hireCost = math.floor(45 * scale)
 
-        report.events[#report.events + 1] = "朝廷命族护送贡品进京。"
+        report.events[#report.events + 1] = "行会托付本族押运大宗商货上路。"
         GameData.AddLog("奉命护送岁贡进京。")
 
         return {
-            title = "护送贡品",
-            desc = "朝廷命本族护送地方岁贡——丝绸锦缎" .. clothCost
-                .. "匹、白银" .. silverCost .. "两——安全送抵京师。\n\n"
+            title = "押运商货",
+            desc = "行会托付本族押运一批大宗商货——丝绸锦缎" .. clothCost
+                .. "匹、白银" .. silverCost .. "两——安全送抵京畿。\n\n"
                 .. "沿途山贼出没、盗匪横行，须派族人亲自护卫。"
-                .. "若贡品有失，全族获罪。\n\n"
+                .. "若商货有失，全族须照价赔偿。\n\n"
                 .. "可派之将：" .. table.concat(fighterNames, "、"),
             choices = {
                 -- 选项1：族人亲自护送（可能触发战斗）
@@ -943,7 +943,7 @@ events[#events + 1] = {
                             GameData.AddResource("cloth", -clothCost)
                             GameData.AddResource("silver", -silverCost)
                             GameData.AddResource("fame", -math.floor(fameReward * 0.8))
-                            GameData.AddLog("护送途中遭匪劫，贡品尽失！")
+                            GameData.AddLog("押运途中遭匪劫，商货尽失！")
                             return
                         end
                         local RivalClans = require("Data.RivalClans")
@@ -974,7 +974,7 @@ events[#events + 1] = {
                         local rival = {
                             id = 0, name = "山贼", surname = sn,
                             tierId = tier.id, tierName = tier.name,
-                            tierColor = tier.color, tierDesc = "护送贡品",
+                            tierColor = tier.color, tierDesc = "押运商货",
                             members = members, soldiers = soldiers,
                             rewards = { silver = math.floor(15 * scale), grain = 0, fame = math.floor(10 * scale) },
                             unitStyle = "bandit",
@@ -986,12 +986,12 @@ events[#events + 1] = {
                                 if result == "victory" then
                                     GameData.AddResource("fame", fameReward)
                                     GameData.AddResource("silver", rivalData.rewards.silver)
-                                    GameData.AddLog("击退劫匪，贡品安全送达！声望+" .. fameReward)
+                                    GameData.AddLog("击退劫匪，商货安全送达！声望+" .. fameReward)
                                 else
                                     GameData.AddResource("cloth", -clothCost)
                                     GameData.AddResource("silver", -silverCost)
                                     GameData.AddResource("fame", -math.floor(fameReward * 0.6))
-                                    GameData.AddLog("护送失败，贡品被劫，朝廷问罪！")
+                                    GameData.AddLog("押运失败，商货被劫，行会索赔！")
                                 end
                                 -- 伤亡处理
                                 for _, memberId in ipairs(deployedIds) do
@@ -1010,7 +1010,7 @@ events[#events + 1] = {
                     else
                         -- 60%概率平安送达
                         GameData.AddResource("fame", fameReward)
-                        GameData.AddLog("贡品平安送达京师，朝廷嘉许。声望+" .. fameReward)
+                        GameData.AddLog("商货平安送达，行会称许。声望+" .. fameReward)
                     end
                 end },
                 -- 选项2：雇佣镖师
@@ -1018,10 +1018,10 @@ events[#events + 1] = {
                   effect = function()
                     GameData.AddResource("silver", -hireCost)
                     GameData.AddResource("fame", math.floor(fameReward * 0.5))
-                    GameData.AddLog("雇镖师护送贡品，安全送达，朝廷记功。")
+                    GameData.AddLog("雇镖师押运商货，安全送达，行会记功。")
                 end },
-                -- 选项3：谎报贡品被劫
-                { text = "谎报途中被劫、侵吞贡品（风险极大）",
+                -- 选项3：谎报商货被劫
+                { text = "谎报途中被劫、侵吞商货（风险极大）",
                   effect = function()
                     local profit = math.floor((clothCost * 3 + silverCost) * 0.5)
                     GameData.AddResource("silver", profit)
@@ -1031,7 +1031,7 @@ events[#events + 1] = {
                         local famePenalty = math.floor(40 * scale)
                         GameData.AddResource("silver", -penalty)
                         GameData.AddResource("fame", -famePenalty)
-                        GameData.AddLog("欺君罔上！侵吞贡品败露，罚银" .. penalty .. "两，声望尽失！")
+                        GameData.AddLog("失信于人！侵吞商货败露，罚银" .. penalty .. "两，声望尽失！")
                     else
                         GameData.AddResource("fame", -10)
                         GameData.AddLog("谎报被劫，暗中得利" .. profit .. "银两。")
@@ -1043,11 +1043,11 @@ events[#events + 1] = {
 }
 
 -- ============================================================================
--- 10. 选秀入宫 —— 朝廷选秀，族中女子可能被选中
+-- 10. 才艺会演 —— 乡里会演，族中女子可能崭露头角
 -- ============================================================================
 events[#events + 1] = {
     id = "court_palace_selection",
-    title = "选秀入宫",
+    title = "才艺会演",
     rankRange = {6, 9},
     weight = 7,
     cooldownMonths = 12,
@@ -1079,67 +1079,64 @@ events[#events + 1] = {
         local fameGain = math.floor(30 * scale)
         local bribeCost = math.floor(50 * scale)
 
-        report.events[#report.events + 1] = "朝廷选秀，" .. name .. "被选中。"
-        GameData.AddLog("大选之年，" .. name .. "入选秀名册。")
+        report.events[#report.events + 1] = "乡里会演，" .. name .. "崭露头角。"
+        GameData.AddLog("乡里会演在即，" .. name .. "名列参演名册。")
 
         return {
-            title = "选秀入宫",
-            desc = "三年一度大选秀女，族中" .. name .. "年方"
-                .. (candidate and candidate.age or 16) .. "，姿容出众，被列入选秀名册。\n\n"
-                .. "若入宫得宠，家族将一步登天；"
-                .. "然深宫似海，一入宫门深似海，生死由人。\n\n"
-                .. "是送女入宫以求荣华，还是设法保全骨肉？",
+            title = "才艺会演",
+            desc = "乡里三年一度的才艺会演将至，族中" .. name .. "年方"
+                .. (candidate and candidate.age or 16) .. "，姿容才艺俱佳，被列入参演名册。\n\n"
+                .. "若一举夺魁，阖族名声大振；"
+                .. "然台上一刻、台下十年，成败皆在一瞬。\n\n"
+                .. "是倾力栽培以期夺魁，还是低调处之不求闻达？",
             choices = {
-                -- 选项1：精心准备送女入宫
-                { text = "置办嫁妆送" .. name .. "入宫（-" .. silverCost .. "银两）",
+                -- 选项1：倾力栽培
+                { text = "延师教习、全力栽培（-" .. silverCost .. "银两）",
                   effect = function()
                     GameData.AddResource("silver", -silverCost)
-                    -- 根据才德决定成功率
                     local successRate = math.min(70, 30 + beauty * 0.5)
                     if math.random(100) <= successRate then
                         GameData.AddResource("fame", fameGain * 2)
-                        GameData.AddLog(name .. "入宫得宠，家族荣耀无上！声望+" .. fameGain * 2)
-                        -- 每月额外声望（通过修改状态实现）
+                        GameData.AddLog(name .. "会演夺魁，名动乡里！声望+" .. fameGain * 2)
                         if candidate then
-                            candidate.state = "入宫"
+                            candidate.state = "献艺"
                             candidate.prevState = nil
                         end
                     else
                         GameData.AddResource("fame", math.floor(fameGain * 0.3))
-                        GameData.AddLog(name .. "入宫未得圣眷，然在宫中尚算安稳。")
+                        GameData.AddLog(name .. "会演虽未夺魁，亦得众人称许。")
                         if candidate then
-                            candidate.state = "入宫"
+                            candidate.state = "献艺"
                             candidate.prevState = nil
                         end
                     end
                 end },
-                -- 选项2：贿赂太监免选
-                { text = "贿赂内侍免去选秀（-" .. bribeCost .. "银两）",
+                -- 选项2：打点主事免演
+                { text = "打点主事免去会演（-" .. bribeCost .. "银两）",
                   effect = function()
                     if s.silver >= bribeCost then
                         GameData.AddResource("silver", -bribeCost)
-                        GameData.AddLog("重金贿赂内侍，" .. name .. "免去入宫。")
+                        GameData.AddLog("重金打点主事，" .. name .. "免去会演。")
                     else
                         GameData.AddResource("silver", -math.floor(bribeCost * 0.5))
                         GameData.AddResource("fame", -10)
-                        GameData.AddLog("银两不足以打点，" .. name .. "仍被选入宫中。")
+                        GameData.AddLog("银两不足以打点，" .. name .. "仍须登台。")
                         if candidate then
-                            candidate.state = "入宫"
+                            candidate.state = "献艺"
                             candidate.prevState = nil
                         end
                     end
                 end },
-                -- 选项3：谎报嫁人
-                { text = "谎报已许人家、规避选秀",
+                -- 选项3：托病避演
+                { text = "托病避演、不求闻达",
                   effect = function()
-                    -- 25%概率被查
                     if math.random(100) <= 25 then
                         local famePenalty = math.floor(20 * scale)
                         GameData.AddResource("fame", -famePenalty)
                         GameData.AddResource("silver", -math.floor(30 * scale))
-                        GameData.AddLog("欺瞒选秀被查实，朝廷问罪！声望-" .. famePenalty)
+                        GameData.AddLog("装病之事被识破，乡里唾弃！声望-" .. famePenalty)
                     else
-                        GameData.AddLog(name .. "免去选秀，留在族中。")
+                        GameData.AddLog(name .. "避开会演，留在族中。")
                     end
                 end },
             }

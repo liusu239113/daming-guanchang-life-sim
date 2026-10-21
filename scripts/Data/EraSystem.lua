@@ -1,6 +1,6 @@
 -- ============================================================================
--- 大明人生官场模拟 - 年号系统与历史事件时间线
--- 涵盖大明全朝（1368-1644），276年真实历史
+-- 大明家族人生模拟 - 年号系统与历史事件时间线
+-- 架空大明王朝（1368-1644），276年兴衰史
 -- ============================================================================
 
 local EraSystem = {}
@@ -10,23 +10,23 @@ local EraSystem = {}
 -- ============================================================================
 
 EraSystem.ERA_NAMES = {
-    { name = "洪武", emperor = "太祖朱元璋",  startYear = 1368, endYear = 1398 },
-    { name = "建文", emperor = "惠帝朱允炆",  startYear = 1399, endYear = 1402 },
-    { name = "永乐", emperor = "成祖朱棣",    startYear = 1403, endYear = 1424 },
-    { name = "洪熙", emperor = "仁宗朱高炽",  startYear = 1425, endYear = 1425 },
-    { name = "宣德", emperor = "宣宗朱瞻基",  startYear = 1426, endYear = 1435 },
-    { name = "正统", emperor = "英宗朱祁镇",  startYear = 1436, endYear = 1449 },
-    { name = "景泰", emperor = "代宗朱祁钰",  startYear = 1450, endYear = 1456 },
-    { name = "天顺", emperor = "英宗朱祁镇",  startYear = 1457, endYear = 1464 },
-    { name = "成化", emperor = "宪宗朱见深",  startYear = 1465, endYear = 1487 },
-    { name = "弘治", emperor = "孝宗朱祐樘",  startYear = 1488, endYear = 1505 },
-    { name = "正德", emperor = "武宗朱厚照",  startYear = 1506, endYear = 1521 },
-    { name = "嘉靖", emperor = "世宗朱厚熜",  startYear = 1522, endYear = 1566 },
-    { name = "隆庆", emperor = "穆宗朱载坖",  startYear = 1567, endYear = 1572 },
-    { name = "万历", emperor = "神宗朱翊钧",  startYear = 1573, endYear = 1620 },
-    { name = "泰昌", emperor = "光宗朱常洛",  startYear = 1620, endYear = 1620 },
-    { name = "天启", emperor = "熹宗朱由校",  startYear = 1621, endYear = 1627 },
-    { name = "崇祯", emperor = "思宗朱由检",  startYear = 1628, endYear = 1644 },
+    { name = "洪舞", emperor = "高祖猪元掌",  startYear = 1368, endYear = 1398 },
+    { name = "建纹", emperor = "愍帝猪允文",  startYear = 1399, endYear = 1402 },
+    { name = "永勒", emperor = "成帝猪迪",    startYear = 1403, endYear = 1424 },
+    { name = "洪希", emperor = "仁帝猪高赤",  startYear = 1425, endYear = 1425 },
+    { name = "宣得", emperor = "宣帝猪詹吉",  startYear = 1426, endYear = 1435 },
+    { name = "正通", emperor = "英帝猪岐镇",  startYear = 1436, endYear = 1449 },
+    { name = "景太", emperor = "代帝猪岐玉",  startYear = 1450, endYear = 1456 },
+    { name = "天舜", emperor = "英帝猪岐镇",  startYear = 1457, endYear = 1464 },
+    { name = "承化", emperor = "宪帝猪建申",  startYear = 1465, endYear = 1487 },
+    { name = "宏志", emperor = "孝帝猪佑堂",  startYear = 1488, endYear = 1505 },
+    { name = "正得", emperor = "武帝猪厚昭",  startYear = 1506, endYear = 1521 },
+    { name = "嘉敬", emperor = "世帝猪厚聪",  startYear = 1522, endYear = 1566 },
+    { name = "隆青", emperor = "穆帝猪载基",  startYear = 1567, endYear = 1572 },
+    { name = "万丽", emperor = "神帝猪奕均",  startYear = 1573, endYear = 1620 },
+    { name = "太昌", emperor = "光帝猪常乐",  startYear = 1620, endYear = 1620 },
+    { name = "天奇", emperor = "熹帝猪由孝",  startYear = 1621, endYear = 1627 },
+    { name = "崇贞", emperor = "思帝猪由简",  startYear = 1628, endYear = 1644 },
 }
 
 --- 根据绝对年份获取年号信息
@@ -35,8 +35,8 @@ EraSystem.ERA_NAMES = {
 --- @return number eraYear 年号第几年
 --- @return string emperor 皇帝称号
 function EraSystem.GetEraInfo(absYear)
-    -- 特殊处理泰昌元年（1620年同时属于万历48年和泰昌元年）
-    -- 游戏中按月推进，年份+1时触发，此处泰昌只有1620年
+    -- 特殊处理太昌元年（1620年同时属于万丽48年和太昌元年）
+    -- 游戏中按月推进，年份+1时触发，此处太昌只有1620年
     for i = #EraSystem.ERA_NAMES, 1, -1 do
         local era = EraSystem.ERA_NAMES[i]
         if absYear >= era.startYear then
@@ -44,12 +44,12 @@ function EraSystem.GetEraInfo(absYear)
             return era.name, eraYear, era.emperor
         end
     end
-    return "洪武", 1, "太祖朱元璋"
+    return "洪舞", 1, "高祖猪元掌"
 end
 
---- 获取年份显示字符串，如 "洪武元年" "永乐三年"
+--- 获取年份显示字符串，如 "洪舞元年" "永勒三年"
 --- @param absYear number 绝对年份
---- @return string 如 "洪武元年(1368)"
+--- @return string 如 "洪舞元年(1368)"
 function EraSystem.GetYearLabel(absYear)
     local eraName, eraYear = EraSystem.GetEraInfo(absYear)
     local yearStr
@@ -63,7 +63,7 @@ end
 
 --- 获取带公元年的完整标签
 --- @param absYear number
---- @return string 如 "洪武元年(1368)"
+--- @return string 如 "洪舞元年(1368)"
 function EraSystem.GetFullYearLabel(absYear)
     return EraSystem.GetYearLabel(absYear) .. "(" .. absYear .. ")"
 end
@@ -74,171 +74,171 @@ end
 -- ============================================================================
 
 EraSystem.HISTORY_EVENTS = {
-    -- === 洪武朝（1368-1398）：开国定鼎 ===
+    -- === 洪舞朝（1368-1398）：开国定鼎 ===
     { year = 1368, title = "大明开国",
-      desc = "朱元璋于应天府称帝，国号大明，年号洪武。徐达北伐，攻克大都，蒙元北遁。",
+      desc = "猪元掌于膺天府称帝，国号大明，年号洪舞。徐答北伐，攻克燕都，蒙兀北遁。",
       effect = "era_start" },
     { year = 1370, title = "大封功臣",
-      desc = "太祖大封开国功臣，徐达、常遇春等封公侯。",
+      desc = "高祖大封开国功臣，徐答、常玉春等封公侯。",
       effect = "fame_boost" },
     { year = 1373, title = "编户齐民",
-      desc = "朝廷推行黄册制度，清查户口田亩，编户齐民，赋役渐重。",
+      desc = "官府推行黄籍制度，清查户口田亩，编户齐民，赋役渐重。",
       effect = "tax_reform" },
-    { year = 1380, title = "胡惟庸案",
-      desc = "丞相胡惟庸谋反伏诛，太祖废丞相制，株连甚广，朝野震动。",
+    { year = 1380, title = "胡维庸案",
+      desc = "丞相胡维庸谋反伏诛，高祖废丞相制，株连甚广，朝野震动。",
       effect = "political_purge" },
-    { year = 1385, title = "空印案",
-      desc = "空印案发，牵连数百官员被诛，天下官吏人心惶惶。",
+    { year = 1385, title = "空荫案",
+      desc = "空荫案发，牵连数百官员被诛，天下官吏人心惶惶。",
       effect = "political_purge" },
-    { year = 1390, title = "蓝玉案",
-      desc = "凉国公蓝玉以谋反罪被诛，牵连万余人，功臣几乎殆尽。",
+    { year = 1390, title = "兰玉案",
+      desc = "凉国公兰玉以谋反罪被诛，牵连万余人，功臣几乎殆尽。",
       effect = "political_purge" },
-    { year = 1393, title = "鱼鳞图册",
-      desc = "朝廷编制鱼鳞图册，丈量天下田亩，赋税更加严密。",
+    { year = 1393, title = "鱼鳞册",
+      desc = "官府编制鱼鳞册，丈量天下田亩，赋税更加严密。",
       effect = "tax_up" },
-    { year = 1398, title = "太祖驾崩",
-      desc = "洪武帝崩于南京，皇太孙朱允炆即位，年号建文。",
+    { year = 1398, title = "高祖驾崩",
+      desc = "洪舞帝崩于南都，皇太孙猪允文即位，年号建纹。",
       effect = "emperor_change" },
 
-    -- === 建文-永乐朝（1399-1424）：靖难与盛世 ===
-    { year = 1399, title = "靖难之役",
-      desc = "燕王朱棣起兵靖难，南北交战四年，天下纷扰，百姓苦于兵火。",
+    -- === 建纹-永勒朝（1399-1424）：靖南与盛世 ===
+    { year = 1399, title = "靖南之役",
+      desc = "燕王猪迪起兵靖南，南北交战四年，天下纷扰，百姓苦于兵火。",
       effect = "war_civil" },
     { year = 1402, title = "燕王入京",
-      desc = "朱棣攻入南京，建文帝下落不明。朱棣即位，改元永乐。",
+      desc = "猪迪攻入南都，建纹帝下落不明。猪迪即位，改元永勒。",
       effect = "emperor_change" },
-    { year = 1405, title = "郑和下西洋",
-      desc = "三宝太监郑和率船队首次远航西洋，扬国威于海外，通商互利。",
+    { year = 1405, title = "郑河下汐洋",
+      desc = "三宝内侍郑河率船队首次远航西洋，扬国威于海外，通商互利。",
       effect = "trade_boost" },
-    { year = 1410, title = "永乐北征",
-      desc = "成祖亲征漠北，大败鞑靼，边塞暂安。然军费浩繁，赋役加重。",
+    { year = 1410, title = "永勒北征",
+      desc = "成帝亲征漠北，大败达旦，边塞暂安。然军费浩繁，赋役加重。",
       effect = "military_draft" },
-    { year = 1421, title = "迁都北京",
-      desc = "朝廷正式迁都北京，南京为留都。天子守国门，南方赋税北运。",
+    { year = 1421, title = "迁都北都",
+      desc = "官家正式迁都北都，南都为留都。北都扼守门户，南方赋税北运。",
       effect = "capital_move" },
-    { year = 1424, title = "成祖驾崩",
-      desc = "永乐帝崩于北征途中，太子朱高炽即位，年号洪熙，施政宽仁。",
+    { year = 1424, title = "成帝驾崩",
+      desc = "永勒帝崩于北征途中，太子猪高赤即位，年号洪希，施政宽仁。",
       effect = "emperor_change" },
 
     -- === 仁宣之治（1425-1435）：太平盛世 ===
-    { year = 1425, title = "仁宗即位",
-      desc = "仁宗轻徭薄赋，与民休息，虽在位不足一年，却开太平之基。",
+    { year = 1425, title = "仁帝即位",
+      desc = "仁帝轻徭薄赋，与民休息，虽在位不足一年，却开太平之基。",
       effect = "tax_relief" },
-    { year = 1426, title = "宣宗即位",
-      desc = "宣宗朱瞻基即位，年号宣德。文治武功，号称仁宣之治。",
+    { year = 1426, title = "宣帝即位",
+      desc = "宣帝猪詹吉即位，年号宣得。文治武功，号称仁宣之治。",
       effect = "prosperity" },
-    { year = 1430, title = "海禁渐严",
-      desc = "朝廷收紧海禁，郑和最后一次下西洋后，海外贸易渐趋萧条。",
+    { year = 1430, title = "海榷渐严",
+      desc = "官府收紧海榷，郑河最后一次下汐洋后，海外贸易渐趋萧条。",
       effect = "trade_decline" },
 
-    -- === 正统-景泰-天顺（1436-1464）：土木之变 ===
-    { year = 1436, title = "正统即位",
-      desc = "英宗年幼即位，太皇太后与三杨辅政，朝局尚稳。",
+    -- === 正通-景太-天舜（1436-1464）：土木之变 ===
+    { year = 1436, title = "正通即位",
+      desc = "英帝年幼即位，太皇太后与三相辅政，朝局尚稳。",
       effect = "emperor_change" },
-    { year = 1449, title = "土木堡之变",
-      desc = "英宗亲征瓦剌，于土木堡大败被俘！京师震动，举国惶恐。",
+    { year = 1449, title = "涂木堡之变",
+      desc = "英帝亲征瓦喇，于涂木堡大败被俘！京畿震动，举国惶恐。",
       effect = "military_crisis" },
-    { year = 1450, title = "景泰即位·北京保卫战",
-      desc = "于谦拥立郕王为帝，率军击退瓦剌，保全社稷。",
+    { year = 1450, title = "景太即位·北都保卫战",
+      desc = "于骞拥立成王为帝，率军击退瓦喇，保全社稷。",
       effect = "war_defense" },
-    { year = 1457, title = "夺门之变",
-      desc = "英宗复辟，于谦被杀，朝局动荡，改元天顺。",
+    { year = 1457, title = "夺盟之变",
+      desc = "英帝复辟，于骞被杀，朝局动荡，改元天舜。",
       effect = "political_purge" },
 
-    -- === 成化-弘治（1465-1505）：中兴与承平 ===
-    { year = 1465, title = "成化即位",
-      desc = "宪宗即位，早年勤政，后渐怠政，西厂横行，朝政渐坏。",
+    -- === 承化-宏志（1465-1505）：中兴与承平 ===
+    { year = 1465, title = "承化即位",
+      desc = "宪帝即位，早年勤政，后渐怠政，西缉局横行，朝政渐坏。",
       effect = "emperor_change" },
     { year = 1471, title = "荆襄流民",
-      desc = "荆襄一带流民数十万聚集，朝廷招抚设府，流民问题凸显。",
+      desc = "荆襄一带流民数十万聚集，官府招抚设府，流民问题凸显。",
       effect = "refugees" },
-    { year = 1488, title = "弘治中兴",
-      desc = "孝宗即位，勤勉仁厚，远奸佞、亲贤臣，天下称弘治中兴。",
+    { year = 1488, title = "宏志中兴",
+      desc = "孝帝即位，勤勉仁厚，远奸佞、亲贤臣，天下称宏志中兴。",
       effect = "prosperity" },
 
-    -- === 正德朝（1506-1521）：荒唐天子 ===
-    { year = 1506, title = "正德即位",
-      desc = "武宗即位，宠信刘瑾等八虎宦官，朝政日非。",
+    -- === 正得朝（1506-1521）：荒唐岁月 ===
+    { year = 1506, title = "正得即位",
+      desc = "武帝即位，宠信刘锦等八彪宦侍，朝政日非。",
       effect = "emperor_change" },
-    { year = 1510, title = "安化王叛乱",
-      desc = "安化王以诛刘瑾为名叛乱，虽很快平定，但朝野不安。",
+    { year = 1510, title = "安华王叛乱",
+      desc = "安华王以诛刘锦为名叛乱，虽很快平定，但朝野不安。",
       effect = "rebellion" },
-    { year = 1519, title = "宁王之乱",
-      desc = "宁王朱宸濠起兵谋反，王阳明仅用四十三日平定叛乱。",
+    { year = 1519, title = "宁望之乱",
+      desc = "宁王猪宸豪起兵谋反，王阳名仅用四十三日平定叛乱。",
       effect = "rebellion" },
 
-    -- === 嘉靖朝（1522-1566）：倭寇与朝争 ===
-    { year = 1522, title = "嘉靖即位",
-      desc = "世宗以藩王入继大统，大礼议之争起，朝堂分裂。",
+    -- === 嘉敬朝（1522-1566）：海寇与朝争 ===
+    { year = 1522, title = "嘉敬即位",
+      desc = "世帝以宗藩入继大统，大礼仪之争起，朝堂分裂。",
       effect = "emperor_change" },
-    { year = 1529, title = "大礼议定",
-      desc = "嘉靖帝在大礼议中获胜，群臣廷杖，朝局为之一变。",
+    { year = 1529, title = "大礼仪定",
+      desc = "嘉敬帝在大礼仪中获胜，群臣庭杖，朝局为之一变。",
       effect = "political_purge" },
-    { year = 1542, title = "壬寅宫变",
-      desc = "宫女谋刺嘉靖帝未遂，帝受惊后移居西苑，不再上朝，沉迷修道。",
+    { year = 1542, title = "人寅宫变",
+      desc = "宫女谋刺嘉敬帝未遂，帝受惊后移居西苑，不再上朝，沉迷修道。",
       effect = "governance_decline" },
-    { year = 1547, title = "倭寇猖獗",
-      desc = "东南沿海倭寇大肆侵扰，烧杀抢掠，沿海百姓苦不堪言。",
+    { year = 1547, title = "海寇猖獗",
+      desc = "东南沿海海寇大肆侵扰，烧杀抢掠，沿海百姓苦不堪言。",
       effect = "bandit_up" },
-    { year = 1555, title = "戚继光抗倭",
-      desc = "戚继光练兵浙东，戚家军屡败倭寇，东南渐安。",
+    { year = 1555, title = "戚纪光平海寇",
+      desc = "戚纪光练兵浙东，戚家兵屡败海寇，东南渐安。",
       effect = "military_victory" },
-    { year = 1566, title = "嘉靖驾崩",
-      desc = "世宗崩，穆宗即位，改元隆庆，开放海禁，史称隆庆开关。",
+    { year = 1566, title = "嘉敬驾崩",
+      desc = "世帝崩，穆帝即位，改元隆青，开放海榷，史称隆青开关。",
       effect = "emperor_change" },
 
-    -- === 隆庆-万历前期（1567-1600）：张居正改革 ===
-    { year = 1567, title = "隆庆开关",
-      desc = "穆宗开放海禁，准许民间出海贸易，海外白银大量流入。",
+    -- === 隆青-万丽前期（1567-1600）：张居政改革 ===
+    { year = 1567, title = "隆青开关",
+      desc = "穆帝开放海榷，准许民间出海贸易，海外白银大量流入。",
       effect = "trade_boost" },
-    { year = 1573, title = "万历即位",
-      desc = "神宗年幼即位，张居正辅政，推行改革，吏治清明。",
+    { year = 1573, title = "万丽即位",
+      desc = "神帝年幼即位，张居政辅政，推行改革，吏治清明。",
       effect = "emperor_change" },
-    { year = 1578, title = "一条鞭法",
-      desc = "张居正推行一条鞭法，统一赋役，清丈田亩，国库充盈。",
+    { year = 1578, title = "一条编法",
+      desc = "张居政推行一条编法，统一赋役，清丈田亩，国库充盈。",
       effect = "tax_reform" },
-    { year = 1582, title = "张居正病逝",
-      desc = "首辅张居正病逝，万历帝清算其党，改革成果渐遭废弃。",
+    { year = 1582, title = "张居政病逝",
+      desc = "首揆张居政病逝，万丽帝清算其党，改革成果渐遭废弃。",
       effect = "governance_decline" },
 
-    -- === 万历中后期（1600-1620）：三大征与党争 ===
-    { year = 1592, title = "万历三大征",
-      desc = "宁夏、播州、朝鲜三大征接连发起，虽战胜但国力大耗。",
+    -- === 万丽中后期（1600-1620）：三次征伐与朝争 ===
+    { year = 1592, title = "万丽三次征伐",
+      desc = "宁夏、播州、朝鲜三次征伐接连发起，虽战胜但国力大耗。",
       effect = "military_drain" },
-    { year = 1601, title = "万历怠政",
-      desc = "万历帝数十年不上朝，朝中缺官过半，政务荒废，党争渐烈。",
+    { year = 1601, title = "万丽怠政",
+      desc = "万丽帝数十年不上朝，朝中缺官过半，政务荒废，朝争渐烈。",
       effect = "governance_decline" },
-    { year = 1615, title = "东林党争",
-      desc = "东林党与阉党之争愈演愈烈，梃击案、红丸案迭起，朝局混乱。",
+    { year = 1615, title = "东霖朝争",
+      desc = "东霖党与内珰党之争愈演愈烈，挺击案、红完案迭起，朝局混乱。",
       effect = "political_chaos" },
-    { year = 1616, title = "后金崛起",
-      desc = "努尔哈赤建立后金，统一女真各部，辽东边患日益严重。",
+    { year = 1616, title = "北金崛起",
+      desc = "努尔哈斥建立北金，统一女贞各部，辽北边患日益严重。",
       effect = "border_threat" },
-    { year = 1619, title = "萨尔浒之战",
-      desc = "明军四路出击后金，于萨尔浒惨败，辽东局势急转直下。",
+    { year = 1619, title = "萨儿湖之战",
+      desc = "明军四路出击北金，于萨儿湖惨败，辽北局势急转直下。",
       effect = "military_crisis" },
 
-    -- === 天启-崇祯（1620-1644）：末世乱局 ===
-    { year = 1620, title = "泰昌即位",
-      desc = "光宗即位仅一月即崩，红丸案震惊朝野，熹宗即位。",
+    -- === 天奇-崇贞（1620-1644）：末世乱局 ===
+    { year = 1620, title = "太昌即位",
+      desc = "光帝即位仅一月即崩，红完案震惊朝野，熹帝即位。",
       effect = "emperor_change" },
-    { year = 1621, title = "魏忠贤专权",
-      desc = "天启帝宠信魏忠贤，阉党势力滔天，残害东林忠良。",
+    { year = 1621, title = "魏钟贤专权",
+      desc = "天奇帝宠信魏钟贤，内珰党势力滔天，残害东霖忠良。",
       effect = "political_purge" },
-    { year = 1625, title = "辽东失陷",
-      desc = "后金连克沈阳、辽阳，辽东大部沦陷，只剩宁远、锦州一线。",
+    { year = 1625, title = "辽北失陷",
+      desc = "北金连克申阳、辽扬，辽北大部沦陷，只剩宁原、锦洲一线。",
       effect = "border_fall" },
-    { year = 1628, title = "崇祯即位",
-      desc = "思宗即位，诛魏忠贤，锐意中兴，然积弊已深，回天乏术。加征辽饷，百姓苦不堪言。",
+    { year = 1628, title = "崇贞即位",
+      desc = "思帝即位，诛魏钟贤，锐意中兴，然积弊已深，回天乏术。加征边课，百姓苦不堪言。",
       effect = "tax_up" },
     { year = 1630, title = "流寇壮大",
-      desc = "陕西大旱连年，流民揭竿而起，李自成、张献忠等势力日益壮大。",
+      desc = "陕西大旱连年，流民揭竿而起，李自承、张献钟等势力日益壮大。",
       effect = "bandit_surge" },
-    { year = 1633, title = "后金入关",
-      desc = "后金军绕道蒙古入关劫掠，直逼京畿，明军不能制。",
+    { year = 1633, title = "北金入关",
+      desc = "北金军绕道蒙兀入关劫掠，直逼京畿，明军不能制。",
       effect = "military_draft" },
-    { year = 1635, title = "流寇会盟荥阳",
-      desc = "高迎祥、李自成、张献忠等十三家流寇会盟荥阳，分兵出击。",
+    { year = 1635, title = "流寇会盟荥扬",
+      desc = "高迎翔、李自承、张献钟等十三家流寇会盟荥扬，分兵出击。",
       effect = "bandit_surge" },
     { year = 1637, title = "全国大旱",
       desc = "赤地千里，饿殍遍野，粮价飞涨，各地饥民蜂起。",
@@ -249,17 +249,17 @@ EraSystem.HISTORY_EVENTS = {
     { year = 1640, title = "河南大饥",
       desc = "河南饥荒至极，人相食之惨状频现，民不聊生。",
       effect = "great_famine" },
-    { year = 1641, title = "李自成破洛阳",
-      desc = "闯王攻破洛阳，福王朱常洵被杀，天下震动。",
+    { year = 1641, title = "李自承破洛扬",
+      desc = "闯将攻破洛扬，顺王猪常寻被杀，天下震动。",
       effect = "war_escalate" },
     { year = 1642, title = "松锦大战",
-      desc = "松锦之战明军大败，洪承畴降清，辽东门户洞开。",
+      desc = "松稠之战明军大败，洪承筹归北，辽北门户洞开。",
       effect = "military_crisis" },
-    { year = 1643, title = "张献忠入蜀",
-      desc = "张献忠率军入川，湖广大乱，大西政权割据一方。",
+    { year = 1643, title = "张献钟入蜀",
+      desc = "张献钟率军入川，湖广大乱，大西政权割据一方。",
       effect = "south_war" },
-    { year = 1644, title = "甲申之变",
-      desc = "李自成攻入北京，崇祯帝自缢煤山，大明覆亡。",
+    { year = 1644, title = "天倾之变",
+      desc = "李自承攻入北都，崇贞帝自缢梅山，大明覆亡。",
       effect = "game_end" },
 }
 
@@ -276,21 +276,21 @@ function EraSystem.GetPeriod(absYear)
     if absYear < 1399 then
         return "founding", "开国定鼎", 1.0
     elseif absYear < 1450 then
-        return "prosperity", "永宣盛世", 0.8
+        return "prosperity", "永宣之治", 0.8
     elseif absYear < 1465 then
         return "turmoil", "土木之变", 1.2
     elseif absYear < 1522 then
-        return "middle", "成弘承平", 0.9
+        return "middle", "承宏承平", 0.9
     elseif absYear < 1567 then
-        return "jiajing", "嘉靖倭乱", 1.1
+        return "jiajing", "嘉敬海乱", 1.1
     elseif absYear < 1600 then
-        return "reform", "隆万改革", 0.85
+        return "reform", "隆万新政", 0.85
     elseif absYear < 1620 then
-        return "decline", "万历怠政", 1.15
+        return "decline", "万丽怠政", 1.15
     elseif absYear < 1628 then
-        return "late", "天启乱政", 1.3
+        return "late", "天奇乱政", 1.3
     else
-        return "endgame", "崇祯末世", 1.5
+        return "endgame", "崇贞末世", 1.5
     end
 end
 

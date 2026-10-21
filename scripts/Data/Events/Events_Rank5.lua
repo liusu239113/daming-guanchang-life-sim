@@ -1,10 +1,10 @@
 local GameData = require("Data.GameData")
 local events = {}
 
--- 1. 朝堂博弈
+-- 1. 商会博弈
 events[#events + 1] = {
     id = "r5_court_politics",
-    title = "朝堂博弈",
+    title = "商会博弈",
     rankRange = {5, 6},
     weight = 8,
     cooldownMonths = 6,
@@ -17,32 +17,32 @@ events[#events + 1] = {
         return #adults >= 3
     end,
     execute = function(s, report)
-        report.events[#report.events + 1] = "朝堂之上暗流涌动，各方势力争相角逐，我族亦被卷入其中"
-        GameData.AddLog("朝堂风云变幻，族中长辈商议应对之策")
+        report.events[#report.events + 1] = "商会之中暗流涌动，各方势力争相角逐，我族亦被卷入其中"
+        GameData.AddLog("商会风云变幻，族中长辈商议应对之策")
         return {
-            title = "朝堂博弈", desc = "朝中大臣分为两派，围绕一项重要国策争执不休。以我族如今的地位，难以置身事外，必须表明立场。支持哪一方，将决定家族在朝中的未来走向。",
+            title = "商会博弈", desc = "行会首脑分为两派，围绕一条新辟商路争执不休。以我族如今的地位，难以置身事外，必须表明立场。支持哪一方，将决定家族在行会中的未来走向。",
             choices = {
-                { text = "支持改革派，锐意进取", cost = {silver = 25}, result = "族长亲赴京师，于朝堂之上慷慨陈词力挺新政。改革派得我族银钱襄助与奔走呼号，声势大振。数月之后新政渐行，朝中大臣皆知我族立场坚定，纷纷刮目相看，族中声望因此大涨。", effect = function()
+                { text = "支持改革派，锐意进取", cost = {silver = 25}, result = "族长亲赴郡城，于众商之前慷慨陈词力挺新路。改革派得我族银钱襄助与奔走呼号，声势大振。数月之后新路渐通，行会商户皆知我族立场坚定，纷纷刮目相看，族中声望因此大涨。", effect = function()
                     GameData.AddResource("fame", 20)
                     GameData.AddLog("族中力挺改革派，声望大振，然花费银两打点关系")
                 end },
-                { text = "支持保守派，稳中求进", cost = {silver = 10}, result = "族中遣人暗中拜会保守派重臣，奉上心意以表归附。保守派势力根深蒂固，我族依附其下虽无赫赫之功，却也免去了站错队的风险。朝堂风波过后，族中安然无恙，稳中有进。", effect = function()
+                { text = "支持保守派，稳中求进", cost = {silver = 10}, result = "族中遣人暗中拜会守旧商董，奉上心意以表归附。守旧派根基深厚，我族依附其下虽无赫赫之功，却也免去了站错队的风险。商会风波过后，族中安然无恙，稳中有进。", effect = function()
                     GameData.AddResource("fame", 10)
                     GameData.AddLog("族中依附保守派，虽无大功，亦保平安")
                 end },
-                { text = "两不相帮，韬光养晦", result = "族中闭门谢客，对朝中两派使者皆以身体抱恙推辞。然两不相帮便是两面得罪，朝中有人冷笑道我族首鼠两端、不堪大用。一时间门庭冷落，旧日交好之人亦渐渐疏远。", effect = function()
+                { text = "两不相帮，韬光养晦", result = "族中闭门谢客，对两派使者皆以身体抱恙推辞。然两不相帮便是两面得罪，行会中有人冷笑道我族首鼠两端、不堪共事。一时间门庭冷落，旧日交好之人亦渐渐疏远。", effect = function()
                     GameData.AddResource("fame", -5)
-                    GameData.AddLog("族中选择中立观望，朝中有人暗讽我族首鼠两端")
+                    GameData.AddLog("族中选择中立观望，行会中有人暗讽我族首鼠两端")
                 end },
             }
         }
     end,
 }
 
--- 2. 皇恩眷顾
+-- 2. 乡望嘉奖
 events[#events + 1] = {
     id = "r5_imperial_favor",
-    title = "皇恩眷顾",
+    title = "乡望嘉奖",
     rankRange = {5, 6},
     weight = 6,
     cooldownMonths = 12,
@@ -54,20 +54,20 @@ events[#events + 1] = {
         return true
     end,
     execute = function(s, report)
-        report.events[#report.events + 1] = "天子下旨嘉奖，御赐匾额与珍宝，举族荣耀"
-        GameData.AddLog("圣旨降临，天恩浩荡，族人跪迎御赐")
+        report.events[#report.events + 1] = "乡里公议嘉奖，赠匾额与珍宝，举族荣耀"
+        GameData.AddLog("乡中耆老登门道贺，族人恭迎赠礼")
         return {
-            title = "皇恩眷顾", desc = "圣上念及我族世代忠良，特颁旨嘉奖，赐下御笔匾额并金银珠宝。此乃莫大殊荣，然御赐之物如何安置处理，族中意见不一。",
+            title = "乡望嘉奖", desc = "乡里念及我族世代勤谨，特赠「德被乡邻」匾额并金银珠宝。此乃莫大殊荣，然所赠之物如何安置处理，族中意见不一。",
             choices = {
-                { text = "高悬匾额于祠堂，珍宝入库收藏", result = "御笔亲题之匾额择吉日高悬于宗祠正堂，金光灿灿令人肃然起敬。珍宝尽入族库妥善珍藏，族人每逢祭祖便仰望御匾，满怀荣耀。四邻乡绅闻讯前来拜贺，皆叹我族天恩浩荡、光宗耀祖。", effect = function()
+                { text = "高悬匾额于祠堂，珍宝入库收藏", result = "名家亲题之匾额择吉日高悬于宗祠正堂，金光灿灿令人肃然起敬。珍宝尽入族库妥善珍藏，族人每逢祭祖便仰望匾额，满怀荣耀。四邻乡绅闻讯前来拜贺，皆叹我族德望日隆、光宗耀祖。", effect = function()
                     GameData.AddResource("silver", 40)
                     GameData.AddResource("fame", 25)
-                    GameData.AddLog("御赐匾额高悬宗祠，珍宝入库，阖族引以为荣")
+                    GameData.AddLog("乡赠匾额高悬宗祠，珍宝入库，阖族引以为荣")
                 end },
-                { text = "将部分赏赐分予族中贫苦子弟", result = "族长召集各房子弟于宗祠前，将御赐珍宝分润族中贫寒之家。老弱妇孺感恩涕零，青壮子弟更添报效之心。虽金银所得不及独占，然族中上下一心归附，凝聚之力远胜金银。", effect = function()
+                { text = "将部分赏赐分予族中贫苦子弟", result = "族长召集各房子弟于宗祠前，将乡赠珍宝分润族中贫寒之家。老弱妇孺感恩涕零，青壮子弟更添报效之心。虽金银所得不及独占，然族中上下一心归附，凝聚之力远胜金银。", effect = function()
                     GameData.AddResource("silver", 20)
                     GameData.AddResource("fame", 15)
-                    GameData.AddLog("族长将御赐之物分润族人，人心更加归附")
+                    GameData.AddLog("族长将乡赠之物分润族人，人心更加归附")
                 end },
             }
         }
@@ -132,17 +132,17 @@ events[#events + 1] = {
         report.events[#report.events + 1] = m.name .. "运筹帷幄，商号遍布数省，隐有商业帝国之势"
         GameData.AddLog(m.name .. "的商业版图持续扩张")
         return {
-            title = "商业帝国", desc = m.name .. "经营有道，如今商号已遍布三省六府，丝绸、茶叶、瓷器贸易络绎不绝。有人建议趁势扩张，将生意做到更远之处；也有人担忧树大招风，恐遭朝廷猜忌。",
+            title = "商业帝国", desc = m.name .. "经营有道，如今商号已遍布三省六府，丝绸、茶叶、瓷器贸易络绎不绝。有人建议趁势扩张，将生意做到更远之处；也有人担忧树大招风，恐遭行会猜忌。",
             choices = {
                 { text = "大举扩张，垄断数省商路", result = "商号如雨后春笋遍布江南数省，丝绸行、茶庄、瓷器铺连成一片。日进斗金之势令同行侧目，商路之上无人不知我族字号。然树大招风，有人暗中向官府参奏其垄断之嫌，隐患渐生。", effect = function()
                     GameData.AddResource("silver", 50)
                     GameData.AddResource("fame", -10)
                     GameData.AddLog(m.name .. "大举扩张商号，日进斗金，然商名太盛引人侧目")
                 end },
-                { text = "稳健经营，同时向朝廷纳捐", result = "商号稳步扩张之余，特向朝廷纳捐银两以示忠心。银钱入了国库，朝中亦有人为我族美言。如此一来商誉日隆而官声亦佳，进退有据不失分寸，实为经商之上策。", effect = function()
+                { text = "稳健经营，同时向行会纳捐", result = "商号稳步扩张之余，特向行会纳捐银两以示忠心。银钱入了国库，行会中亦有人为我族美言。如此一来商誉日隆而人望亦佳，进退有据不失分寸，实为经商之上策。", effect = function()
                     GameData.AddResource("silver", 30)
                     GameData.AddResource("fame", 10)
-                    GameData.AddLog(m.name .. "稳健经营并向朝廷纳捐，商誉与官声兼得")
+                    GameData.AddLog(m.name .. "稳健经营并向行会纳捐，商誉与人望兼得")
                 end },
                 { text = "分散经营，化整为零以避嫌", result = "将旗下商号拆分为数家，分由族中子弟各自经营，表面上已无垄断之嫌。虽利润因此摊薄不少，但也不再引人注目。族中长辈叹道，做生意如做人，锋芒太露终非善事。", effect = function()
                     GameData.AddResource("silver", 15)
@@ -172,24 +172,24 @@ events[#events + 1] = {
     execute = function(s, report)
         local warriors = GameData.GetMembersByState("从军")
         local m = warriors[1]
-        report.events[#report.events + 1] = m.name .. "在边关立下赫赫战功，朝廷论功行赏"
+        report.events[#report.events + 1] = m.name .. "在边关立下赫赫战功，行会论功行赏"
         GameData.AddLog(m.name .. "率部出征，捷报传来")
         return {
-            title = "军功报国", desc = "边疆告急，朝廷调兵遣将。" .. m.name .. "奉命率部驰援，经数月鏖战终于击退来犯之敌。朝廷论功行赏，问我族欲求何赏。",
+            title = "军功报国", desc = "边疆告急，行会调兵遣将。" .. m.name .. "奉命率部驰援，经数月鏖战终于击退来犯之敌。行会论功行赏，问我族欲求何赏。",
             choices = {
-                { text = "请封世袭武职，光耀门楣", cost = {silver = 20}, result = "朝廷颁下诰命，赐予世袭武职，族中又添一位柱国之臣。授印之日，全族张灯结彩设宴庆贺。自此我族文武兼备，在朝堂上更有了分量，远近世家纷纷前来结交攀附。", effect = function()
+                { text = "请封世袭武职，光耀门楣", cost = {silver = 20}, result = "行会颁下文书，赐予世袭武职，族中又添一位栋梁之才。授印之日，全族张灯结彩设宴庆贺。自此我族文武兼备，在商会上更有了分量，远近世家纷纷前来结交攀附。", effect = function()
                     GameData.AddResource("fame", 30)
-                    GameData.AddLog(m.name .. "获封武职，族中又添一柱国之臣")
+                    GameData.AddLog(m.name .. "获封武职，族中又添一栋梁之才")
                 end },
-                { text = "请赐田产金银，充实家业", result = "朝廷论功行赏，赐下良田数百亩、黄金白银若干。运回之日车马络绎不绝，族人欢欣鼓舞。田产入册、金银入库，家业因此大为充实，来年佃租收入亦随之水涨船高。", effect = function()
+                { text = "请赐田产金银，充实家业", result = "行会论功行赏，赐下良田数百亩、黄金白银若干。运回之日车马络绎不绝，族人欢欣鼓舞。田产入册、金银入库，家业因此大为充实，来年佃租收入亦随之水涨船高。", effect = function()
                     GameData.AddResource("silver", 40)
                     GameData.AddResource("grain", 30)
                     GameData.AddResource("fame", 10)
                     GameData.AddLog(m.name .. "之功换得大片田产与金银赏赐")
                 end },
-                { text = "请恩荫子弟入国子监读书", cost = {silver = 10}, result = "以军功换得恩荫名额，族中数名子弟得以入国子监就读。太学之中名师荟萃、同窗皆贵胄之后，日后科举仕途皆多了一条捷径。族人感慨，一将功成不仅护了家国，更为后辈铺就了青云之路。", effect = function()
+                { text = "请恩荫子弟入书院附读", cost = {silver = 10}, result = "以军功换得恩荫名额，族中数名子弟得以入国子学就读。太学之中名师荟萃、同窗皆贵胄之后，日后文脉前程皆多了一条捷径。族人感慨，一将功成不仅护了家国，更为后辈铺就了青云之路。", effect = function()
                     GameData.AddResource("fame", 20)
-                    GameData.AddLog(m.name .. "以军功换得子弟入国子监的名额")
+                    GameData.AddLog(m.name .. "以军功换得子弟入国子学的名额")
                 end },
             }
         }
@@ -256,14 +256,14 @@ events[#events + 1] = {
     execute = function(s, report)
         local adults = GameData.GetAdultMembers()
         local m = adults[1]
-        report.events[#report.events + 1] = "朝廷委派" .. m.name .. "出使邻邦，代天子行外交之事"
+        report.events[#report.events + 1] = "行会委派" .. m.name .. "出使邻邦，代乡耆行外交之事"
         GameData.AddLog(m.name .. "受命出使，肩负邦交重任")
         return {
-            title = "外交使命", desc = "朝廷选中我族" .. m.name .. "出使西域邻邦，商讨通商互市与边界划定事宜。此行路途遥远，凶险难测，然若功成，我族在朝中地位将更上一层。",
+            title = "外交使命", desc = "行会选中我族" .. m.name .. "出使西域邻邦，商讨通商互市与边界划定事宜。此行路途遥远，凶险难测，然若功成，我族在行会中地位将更上一层。",
             choices = {
-                { text = "备厚礼出使，展现大国气度", cost = {silver = 30, cloth = 15}, result = "车载珍玩丝帛浩浩荡荡出关，沿途旌旗猎猎好不威风。至邻邦王庭献上厚礼，对方君臣叹服天朝气度，通商互市之约一拍即合。捷报传回朝廷，天子龙颜大悦，我族声望更上层楼。", effect = function()
+                { text = "备厚礼出使，展现大国气度", cost = {silver = 30, cloth = 15}, result = "车载珍玩丝帛浩浩荡荡出关，沿途旌旗猎猎好不威风。至邻邦王庭献上厚礼，对方君臣叹服天朝气度，通商互市之约一拍即合。捷报传回行会，乡耆龙颜大悦，我族声望更上层楼。", effect = function()
                     GameData.AddResource("fame", 25)
-                    GameData.AddLog(m.name .. "携重礼出使成功，邦交议成，朝廷大悦")
+                    GameData.AddLog(m.name .. "携重礼出使成功，邦交议成，行会大悦")
                 end },
                 { text = "轻车简从，以才学折服对方", result = "仅带三五随从便策马西行，至邻邦王庭以三寸之舌折冲樽俎。引经据典、纵横捭阖，对方君臣无不折服。虽无厚礼却以才学赢得敬重，邦交事宜亦圆满议成，不辱使命而归。", effect = function()
                     GameData.AddResource("silver", -10)
@@ -334,7 +334,7 @@ events[#events + 1] = {
         return {
             title = "大兴土木", desc = "家族地位日隆，然祖宅年久失修，已不堪世家体面。族中提议重修宅邸，扩建园林、祠堂、藏书楼，使之与我族身份相配。此举需耗费大量银钱与人力。",
             choices = {
-                { text = "倾力营建，修筑气派庄园", cost = {silver = 40, cloth = 10}, result = "请来苏杭名匠精心设计，历时半载终成一座气派庄园。亭台楼阁错落有致，假山流水曲径通幽，花木扶疏四时有景。落成之日远近乡绅皆来道贺，赞叹此园不逊于京城王府之胜。", effect = function()
+                { text = "倾力营建，修筑气派庄园", cost = {silver = 40, cloth = 10}, result = "请来苏杭名匠精心设计，历时半载终成一座气派庄园。亭台楼阁错落有致，假山流水曲径通幽，花木扶疏四时有景。落成之日远近乡绅皆来道贺，赞叹此园不逊于京中王府之胜。", effect = function()
                     GameData.AddResource("fame", 20)
                     GameData.AddLog("庄园落成，亭台楼阁错落有致，远近闻名")
                 end },
@@ -371,7 +371,7 @@ events[#events + 1] = {
         return {
             title = "敌军来袭", desc = "北方游牧骑兵大举南侵，沿途烧杀抢掠。官军节节败退，敌军前锋距我族不过百里。族中必须立即做出决断，事关全族存亡。",
             choices = {
-                { text = "组织族人协助官军抗敌", result = "族中子弟披甲执锐，与官军并肩迎敌于城下。鏖战数日，血染城墙，敌骑终于退去。战后点检伤亡，族中折损子弟数人，银粮亦耗费甚巨。然朝廷嘉其忠勇，传旨褒奖，我族忠义之名响彻四方。", effect = function()
+                { text = "组织族人协助官军抗敌", result = "族中子弟披甲执锐，与官军并肩迎敌于城下。鏖战数日，血染城墙，敌骑终于退去。战后点检伤亡，族中折损子弟数人，银粮亦耗费甚巨。然行会嘉其忠勇，传旨褒奖，我族忠义之名响彻四方。", effect = function()
                     GameData.AddResource("silver", -30)
                     GameData.AddResource("grain", -35)
                     GameData.AddResource("fame", 25)
@@ -493,14 +493,14 @@ events[#events + 1] = {
         report.events[#report.events + 1] = m.name .. "谋划海上通商，遣船出海贸易"
         GameData.AddLog(m.name .. "筹备海上贸易，打造商船准备出海")
         return {
-            title = "海外通商", desc = "海禁虽严，然南洋贸易利润丰厚。" .. m.name .. "暗中打造商船，欲走海路将丝绸瓷器贩往南洋诸国，换取香料珍宝。此举利润巨大但风险亦高，若被朝廷查获，恐获重罪。",
+            title = "海外通商", desc = "海榷虽严，然南洋贸易利润丰厚。" .. m.name .. "暗中打造商船，欲走海路将丝绸瓷器贩往南洋诸国，换取香料珍宝。此举利润巨大但风险亦高，若被行会查获，恐获重罪。",
             choices = {
                 { text = "冒险出海，搏一搏大富贵", cost = {cloth = 20}, result = "商船满载丝绸瓷器趁夜色出港，一路避开巡海官兵。历经风浪颠簸数月后抵达南洋，货物被当地番商抢购一空，换回大量金银、香料、珍珠。然走私之名暗中流传，日后若被追查恐有后患。", effect = function()
                     GameData.AddResource("silver", 50)
                     GameData.AddResource("fame", -10)
                     GameData.AddLog(m.name .. "商船满载而归，金银香料堆满库房，然走私之名暗中流传")
                 end },
-                { text = "贿赂官员取得出海许可", cost = {cloth = 10}, result = "暗中打点市舶司官员，以丝帛相赠换得一纸出海文牒。商船挂着合法旗号堂而皇之出港，虽因打点花去不少本钱利润摊薄，但一路无虞往返顺遂。合法贸易之名亦为日后的长远经营奠了基。", effect = function()
+                { text = "贿赂官员取得出海许可", cost = {cloth = 10}, result = "暗中打点舶税司官员，以丝帛相赠换得一纸出海文牒。商船挂着合法旗号堂而皇之出港，虽因打点花去不少本钱利润摊薄，但一路无虞往返顺遂。合法贸易之名亦为日后的长远经营奠了基。", effect = function()
                     GameData.AddResource("silver", 25)
                     GameData.AddResource("fame", 5)
                     GameData.AddLog(m.name .. "以合法名义出海，利润虽薄但无后顾之忧")
@@ -557,10 +557,10 @@ events[#events + 1] = {
     end,
 }
 
--- 15. 皇家联姻
+-- 15. 望族联宗
 events[#events + 1] = {
     id = "r5_royal_wedding",
-    title = "皇家联姻",
+    title = "望族联宗",
     rankRange = {5, 6},
     weight = 8,
     cooldownMonths = 8,
@@ -585,20 +585,20 @@ events[#events + 1] = {
             if not m.spouseId and m.alive then candidate = m; break end
         end
         local name = candidate and candidate.name or "族人"
-        report.events[#report.events + 1] = "皇室遣使提亲，欲与" .. name .. "联姻结好"
-        GameData.AddLog("天家遣媒来访，为" .. name .. "提亲")
+        report.events[#report.events + 1] = "望族遣使提亲，欲与" .. name .. "联姻结好"
+        GameData.AddLog("望族遣媒来访，为" .. name .. "提亲")
         return {
-            title = "皇家联姻", desc = "皇室一位郡主/宗室子弟看中" .. name .. "，遣使前来提亲。与皇家结亲固然是莫大荣耀。是否为" .. name .. "前去相看？",
+            title = "望族联姻", desc = "望族一位郡主/宗室子弟看中" .. name .. "，遣使前来提亲。与望族结亲固然是莫大荣耀。是否为" .. name .. "前去相看？",
             choices = {
-                { text = "前去相看", result = "族长遣人备下厚礼，携适龄子弟前往京师赴约相看。皇家庭院深深，礼仪繁复，两家子弟隔帘相见，彼此颇为满意。此番若能结成秦晋之好，我族便与天家攀上了姻亲，荣耀非凡。", effect = function()
+                { text = "前去相看", result = "族长遣人备下厚礼，携适龄子弟前往郡城赴约相看。望族庭院深深，礼仪繁复，两家子弟隔帘相见，彼此颇为满意。此番若能结成秦晋之好，我族便与望族攀上了姻亲，荣耀非凡。", effect = function()
                     if candidate and not candidate.spouseId then
                         local GS = require("UI.GameScreen")
                         GS.ShowMarriageTierSelect(candidate)
                     end
                 end },
-                { text = "婉拒皇恩，不愿受天家约束", result = "族长思虑再三，终以族中子弟尚年幼、不堪匹配天家为由婉拒了这桩亲事。皇室使者面露不悦拂袖而去，朝中亦有人暗中非议。然族中长辈松了口气，毕竟与天家结亲便如笼中之鸟，行事处处受制。", effect = function()
+                { text = "婉拒皇恩，不愿受望族约束", result = "族长思虑再三，终以族中子弟尚年幼、不堪匹配望族为由婉拒了这桩亲事。望族使者面露不悦拂袖而去，行会中亦有人暗中非议。然族中长辈松了口气，毕竟与望族结亲便如笼中之鸟，行事处处受制。", effect = function()
                     GameData.AddResource("fame", -10)
-                    GameData.AddLog("婉拒皇家联姻，虽失此良机但保住了行事自由")
+                    GameData.AddLog("婉拒望族联姻，虽失此良机但保住了行事自由")
                 end },
             }
         }
@@ -623,13 +623,13 @@ events[#events + 1] = {
         report.events[#report.events + 1] = "天下大乱，群雄并起，各方势力纷纷拉拢世家大族"
         GameData.AddLog("乱世降临，族中面临艰难的站队抉择")
         return {
-            title = "乱世抉择", desc = "朝廷风雨飘摇，各方势力割据一方。有人劝我族效忠朝廷以全忠义之名，有人建议投靠新兴势力以图存续，还有人主张据守一方静观其变。一步走错，便是灭族之祸。",
+            title = "乱世抉择", desc = "行会风雨飘摇，各方势力割据一方。有人劝我族效忠行会以全忠义之名，有人建议投靠新兴势力以图存续，还有人主张据守一方静观其变。一步走错，便是灭族之祸。",
             choices = {
-                { text = "效忠朝廷，与国同休", cost = {silver = 25}, result = "族长率子弟于宗祠前焚香盟誓，矢志效忠大明社稷。倾族中银钱捐作军饷助朝廷平乱，忠义之名传遍天下。然朝廷风雨飘摇、胜负未分，前途吉凶难卜，族人心中忐忑不安。", effect = function()
+                { text = "效忠行会，与国同休", cost = {silver = 25}, result = "族长率子弟于宗祠前焚香盟誓，矢志效忠桑梓乡里。倾族中银钱捐作军饷助行会平乱，忠义之名传遍天下。然行会风雨飘摇、胜负未分，前途吉凶难卜，族人心中忐忑不安。", effect = function()
                     GameData.AddResource("fame", 20)
-                    GameData.AddLog("族中矢志效忠朝廷，忠义之名传遍天下，然前途未卜")
+                    GameData.AddLog("族中矢志效忠行会，忠义之名传遍天下，然前途未卜")
                 end },
-                { text = "审时度势，暗中接触新势力", cost = {silver = 15}, result = "族中暗遣心腹分赴两方，一边维持朝廷关系，一边秘密接触新兴势力探其底细。如此两面下注虽非光明磊落之举，却也为族中留下了退路。不论哪方得势，我族皆有说辞应对。", effect = function()
+                { text = "审时度势，暗中接触新势力", cost = {silver = 15}, result = "族中暗遣心腹分赴两方，一边维持行会关系，一边秘密接触新兴势力探其底细。如此两面下注虽非光明磊落之举，却也为族中留下了退路。不论哪方得势，我族皆有说辞应对。", effect = function()
                     GameData.AddResource("fame", -5)
                     GameData.AddLog("族中暗中两面下注，虽非光明磊落却也留了后路")
                 end },
@@ -667,10 +667,10 @@ events[#events + 1] = {
                     GameData.AddResource("silver", 45)
                     GameData.AddLog("宝藏秘密入库，族中财力大增，此事知者甚少")
                 end },
-                { text = "上报官府，以示忠厚", result = "族长将窖藏造册详列后呈报县衙。知县大悦上报朝廷，朝廷嘉奖我族拾遗不昧，赏回部分器物并颁下嘉奖文书。虽失去了大半宝藏，然忠厚之名远近皆知，官府日后亦多有照拂。", effect = function()
+                { text = "上报官府，以示忠厚", result = "族长将窖藏造册详列后呈报县衙。知县大悦上报行会，行会嘉奖我族拾遗不昧，赏回部分器物并颁下嘉奖文书。虽失去了大半宝藏，然忠厚之名远近皆知，官府日后亦多有照拂。", effect = function()
                     GameData.AddResource("silver", 15)
                     GameData.AddResource("fame", 20)
-                    GameData.AddLog("宝藏上交官府，朝廷赏赐一部分并嘉奖我族忠厚")
+                    GameData.AddLog("宝藏上交官府，行会赏赐一部分并嘉奖我族忠厚")
                 end },
                 { text = "取一部分自用，余下捐给寺庙", result = "族中取了金银器物中的一半充入库房，余下古玩字画尽数捐给附近宝刹供佛。寺中住持感恩为我族祈福诵经七日，坊间也传出我族乐善好施的美名。既充了家底又积了善德，可谓两全其美。", effect = function()
                     GameData.AddResource("silver", 25)
@@ -697,17 +697,17 @@ events[#events + 1] = {
         return true
     end,
     execute = function(s, report)
-        report.events[#report.events + 1] = "朝廷推行赋税新法，一条鞭法将各项赋役合而为一"
+        report.events[#report.events + 1] = "行会推行赋税新法，一条编法将各项赋役合而为一"
         GameData.AddLog("赋税改革波及我族，田产多者首当其冲")
         return {
-            title = "赋税改革", desc = "朝廷推行一条鞭法，将田赋、徭役、各项杂税合而为一，统一以银两缴纳。新法之下，田产越多赋税越重。我族田产广袤，首当其冲。族中须决定如何应对这场变革。",
+            title = "赋税改革", desc = "行会推行一条编法，将田赋、徭役、各项杂税合而为一，统一以银两缴纳。新法之下，田产越多赋税越重。我族田产广袤，首当其冲。族中须决定如何应对这场变革。",
             choices = {
                 { text = "积极配合新法，如实申报田产", result = "族长命账房将名下田产逐亩登记造册，如实呈报官府缴纳赋银。一笔银两交出去虽令人肉痛，然知县赞我族深明大义乃地方表率，日后凡有公事皆优先关照，官民之间更添信任。", effect = function()
                     GameData.AddResource("silver", -30)
                     GameData.AddResource("fame", 15)
                     GameData.AddLog("如实纳税虽多费银两，却赢得官府信任，日后多有便利")
                 end },
-                { text = "将部分田产挂靠在佃户名下避税", result = "族中暗将数百亩田产挂在佃户名下以避重税。表面上族中田产骤减，实则收益分文未少。此计虽省了不少银两，然知情佃户日后若生异心或被人告发，便是欺瞒朝廷的大罪。", effect = function()
+                { text = "将部分田产挂靠在佃户名下避税", result = "族中暗将数百亩田产挂在佃户名下以避重税。表面上族中田产骤减，实则收益分文未少。此计虽省了不少银两，然知情佃户日后若生异心或被人告发，便是欺瞒行会的大罪。", effect = function()
                     GameData.AddResource("silver", -10)
                     GameData.AddResource("fame", -10)
                     GameData.AddLog("避税之计虽省了银两，但被人告发的隐患始终存在")
@@ -782,13 +782,13 @@ events[#events + 1] = {
         report.events[#report.events + 1] = m.name .. "统兵征战，连战连捷，威名远播"
         GameData.AddLog(m.name .. "在战场上屡立奇功，名震天下")
         return {
-            title = "沙场扬威", desc = m.name .. "奉命征讨叛乱，凭借出色的军事才能，以少胜多连克数城。捷报频传，朝廷龙颜大悦，满朝文武皆知我族出了一员虎将。",
+            title = "沙场扬威", desc = m.name .. "奉命征讨叛乱，凭借出色的军事才能，以少胜多连克数城。捷报频传，行会龙颜大悦，四方乡邻皆知我族出了一员虎将。",
             choices = {
-                { text = "乘胜追击，争取更大战功", cost = {silver = 15}, result = "趁敌军溃退之际挥师追击，连克数城直捣贼巢。凯旋之日朝廷颁下封赏——封侯拜将、赐金百两。族中武名一时冠绝四方，世人皆道我族文能安邦、武能定国，实乃当世望族。", effect = function()
+                { text = "乘胜追击，争取更大战功", cost = {silver = 15}, result = "趁敌军溃退之际挥师追击，连克数城直捣贼巢。凯旋之日行会颁下封赏——名重一方、赐金百两。族中武名一时冠绝四方，世人皆道我族文能安邦、武能定国，实乃当世望族。", effect = function()
                     GameData.AddResource("fame", 30)
-                    GameData.AddLog(m.name .. "再立新功，封侯拜将，族中武名冠绝一方")
+                    GameData.AddLog(m.name .. "再立新功，名重一方，族中武名冠绝一方")
                 end },
-                { text = "见好就收，上表请求还乡", result = "功成之后急流勇退，上表天子请求解甲还乡。朝廷感其忠勇赐下丰厚赏银，准予荣归故里。还乡之日族人夹道欢迎锣鼓喧天，老族长含泪相迎叹道知进退方为大丈夫。", effect = function()
+                { text = "见好就收，上表请求还乡", result = "功成之后急流勇退，上表乡耆请求解甲还乡。行会感其忠勇赐下丰厚赏银，准予荣归故里。还乡之日族人夹道欢迎锣鼓喧天，老族长含泪相迎叹道知进退方为大丈夫。", effect = function()
                     GameData.AddResource("silver", 20)
                     GameData.AddResource("fame", 15)
                     GameData.AddLog(m.name .. "功成身退携赏银而归，族人夹道欢迎")
@@ -927,10 +927,10 @@ events[#events + 1] = {
     end,
 }
 
--- 24. 宫廷阴谋
+-- 24. 家族阴谋
 events[#events + 1] = {
     id = "r5_palace_intrigue",
-    title = "宫廷阴谋",
+    title = "家族阴谋",
     rankRange = {5, 6},
     weight = 6,
     cooldownMonths = 10,
@@ -943,20 +943,20 @@ events[#events + 1] = {
         return #adults >= 2
     end,
     execute = function(s, report)
-        report.events[#report.events + 1] = "宫中传来密信，我族被卷入一场宫廷权力争斗"
-        GameData.AddLog("宫廷密信至，族中上下如临深渊")
+        report.events[#report.events + 1] = "邻家传来密信，我族被卷入一场家族权力争斗"
+        GameData.AddLog("家族密信至，族中上下如临深渊")
         return {
-            title = "宫廷阴谋", desc = "宫中太监携密信到访，称有人欲构陷我族谋反。幕后之人是朝中政敌，意图借此扳倒我族在朝中的势力。此事若不妥善应对，轻则抄家，重则灭族。",
+            title = "家族阴谋", desc = "邻家内侍携密信到访，称有人欲构陷我族谋反。幕后之人是行会中政敌，意图借此扳倒我族在行会中的势力。此事若不妥善应对，轻则抄家，重则灭族。",
             choices = {
-                { text = "进京面圣自辩清白", cost = {silver = 30}, result = "族长亲赴京师跪请面圣，呈上数十年来忠心报国之凭证。天子细阅之后龙颜稍霁，着令彻查此案。数月后冤情终得昭雪，然这番奔走打点耗费银钱无数，族中元气大伤。", effect = function()
+                { text = "进京面圣自辩清白", cost = {silver = 30}, result = "族长亲赴郡城跪请面圣，呈上数十年来忠心报国之凭证。乡耆细阅之后龙颜稍霁，着令彻查此案。数月后冤情终得昭雪，然这番奔走打点耗费银钱无数，族中元气大伤。", effect = function()
                     GameData.AddResource("fame", 15)
                     GameData.AddLog("面圣自辩终洗清冤屈，然这番折腾耗费甚巨")
                 end },
-                { text = "暗中搜集政敌把柄反击", cost = {silver = 25}, result = "族中暗遣心腹四处查探，终于搜得政敌贪赃枉法、结党营私之铁证。将证据密呈御史台后，政敌反被弹劾下狱。以其人之道还治其人之身虽大快人心，然朝中同僚亦暗道我族手段狠辣。", effect = function()
+                { text = "暗中搜集政敌把柄反击", cost = {silver = 25}, result = "族中暗遣心腹四处查探，终于搜得政敌贪赃枉法、结党营私之铁证。将证据密呈御史台后，政敌反被弹劾下狱。以其人之道还治其人之身虽大快人心，然行会中同僚亦暗道我族手段狠辣。", effect = function()
                     GameData.AddResource("fame", -5)
                     GameData.AddLog("搜得政敌贪赃枉法之证据，以其人之道还治其人之身")
                 end },
-                { text = "主动示弱，辞去朝中官职避祸", result = "族中在朝为官者主动上表请辞，言辞恳切自称才疏学浅不堪重任。政敌见我族已自去爪牙便不再穷追猛打，风波渐渐平息。然辞官之后门庭冷落、旧交疏远，声望亦大不如前。", effect = function()
+                { text = "主动示弱，辞去教职避祸", result = "族中执掌教席者主动上书请辞，言辞恳切自称才疏学浅不堪重任。政敌见我族已自去爪牙便不再穷追猛打，风波渐渐平息。然卸职之后门庭冷落、旧交疏远，声望亦大不如前。", effect = function()
                     GameData.AddResource("silver", -10)
                     GameData.AddResource("fame", -15)
                     GameData.AddLog("辞官退隐暂避锋芒，政敌见势已去便不再追究")

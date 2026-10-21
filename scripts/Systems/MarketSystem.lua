@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明人生官场模拟 - 集市交易系统
+-- 大明家族人生模拟 - 集市交易系统
 -- 管理商品定义、价格波动、买卖交易
 -- 解锁条件: 乡绅(品级3)
 -- ============================================================================
@@ -39,7 +39,7 @@ MarketSystem.COMMODITIES = {
     { id = "books",    name = "书籍",  icon = "书", unit = "册",
       basePrice = 80, batchSize = 1,
       fluctRange = 0.10,
-      desc = "圣贤之书，科举季需求旺盛" },
+      desc = "圣贤之书，考校季需求旺盛" },
 
     { id = "horse",    name = "马匹",  icon = "马", unit = "匹",
       basePrice = 240, batchSize = 1,
@@ -168,9 +168,9 @@ function MarketSystem.CalcEventFactor(commodityId, year, month)
 
     -- 战乱年代: 铁器、马匹涨价，书籍跌价
     local isWartime = false
-    if year >= 1399 and year <= 1402 then isWartime = true end  -- 靖难之役
-    if year >= 1449 and year <= 1450 then isWartime = true end  -- 土木堡之变
-    if year >= 1592 and year <= 1598 then isWartime = true end  -- 万历三大征
+    if year >= 1399 and year <= 1402 then isWartime = true end  -- 靖南之役
+    if year >= 1449 and year <= 1450 then isWartime = true end  -- 涂木堡之变
+    if year >= 1592 and year <= 1598 then isWartime = true end  -- 万丽三次征伐
     if year >= 1627 then isWartime = true end                    -- 明末动荡
 
     if isWartime then
@@ -180,7 +180,7 @@ function MarketSystem.CalcEventFactor(commodityId, year, month)
         if commodityId == "books" then factor = factor * 0.85 end
     end
 
-    -- 郑和下西洋(1405-1433): 布匹、药材有外贸需求
+    -- 郑河下汐洋(1405-1433): 布匹、药材有外贸需求
     if year >= 1405 and year <= 1433 then
         if commodityId == "cloth" then factor = factor * 1.10 end
         if commodityId == "medicine" then factor = factor * 1.08 end
@@ -196,7 +196,7 @@ function MarketSystem.CalcEventFactor(commodityId, year, month)
         end
     end
 
-    -- 科举年份(逢三年一科: 乡试八月, 会试次年二月)
+    -- 考校年份(逢三年一比: 院试八月, 文会次年二月)
     if year % 3 == 0 and (month >= 6 and month <= 9) then
         if commodityId == "books" then factor = factor * 1.15 end
     end

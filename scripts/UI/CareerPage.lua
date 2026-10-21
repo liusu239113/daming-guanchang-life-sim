@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明人生官场模拟 - 仕途科举 / 从军 页面
+-- 大明家族人生模拟 - 文脉书院 / 从军 页面
 -- 从 GameScreen.lua 拆分出来的全屏页面模块
 -- ============================================================================
 
@@ -11,7 +11,7 @@ local ExamQuestions = require("Data.ExamQuestions")
 
 local CareerPage = {}
 
---- 创建仕途科举页面
+--- 创建文脉书院页面
 ---@param pageTitle fun(title: string, subtitle: string): table  PageTitle 组件构造函数
 ---@param gameScreen table  GameScreen 模块引用（用于调用 ShowResultPopup, RefreshAll）
 function CareerPage.Create(pageTitle, gameScreen)
@@ -31,7 +31,7 @@ function CareerPage.Create(pageTitle, gameScreen)
     end
 
     local children = {
-        pageTitle("仕途科举", "经文纬武，报效朝廷"),
+        pageTitle("文脉书院", "诗书传家，人文蔚起"),
 
         -- 安排读书
         UI.Label { text = "安排族人读书", fontSize = 17, fontColor = Theme.GOLD, marginTop = 4 },
@@ -67,7 +67,7 @@ function CareerPage.Create(pageTitle, gameScreen)
         }
     end
 
-    -- 科举考试
+    -- 书院考校
     children[#children + 1] = UI.Panel { width = "100%", height = 1, backgroundColor = Theme.BORDER, marginTop = 12 }
     local examUnlocked = s.clanRank >= (GameData.CAREER_UNLOCK.exam or 3)
     local examReqRank = GameData.GetUnlockRankName(GameData.CAREER_UNLOCK.exam or 3)
@@ -77,19 +77,19 @@ function CareerPage.Create(pageTitle, gameScreen)
             backgroundColor = Theme.BG_INPUT, opacity = 0.6,
             gap = 6, alignItems = "center",
             onTap = function(self)
-                gameScreen.ShowResultPopup("科举考试（未解锁）",
-                    "提升品级至【" .. examReqRank .. "】后可参加科举考试。\n\n"
-                    .. "科举路径：\n"
+                gameScreen.ShowResultPopup("书院考校（未解锁）",
+                    "提升品级至【" .. examReqRank .. "】后可参加书院考校。\n\n"
+                    .. "文脉之路：\n"
                     .. "  1. 先在书院安排族人读书，提升学识\n"
                     .. "  2. 学识达标后依次参加：\n"
-                    .. "     童试（学识30+）→ 乡试（60+）→ 会试（85+）→ 殿试（95+）\n"
-                    .. "  3. 中举/中进士可大幅提升声望\n\n"
+                    .. "     蒙学考（学识30+）→ 院试（60+）→ 文会（85+）→ 儒林大比（95+）\n"
+                    .. "  3. 考取功名可大幅提升声望\n\n"
                     .. "当前品级：" .. GameData.GetClanRankName() .. "，需提升至" .. examReqRank)
             end,
             children = {
                 UI.Panel { width = 200, height = 112, alignSelf = "center", borderRadius = 8, overflow = "hidden", backgroundImage = Theme.IMG.BTN_EXAM, backgroundFit = "cover", opacity = 0.4 },
-                UI.Label { text = "科举取士 · 需品级【" .. examReqRank .. "】解锁", fontSize = 14, fontColor = Theme.GOLD },
-                UI.Label { text = "安排族人读书→参加科举→获取功名声望", fontSize = 12, fontColor = Theme.TEXT_SECONDARY },
+                UI.Label { text = "书院考校 · 需品级【" .. examReqRank .. "】解锁", fontSize = 14, fontColor = Theme.GOLD },
+                UI.Label { text = "安排族人读书→参加考校→积累文名声望", fontSize = 12, fontColor = Theme.TEXT_SECONDARY },
                 UI.Label { text = "点击查看详情", fontSize = 11, fontColor = Theme.BLUE },
             },
         }
@@ -144,7 +144,7 @@ function CareerPage.Create(pageTitle, gameScreen)
 
     end -- examUnlocked else end
 
-    -- 纳捐监生
+    -- 捐资附读
     children[#children + 1] = UI.Panel { width = "100%", height = 1, backgroundColor = Theme.BORDER, marginTop = 12 }
     local donateUnlocked = s.clanRank >= (GameData.CAREER_UNLOCK.donate or 4)
     local donateReqRank = GameData.GetUnlockRankName(GameData.CAREER_UNLOCK.donate or 4)
@@ -154,28 +154,28 @@ function CareerPage.Create(pageTitle, gameScreen)
             backgroundColor = Theme.BG_INPUT, opacity = 0.6,
             gap = 6, alignItems = "center",
             onTap = function(self)
-                gameScreen.ShowResultPopup("纳捐监生（未解锁）",
-                    "提升品级至【" .. donateReqRank .. "】后可纳捐监生。\n\n"
-                    .. "纳捐说明：\n"
-                    .. "  · 花费银两为族人购买国子监名额\n"
-                    .. "  · 族人获得「监生」身份\n"
-                    .. "  · 无需参加科举，直接获得功名\n\n"
+                gameScreen.ShowResultPopup("捐资附读（未解锁）",
+                    "提升品级至【" .. donateReqRank .. "】后可捐资附读。\n\n"
+                    .. "捐资说明：\n"
+                    .. "  · 花费银两为族人捐一个书院附读名额\n"
+                    .. "  · 族人获得「附读」身份\n"
+                    .. "  · 无需参加考校，直接取得文名\n\n"
                     .. "当前品级：" .. GameData.GetClanRankName() .. "，需提升至" .. donateReqRank)
             end,
             children = {
-                UI.Label { text = "纳捐监生 · 需品级【" .. donateReqRank .. "】解锁", fontSize = 14, fontColor = Theme.GOLD },
-                UI.Label { text = "花银两为族人买功名（不需科举）", fontSize = 12, fontColor = Theme.TEXT_SECONDARY },
+                UI.Label { text = "捐资附读 · 需品级【" .. donateReqRank .. "】解锁", fontSize = 14, fontColor = Theme.GOLD },
+                UI.Label { text = "花银两为族人捐附读名额（不需考校）", fontSize = 12, fontColor = Theme.TEXT_SECONDARY },
                 UI.Label { text = "点击查看详情", fontSize = 11, fontColor = Theme.BLUE },
             },
         }
     else
-    children[#children + 1] = UI.Label { text = "纳捐监生", fontSize = 17, fontColor = Theme.GOLD, marginTop = 4 }
+    children[#children + 1] = UI.Label { text = "捐资附读", fontSize = 17, fontColor = Theme.GOLD, marginTop = 4 }
     children[#children + 1] = UI.Label {
-        text = "花银两" .. GameData.DONATION_COST.silver .. "买国子监名额（声望" .. GameData.DONATION_COST.famePrice .. "）",
+        text = "花银两" .. GameData.DONATION_COST.silver .. "捐书院附读名额（声望" .. GameData.DONATION_COST.famePrice .. "）",
         fontSize = 12, fontColor = Theme.TEXT_SECONDARY, whiteSpace = "normal",
     }
     for _, m in ipairs(GameData.GetAliveMembers()) do
-        if (m.identity == "白丁" or m.identity == "童生") and m.age >= 15 and m.state ~= "从军" and m.state ~= "出征" then
+        if (m.identity == "白丁" or m.identity == "蒙童") and m.age >= 15 and m.state ~= "从军" and m.state ~= "出征" then
             local canDonate = GameData.CanAfford(GameData.DONATION_COST.silver, 0, 0, 0)
             children[#children + 1] = UI.Panel {
                 width = "100%", padding = 10, borderRadius = 8,
@@ -200,12 +200,12 @@ function CareerPage.Create(pageTitle, gameScreen)
                             if GameData.SpendResources(GameData.DONATION_COST.silver, 0, 0, 0) then
                                 m.identity = GameData.DONATION_COST.resultIdentity
                                 GameData.AddResource("fame", GameData.DONATION_COST.famePrice)
-                                GameData.AddLog(m.name .. "纳捐入国子监，获监生身份。")
-                                gameScreen.ShowResultPopup("纳捐成功", m.name .. "已获监生身份。")
+                                GameData.AddLog(m.name .. "捐资入书院附读，获附读身份。")
+                                gameScreen.ShowResultPopup("捐资成功", m.name .. "已获附读身份。")
                                 gameScreen.RefreshAll()
                             end
                         end,
-                        children = { UI.Label { text = "纳捐（-" .. GameData.DONATION_COST.silver .. "银）", fontSize = 12, fontColor = Theme.GOLD } },
+                        children = { UI.Label { text = "捐资（-" .. GameData.DONATION_COST.silver .. "银）", fontSize = 12, fontColor = Theme.GOLD } },
                     },
                 },
             }
@@ -276,7 +276,7 @@ function CareerPage.Create(pageTitle, gameScreen)
     end -- militaryUnlocked else end
 
     -- ================================================================
-    -- 入仕为官
+    -- 受聘讲学
     -- ================================================================
     children[#children + 1] = UI.Panel { width = "100%", height = 1, backgroundColor = Theme.BORDER, marginTop = 12 }
 
@@ -288,26 +288,26 @@ function CareerPage.Create(pageTitle, gameScreen)
             backgroundColor = Theme.BG_INPUT, opacity = 0.6,
             gap = 6, alignItems = "center",
             children = {
-                UI.Label { text = "入仕为官 · 需先通过科举", fontSize = 14, fontColor = Theme.GOLD },
-                UI.Label { text = "进士可授知县，逐级升迁至布政使", fontSize = 12, fontColor = Theme.TEXT_SECONDARY },
+                UI.Label { text = "受聘讲学 · 需先考取名士", fontSize = 14, fontColor = Theme.GOLD },
+                UI.Label { text = "名士可受聘教习，逐级升为宗师", fontSize = 12, fontColor = Theme.TEXT_SECONDARY },
             },
         }
     else
-        children[#children + 1] = UI.Label { text = "入仕为官", fontSize = 17, fontColor = Theme.GOLD, marginTop = 4 }
+        children[#children + 1] = UI.Label { text = "受聘讲学", fontSize = 17, fontColor = Theme.GOLD, marginTop = 4 }
         children[#children + 1] = UI.Label {
-            text = "进士可授官，官员月产俸禄与声望，并减免税赋",
+            text = "名士可受聘教职，讲学月得束脩与声望，并减轻族中耗用",
             fontSize = 12, fontColor = Theme.TEXT_SECONDARY, whiteSpace = "normal",
         }
 
-        -- 已在任官员
+        -- 已在任教职
         local currentOfficials = {}
         for _, m in ipairs(GameData.GetAliveMembers()) do
-            if m.state == "为官" and m.officialRank then
+            if m.state == "讲学" and m.officialRank then
                 currentOfficials[#currentOfficials + 1] = m
             end
         end
         if #currentOfficials > 0 then
-            children[#children + 1] = UI.Label { text = "在任官员", fontSize = 14, fontColor = Theme.TEXT_MUTED, marginTop = 4 }
+            children[#children + 1] = UI.Label { text = "在任教职", fontSize = 14, fontColor = Theme.TEXT_MUTED, marginTop = 4 }
             for _, m in ipairs(currentOfficials) do
                 local rankInfo = nil
                 for _, r in ipairs(MemberData.OFFICIAL_RANKS) do
@@ -339,8 +339,8 @@ function CareerPage.Create(pageTitle, gameScreen)
                 }
                 if rankInfo then
                     cardChildren[#cardChildren + 1] = UI.Label {
-                        text = "月俸银" .. rankInfo.silver .. " 望+" .. rankInfo.fame
-                            .. " 税减" .. math.floor(rankInfo.taxReduce * 100) .. "%",
+                        text = "束脩银" .. rankInfo.silver .. " 望+" .. rankInfo.fame
+                            .. " 耗减" .. math.floor(rankInfo.taxReduce * 100) .. "%",
                         fontSize = 12, fontColor = Theme.TEXT_SECONDARY,
                     }
                 end
@@ -357,7 +357,7 @@ function CareerPage.Create(pageTitle, gameScreen)
                             m.officialTenure = 0
                             GameData.AddResource("fame", nextRank.fame)
                             GameData.AddLog(m.name .. "晋升为" .. nextRank.name .. "！")
-                            gameScreen.ShowResultPopup("官职晋升",
+                            gameScreen.ShowResultPopup("教职晋升",
                                 m.name .. "晋升为" .. nextRank.name .. "！\n" .. nextRank.desc)
                             gameScreen.RefreshAll()
                         end,
@@ -373,7 +373,7 @@ function CareerPage.Create(pageTitle, gameScreen)
             end
         end
 
-        -- 可授官的族人（进士/知县/知府 在家状态）
+        -- 可受聘的族人（名士/教习/山长 在家状态）
         local appointable = {}
         for _, m in ipairs(GameData.GetAliveMembers()) do
             if m.state == "在家" then
@@ -387,7 +387,7 @@ function CareerPage.Create(pageTitle, gameScreen)
         end
 
         if #appointable > 0 then
-            children[#children + 1] = UI.Label { text = "可授官族人", fontSize = 14, fontColor = Theme.TEXT_MUTED, marginTop = 4 }
+            children[#children + 1] = UI.Label { text = "可受聘族人", fontSize = 14, fontColor = Theme.TEXT_MUTED, marginTop = 4 }
             for _, ap in ipairs(appointable) do
                 local m = ap.member
                 local r = ap.rank
@@ -418,17 +418,17 @@ function CareerPage.Create(pageTitle, gameScreen)
                             backgroundGradient = Theme.GRADIENT_PRIMARY,
                             onTap = function(self)
                                 AudioManager.Click()
-                                m.state = "为官"
+                                m.state = "讲学"
                                 m.officialRank = r.id
                                 m.identity = r.name
                                 m.officialTenure = 0
                                 GameData.AddResource("fame", r.fame)
-                                GameData.AddLog(m.name .. "入仕为官，授" .. r.name .. "。")
-                                gameScreen.ShowResultPopup("入仕为官",
-                                    m.name .. "被授" .. r.name .. "！\n" .. r.desc)
+                                GameData.AddLog(m.name .. "受聘" .. r.name .. "，执掌教席。")
+                                gameScreen.ShowResultPopup("受聘讲学",
+                                    m.name .. "受聘为" .. r.name .. "！\n" .. r.desc)
                                 gameScreen.RefreshAll()
                             end,
-                            children = { UI.Label { text = "授" .. r.name, fontSize = 14, fontColor = Theme.TEXT_WHITE } },
+                            children = { UI.Label { text = "聘" .. r.name, fontSize = 14, fontColor = Theme.TEXT_WHITE } },
                         },
                     },
                 }
@@ -437,7 +437,7 @@ function CareerPage.Create(pageTitle, gameScreen)
 
         if #currentOfficials == 0 and #appointable == 0 then
             children[#children + 1] = UI.Label {
-                text = "暂无可授官族人（需进士及以上在家状态）",
+                text = "暂无可受聘族人（需名士及以上在家状态）",
                 fontSize = 13, fontColor = Theme.TEXT_MUTED, marginTop = 2,
             }
         end
@@ -455,7 +455,7 @@ function CareerPage.Create(pageTitle, gameScreen)
     }
 end
 
---- 科举策略选择弹窗
+--- 考校策略选择弹窗
 ---@param member table 参加考试的族人
 ---@param exam table EXAM_LEVELS 中的考试定义
 ---@param gameScreen table GameScreen 模块引用
@@ -524,7 +524,7 @@ function CareerPage.ShowExamStrategyModal(member, exam, gameScreen)
         UI.Label { text = "考试形式：共" .. examTotalQ .. "题，答对" .. examPassQ .. "题即可通过", fontSize = 13, fontColor = Theme.TEXT_SECONDARY },
     }
     if hasAdBoost then
-        infoChildren[#infoChildren + 1] = UI.Label { text = "科举加持已生效：额外+1次免费提示", fontSize = 12, fontColor = Theme.GOLD }
+        infoChildren[#infoChildren + 1] = UI.Label { text = "文脉加持已生效：额外+1次免费提示", fontSize = 12, fontColor = Theme.GOLD }
     end
 
     -- 广告加持按钮（若尚未激活）—— 改为赠送免费提示
@@ -640,13 +640,13 @@ end
 function CareerPage.DoExam(member, exam, passRate, strategy, gameScreen)
     local config = ExamQuestions.GetConfig(exam.id)
     if not config then
-        log:Write(LOG_ERROR, "[科举] 未找到考试配置: " .. tostring(exam.id))
+        log:Write(LOG_ERROR, "[文脉] 未找到考试配置: " .. tostring(exam.id))
         return
     end
 
     local questions = ExamQuestions.Pick(exam.id, config.total)
     if #questions < config.total then
-        log:Write(LOG_WARNING, "[科举] 题库不足: 需要" .. config.total .. "题，只有" .. #questions .. "题")
+        log:Write(LOG_WARNING, "[文脉] 题库不足: 需要" .. config.total .. "题，只有" .. #questions .. "题")
     end
 
     -- 答题状态
@@ -788,7 +788,7 @@ function CareerPage._showQuestion(state, member, exam, strategy, gameScreen)
                         modal:Close()
                         CareerPage._showQuestion(state, member, exam, strategy, gameScreen)
                     end, function(msg)
-                        log:Write(LOG_WARNING, "[科举] 提示广告失败: " .. tostring(msg))
+                        log:Write(LOG_WARNING, "[文脉] 提示广告失败: " .. tostring(msg))
                     end)
                 end,
                 children = {
@@ -1011,7 +1011,7 @@ function CareerPage._showExamResult(state, member, exam, strategy, gameScreen)
                         GameData.AddLog(member.name .. "观看广告获得" .. exam.name .. "重考机会！")
                         CareerPage._showQuestion(newState, member, exam, strategy, gameScreen)
                     end, function(msg)
-                        log:Write(LOG_WARNING, "[科举] 重考广告失败: " .. tostring(msg))
+                        log:Write(LOG_WARNING, "[文脉] 重考广告失败: " .. tostring(msg))
                     end)
                 end,
                 children = {

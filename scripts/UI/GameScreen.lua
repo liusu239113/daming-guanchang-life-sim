@@ -1,6 +1,6 @@
 -- ============================================================================
--- 大明人生官场模拟 - 游戏主界面（族谱中心 + 全屏页面切换）
--- 顶部资源栏 + 中央内容区(族谱/宗祠/族人/产业/仕途/族规/事件) + 浮动时间控制 + 底部导航
+-- 大明家族人生模拟 - 游戏主界面（族谱中心 + 全屏页面切换）
+-- 顶部资源栏 + 中央内容区(族谱/宗祠/族人/产业/文脉/族规/事件) + 浮动时间控制 + 底部导航
 -- ============================================================================
 
 local UI = require("urhox-libs/UI")
@@ -766,7 +766,7 @@ local NAV_ITEMS = {
     { id = "clan",       icon = "祠", label = "宗族",  img = Theme.IMG.NAV_CLAN },       -- 宗祠 + 族规
     { id = "members",    icon = "人", label = "族人",  img = Theme.IMG.NAV_MEMBERS },
     { id = "industry",   icon = "田", label = "经营",  img = Theme.IMG.NAV_INDUSTRY },   -- 产业 + 库房
-    { id = "career",     icon = "仕", label = "功业",  img = Theme.IMG.NAV_CAREER },     -- 仕途 + 书院 + 历练
+    { id = "career",     icon = "仕", label = "功业",  img = Theme.IMG.NAV_CAREER },     -- 文脉 + 书院 + 历练
 }
 
 -- 子页签配置：合并后的 Tab 内含子页签
@@ -782,7 +782,7 @@ local SUB_TABS = {
         { id = "ind_store",  label = "库房" },
     },
     career = {
-        { id = "car_career",     label = "仕途" },
+        { id = "car_career",     label = "文脉" },
         { id = "car_academy",    label = "书院" },
         { id = "car_expedition", label = "历练" },
     },
@@ -1912,7 +1912,7 @@ function GameScreen.RefreshTopBar()
 end
 
 --- 通用结果弹窗（标题+描述，点击"知道了"关闭）
---- 用于科举结果、功能提示等需要玩家确认的场景
+--- 用于考校结果、功能提示等需要玩家确认的场景
 ---@param title string 弹窗标题
 ---@param desc string 弹窗描述
 function GameScreen.ShowResultPopup(title, desc)

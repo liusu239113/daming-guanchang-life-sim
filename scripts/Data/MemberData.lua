@@ -1,6 +1,6 @@
 -- ============================================================================
--- 大明人生官场模拟 - 族人数据模块
--- 管理族人相关配置：天赋、身份、状态、年龄、科举、军职、联姻等
+-- 大明家族人生模拟 - 族人数据模块
+-- 管理族人相关配置：天赋、身份、状态、年龄、文脉、军职、联姻等
 -- 从 GameData.lua 中拆分出来
 -- ============================================================================
 
@@ -8,12 +8,12 @@ local MemberData = {}
 
 -- 族人身份
 MemberData.IDENTITIES = {
-    "白丁", "童生", "秀才", "监生", "举人", "进士", "知县", "知府", "布政使",
+    "白丁", "蒙童", "书生", "附读", "才俊", "名士", "教习", "山长", "宗师",
     "士兵", "把总", "守备", "商人"
 }
 
 -- 族人状态
-MemberData.STATES = { "在家", "读书", "赶考", "经商", "从军", "出征", "生病", "筑寨", "历练", "打工", "为官" }
+MemberData.STATES = { "在家", "读书", "赶考", "经商", "从军", "出征", "生病", "筑寨", "历练", "打工", "讲学" }
 
 -- 天赋列表
 MemberData.TALENTS = {
@@ -120,12 +120,12 @@ MemberData.AGE_STAGES = {
     { name = "耄耋", minAge = 71, maxAge = 100 },
 }
 
--- 科举等级
+-- 书院考校等级
 MemberData.EXAM_LEVELS = {
-    { id = "tongshi", name = "童试", reqStudy = 30, passRate = 0.4, result = "童生", famePlus = 5 },
-    { id = "xiangshi", name = "乡试", reqStudy = 60, passRate = 0.25, result = "秀才", famePlus = 15 },
-    { id = "huishi", name = "会试", reqStudy = 85, passRate = 0.12, result = "举人", famePlus = 30 },
-    { id = "dianshi", name = "殿试", reqStudy = 95, passRate = 0.05, result = "进士", famePlus = 60 },
+    { id = "tongshi", name = "蒙学考", reqStudy = 30, passRate = 0.4, result = "蒙童", famePlus = 5 },
+    { id = "xiangshi", name = "院试", reqStudy = 60, passRate = 0.25, result = "书生", famePlus = 15 },
+    { id = "huishi", name = "文会", reqStudy = 85, passRate = 0.12, result = "才俊", famePlus = 30 },
+    { id = "dianshi", name = "儒林大比", reqStudy = 95, passRate = 0.05, result = "名士", famePlus = 60 },
 }
 
 -- 军职等级（阵亡率已下调，避免从军即送死）
@@ -135,18 +135,18 @@ MemberData.MILITARY_RANKS = {
     { id = "shoubei", name = "守备", deathRate = 0.008, silverPay = 15, famePlus = 15 },
 }
 
--- 官职等级（殿试进士可入仕为官）
+-- 书院教职（名士可受聘讲学）
 MemberData.OFFICIAL_RANKS = {
-    { id = "zhixian",    name = "知县", reqIdentity = "进士",
+    { id = "jiaoxi",     name = "教习", reqIdentity = "名士",
       silver = 20, fame = 15, taxReduce = 0.10, demotionRate = 0.03,
-      desc = "治理一县，月俸20两，声望+15，税赋-10%" },
-    { id = "zhifu",      name = "知府", reqIdentity = "知县",
+      desc = "执掌蒙学，月俸20两，声望+15，族中耗用-10%" },
+    { id = "shanzhang",  name = "山长", reqIdentity = "教习",
       silver = 40, fame = 25, taxReduce = 0.20, demotionRate = 0.03,
-      desc = "统辖一府，月俸40两，声望+25，税赋-20%" },
-    { id = "buzhengshi", name = "布政使", reqIdentity = "知府",
+      desc = "主持书院，月俸40两，声望+25，族中耗用-20%" },
+    { id = "zongshi",    name = "宗师", reqIdentity = "山长",
       silver = 80, fame = 40, taxReduce = 0.30, demotionRate = 0.03,
       famePerMonth = 5,
-      desc = "掌管一省，月俸80两，声望+40，税赋-30%，月产声望+5" },
+      desc = "一代文宗，月俸80两，声望+40，族中耗用-30%，月产声望+5" },
 }
 
 -- 联姻等级
@@ -155,18 +155,18 @@ MemberData.MARRIAGE_TIERS = {
       desc = "聘礼少，无特殊加成", bonusType = nil },
     { id = "scholar", name = "书香门第", silverCost = 200, grainCost = 80, fameReq = 15, famePlus = 8,
       desc = "配偶学识+20，子女聪慧概率+15%", bonusType = "study", bonusValue = 20 },
-    { id = "official", name = "官宦世家", silverCost = 450, grainCost = 150, fameReq = 30, famePlus = 15,
-      desc = "声望大增，官场人脉+1", bonusType = "fame", bonusValue = 10 },
+    { id = "official", name = "诗礼世家", silverCost = 450, grainCost = 150, fameReq = 30, famePlus = 15,
+      desc = "声望大增，文脉人望+1", bonusType = "fame", bonusValue = 10 },
     { id = "military", name = "军户世家", silverCost = 180, grainCost = 100, fameReq = 10, famePlus = 5,
       desc = "配偶武艺+25，从军存活率+10%", bonusType = "martial", bonusValue = 25 },
     { id = "noble", name = "名门望族", silverCost = 800, grainCost = 300, fameReq = 60, famePlus = 25,
       desc = "配偶学识+15武艺+15，声望大增，子女天赋概率+20%", bonusType = "all", bonusValue = 15 },
-    { id = "royal_kin", name = "皇亲国戚", silverCost = 1500, grainCost = 500, fameReq = 120, famePlus = 40,
-      desc = "皇室姻亲，声望飞涨；配偶全属性+20，税赋减免10%", bonusType = "all", bonusValue = 20 },
-    { id = "warlord", name = "藩镇将门", silverCost = 1200, grainCost = 600, fameReq = 80, famePlus = 30,
+    { id = "royal_kin", name = "书香望族", silverCost = 1500, grainCost = 500, fameReq = 120, famePlus = 40,
+      desc = "文名远播，声望飞涨；配偶全属性+20，耗用减免10%", bonusType = "all", bonusValue = 20 },
+    { id = "warlord", name = "镖局武家", silverCost = 1200, grainCost = 600, fameReq = 80, famePlus = 30,
       desc = "配偶武艺+35，从军存活率+20%，赠送精兵50", bonusType = "martial", bonusValue = 35 },
-    { id = "prime_minister", name = "宰辅门第", silverCost = 2500, grainCost = 800, fameReq = 200, famePlus = 60,
-      desc = "宰相之家联姻，全族声望月产+5，配偶全属性+25", bonusType = "all", bonusValue = 25 },
+    { id = "prime_minister", name = "文宗门第", silverCost = 2500, grainCost = 800, fameReq = 200, famePlus = 60,
+      desc = "文坛宗师之家联姻，全族声望月产+5，配偶全属性+25", bonusType = "all", bonusValue = 25 },
 }
 
 -- 联姻门第解锁要求
@@ -181,8 +181,8 @@ MemberData.MARRIAGE_UNLOCK = {
     prime_minister = 9, -- 国柱解锁
 }
 
--- 纳捐监生费用
-MemberData.DONATION_COST = { silver = 500, famePrice = -15, resultIdentity = "监生" }
+-- 捐资附读费用
+MemberData.DONATION_COST = { silver = 500, famePrice = -15, resultIdentity = "附读" }
 
 -- 马匹费用
 MemberData.HORSE_COST = { silver = 400 }
@@ -292,7 +292,7 @@ MemberData.EQUIPMENT_LIST = {
     { id = "art_of_war", name = "兵书",   slot = "accessory", rarity = "blue",
       martial = 8,  study = 5,  health = 0,  cost = 50,  desc = "孙子兵法，知己知彼" },
     { id = "official_seal", name = "官印", slot = "accessory", rarity = "purple",
-      martial = 0,  study = 10, health = 0,  cost = 100, desc = "朝廷印信，权势象征", fameBonus = 3 },
+      martial = 0,  study = 10, health = 0,  cost = 100, desc = "乡约印信，人望象征", fameBonus = 3 },
     { id = "dragon_seal", name = "蟠龙玉印", slot = "accessory", rarity = "gold",
       martial = 5,  study = 15, health = 5,  cost = 300, desc = "传世至宝，龙气护身", fameBonus = 5, heirloom = true },
 }
@@ -328,7 +328,7 @@ end
 
 MemberData.SKILL_PATHS = {
     { id = "scholar", name = "文士", icon = "文", reqAttr = "study", reqValue = 50,
-      desc = "饱读诗书，科举加成+20%，声望月产+2，教导后代学识+30%",
+      desc = "饱读诗书，文脉加成+20%，声望月产+2，教导后代学识+30%",
       effects = { examBonus = 0.2, famePerMonth = 2, childStudyBonus = 0.3 } },
     { id = "warrior", name = "武将", icon = "武", reqAttr = "martial", reqValue = 50,
       desc = "武艺超群，从军存活+25%，战力+30%，训练后代武艺+30%",

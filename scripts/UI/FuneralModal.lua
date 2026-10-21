@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明人生官场模拟 - 葬礼系统
+-- 大明家族人生模拟 - 葬礼系统
 -- 死亡触发葬礼弹窗：选择规模后播放仪式
 -- 薄葬/厚葬：静态灵堂图，可直接点击跳过
 -- 广大祭葬：看广告解锁 → 静态仪式图 + 收份子钱，可直接点击跳过
@@ -52,7 +52,7 @@ local SCALES = {
     {
         key         = "royal",
         name        = "广大祭葬",
-        desc        = "皇家御礼，八方来贺，大操大办",
+        desc        = "望族御礼，八方来贺，大操大办",
         minRank     = 1,   -- 所有族人均可举办
         free        = true,   -- 免费（但需看广告）
         fameReward  = 30,
@@ -528,7 +528,7 @@ function FuneralModal.ShowDialog(gameRoot, member, onComplete)
                                 gap = 10, alignItems = "center", width = "100%",
                                 children = {
                                     UI.Label {
-                                        text = "观看广告后，将举办隆重的皇家祭葬仪式",
+                                        text = "观看广告后，将举办隆重的望族祭葬仪式",
                                         fontSize = 14, fontColor = { 220, 200, 160, 255 },
                                         textAlign = "center", whiteSpace = "normal",
                                     },

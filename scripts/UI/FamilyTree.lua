@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明人生官场模拟 - 可视化族谱树组件
+-- 大明家族人生模拟 - 可视化族谱树组件
 -- 以树状图形式展示宗族世代关系：夫妻并列、子嗣分支、连线标注
 -- 支持双轴滚动和点击族人查看详情
 -- ============================================================================
@@ -168,14 +168,14 @@ local function CreateMemberCard(member, onClickMember)
     -- 身份颜色：文官蓝紫、武将赤红、普通金色
     local identityColor = Theme.GOLD_DARK
     local identityEffect = ""
-    local CIVIL_IDS = { ["童生"]=true, ["秀才"]=true, ["举人"]=true, ["进士"]=true, ["监生"]=true }
+    local CIVIL_IDS = { ["蒙童"]=true, ["书生"]=true, ["才俊"]=true, ["名士"]=true, ["附读"]=true }
     local MILITARY_IDS = { ["士兵"]=true, ["把总"]=true, ["守备"]=true }
     if CIVIL_IDS[member.identity] then
         identityColor = { 80, 100, 180, 255 }  -- 蓝紫色（文官）
-        if member.identity == "秀才" then identityEffect = "月+2望"
-        elseif member.identity == "举人" then identityEffect = "月+5望+2银"
-        elseif member.identity == "进士" then identityEffect = "月+10望+5银"
-        elseif member.identity == "监生" then identityEffect = "月+2望"
+        if member.identity == "书生" then identityEffect = "月+2望"
+        elseif member.identity == "才俊" then identityEffect = "月+5望+2银"
+        elseif member.identity == "名士" then identityEffect = "月+10望+5银"
+        elseif member.identity == "附读" then identityEffect = "月+2望"
         end
     elseif MILITARY_IDS[member.identity] then
         identityColor = { 180, 60, 60, 255 }  -- 赤红色（武将）
@@ -605,14 +605,14 @@ function FamilyTree.Create(onClickMember, onBattleClick, extraCallbacks)
         makeSideBtn(Theme.IMG.NAV_PRAY, "祈福", cbs.onPray)
     end
 
-    -- 教坊司·花魁（世家/品级5解锁）
+    -- 乐坊司·花魁（世家/品级5解锁）
     if s.clanRank >= 5 and cbs.onCourtesan then
         makeSideBtn(Theme.IMG.NAV_COURTESAN, "花魁", cbs.onCourtesan)
     end
 
-    -- 天子诰封（勋贵/品级6解锁）
+    -- 乡贤嘉奖（勋贵/品级6解锁）
     if s.clanRank >= 6 and cbs.onImperialSeal then
-        makeSideBtn(Theme.IMG.NAV_SEAL, "诰封", cbs.onImperialSeal)
+        makeSideBtn(Theme.IMG.NAV_SEAL, "嘉奖", cbs.onImperialSeal)
     end
 
     -- 左下角宠物面板（绝对定位）

@@ -14,19 +14,19 @@ events[#events + 1] = {
     isChainEvent = false,
     check = function(s) return true end,
     execute = function(s, report)
-        report.events[#report.events + 1] = "天子传召，族中长者入朝觐见，龙颜大悦，赐以厚赏。"
-        GameData.AddLog("族人入宫觐见天子，获赐御酒锦缎。")
+        report.events[#report.events + 1] = "文宗开坛讲学，族中长者被邀登坛论道，备受推崇。"
+        GameData.AddLog("族人登坛论道，获赠名砚锦缎。")
         return {
-            title = "御前觐见", desc = "圣上传召觐见，金殿之上龙威赫赫。族人伏拜丹墀，天子询及家世功业，颇为嘉许。此乃光耀门楣之千载良机，当如何应对？",
+            title = "登坛论道", desc = "文宗开坛论道，四方名士云集。族人登坛陈说家学渊源，满座肃然。此乃扬名立万之良机，当如何应对？",
             choices = {
                 { text = "进献珍宝以表忠心", effect = function()
                     GameData.AddResource("silver", -50)
                     GameData.AddResource("fame", 35)
-                    GameData.AddLog("进献珍宝于御前，圣上龙颜大悦，声望大增。")
+                    GameData.AddLog("进献珍本典籍于坛前，文宗赞赏，声望大增。")
                 end },
                 { text = "恭谨对答不卑不亢", effect = function()
                     GameData.AddResource("fame", 15)
-                    GameData.AddLog("觐见应答得体，天子略有嘉许。")
+                    GameData.AddLog("论道应答得体，众人略有嘉许。")
                 end },
             }
         }
@@ -46,10 +46,10 @@ events[#events + 1] = {
     isChainEvent = false,
     check = function(s) return true end,
     execute = function(s, report)
-        report.events[#report.events + 1] = "朝廷颁旨，族中因功勋卓著而获爵位晋升之恩典。"
-        GameData.AddLog("圣旨降临，族人获封爵位。")
+        report.events[#report.events + 1] = "乡里公议，族中因德望卓著而获乡望晋阶之褒奖。"
+        GameData.AddLog("乡约既立，族中获授乡望。")
         return {
-            title = "封爵晋升", desc = "朝廷论功行赏，族中积年之功终获圣上垂青，特降恩旨晋封爵位。封爵之仪需大排筵宴，昭告四方，然开销甚巨。",
+            title = "乡望晋阶", desc = "乡里论功行赏，族中积年之功终获耆老推重，特授乡望之阶。晋阶之仪需大排筵宴，昭告四方，然开销甚巨。",
             choices = {
                 { text = "大办仪典光耀门楣", effect = function()
                     GameData.AddResource("silver", -60)
@@ -67,10 +67,10 @@ events[#events + 1] = {
     end,
 }
 
--- 3. 朝堂阴谋
+-- 3. 乡里阴谋
 events[#events + 1] = {
     id = "r6_court_conspiracy",
-    title = "朝堂阴谋",
+    title = "乡里阴谋",
     rankRange = {5, 6},
     weight = 8,
     cooldownMonths = 6,
@@ -80,19 +80,19 @@ events[#events + 1] = {
     isChainEvent = false,
     check = function(s) return true end,
     execute = function(s, report)
-        report.events[#report.events + 1] = "朝中风云突变，有人密谋政变，族人被卷入漩涡之中。"
-        GameData.AddLog("朝堂暗流涌动，族人被卷入宫廷阴谋。")
+        report.events[#report.events + 1] = "乡里风云突变，有人密谋政变，族人被卷入漩涡之中。"
+        GameData.AddLog("族中暗流涌动，族人被卷入家产之争。")
         return {
-            title = "朝堂阴谋", desc = "夜半有人密送帛书，言及朝中重臣暗结党羽、图谋不轨。此事若成则改天换日，若败则株连九族。族人身处高位，已难置身事外。",
+            title = "乡里阴谋", desc = "夜半有人密送帛书，言及乡里重臣暗结党羽、图谋不轨。此事若成则改天换日，若败则株连九族。族人身处高位，已难置身事外。",
             choices = {
-                { text = "密报天子以示忠诚", effect = function()
+                { text = "具实禀明以示坦荡", effect = function()
                     GameData.AddResource("fame", 30)
                     GameData.AddResource("silver", 40)
-                    GameData.AddLog("密报阴谋有功，获天子嘉赏。")
+                    GameData.AddLog("据实禀明有功，获族老嘉赏。")
                 end },
                 { text = "韬光养晦静观其变", effect = function()
                     GameData.AddResource("fame", -10)
-                    GameData.AddLog("未表明立场，朝中风波渐息，暂且无虞。")
+                    GameData.AddLog("未表明立场，乡里风波渐息，暂且无虞。")
                 end },
             }
         }
@@ -120,7 +120,7 @@ events[#events + 1] = {
         report.events[#report.events + 1] = leader.name .. "奉旨统兵出征，三军听令。"
         GameData.AddLog(leader.name .. "被任命为统帅，领军出征。")
         return {
-            title = "领军出征", desc = "边关告急，圣上钦点族中" .. leader.name .. "为帅，统兵十万出征讨逆。大军旌旗蔽日、甲光耀天，此一战关乎国运兴亡。",
+            title = "领军出征", desc = "边地告急，乡里公推族中" .. leader.name .. "为帅，统领乡勇出征御敌。大军旌旗蔽日、甲光耀天，此一战关乎一方安危。",
             choices = {
                 { text = "倾族中之力全力支持", effect = function()
                     GameData.AddResource("silver", -50)
@@ -138,10 +138,10 @@ events[#events + 1] = {
     end,
 }
 
--- 5. 贡品使命
+-- 5. 岁礼使命
 events[#events + 1] = {
     id = "r6_tribute_mission",
-    title = "贡品使命",
+    title = "岁礼使命",
     rankRange = {5, 6},
     weight = 8,
     cooldownMonths = 6,
@@ -151,21 +151,21 @@ events[#events + 1] = {
     isChainEvent = false,
     check = function(s) return true end,
     execute = function(s, report)
-        report.events[#report.events + 1] = "朝廷委派族人督办岁贡事宜，责任重大。"
+        report.events[#report.events + 1] = "乡里托付族人筹办岁礼事宜，责任重大。"
         GameData.AddLog("族人受命督办进贡事务。")
         return {
-            title = "贡品使命", desc = "朝廷命族中督办今岁贡品，需搜罗奇珍异宝、锦缎丝绸，护送入京。此乃信任之托，亦是敛财之机，当如何行事？",
+            title = "岁礼使命", desc = "乡里命族中筹办今岁岁礼，需搜罗奇珍异宝、锦缎丝绸，送往郡城。此乃信任之托，亦是渔利之机，当如何行事？",
             choices = {
-                { text = "精心置办呈上等贡品", effect = function()
+                { text = "精心置办呈上等岁礼", effect = function()
                     GameData.AddResource("silver", -40)
                     GameData.AddResource("cloth", -30)
                     GameData.AddResource("fame", 25)
-                    GameData.AddLog("贡品精美，天子大悦，族人深受信赖。")
+                    GameData.AddLog("岁礼精美，耆老称许，族人深受信赖。")
                 end },
                 { text = "从中周旋留有余利", effect = function()
                     GameData.AddResource("silver", 30)
                     GameData.AddResource("fame", -15)
-                    GameData.AddLog("贡品之事暗中取利，虽有所得，名声略损。")
+                    GameData.AddLog("岁礼之事暗中取利，虽有所得，名声略损。")
                 end },
             }
         }
@@ -186,9 +186,9 @@ events[#events + 1] = {
     check = function(s) return true end,
     execute = function(s, report)
         report.events[#report.events + 1] = "天下大乱，王朝将倾，族人面临生死抉择。"
-        GameData.AddLog("社稷崩摧，王朝覆灭在即。")
+        GameData.AddLog("桑梓崩摧，王朝覆灭在即。")
         return {
-            title = "王朝倾覆", desc = "烽火连天，京师失陷，天子殉国。数百年基业一朝倾覆，山河易主。族中世代忠良，如今何去何从？是殉节以全大义，还是顺时以保宗族？",
+            title = "世道倾覆", desc = "烽火连天，郡城失陷，旧秩序一朝崩解。数百年基业岌岌可危，四方易主。族中世代安分，如今何去何从？是守节以全气节，还是顺时以保宗族？",
             choices = {
                 { text = "誓死效忠不事二主", effect = function()
                     GameData.AddResource("silver", -60)
@@ -206,10 +206,10 @@ events[#events + 1] = {
     end,
 }
 
--- 7. 御赐庄园
+-- 7. 乡赠庄园
 events[#events + 1] = {
     id = "r6_imperial_garden",
-    title = "御赐庄园",
+    title = "乡赠庄园",
     rankRange = {5, 6},
     weight = 8,
     cooldownMonths = 6,
@@ -219,16 +219,16 @@ events[#events + 1] = {
     isChainEvent = false,
     check = function(s) return true end,
     execute = function(s, report)
-        report.events[#report.events + 1] = "天子恩赐御苑别庄一座，族人喜不自胜。"
-        GameData.AddLog("蒙天子恩典，御赐庄园一座。")
+        report.events[#report.events + 1] = "乡里酬赠别业一座，族人喜不自胜。"
+        GameData.AddLog("蒙乡里厚意，获赠别业一座。")
         return {
-            title = "御赐庄园", desc = "圣上念及族中数代忠勤，特赐京郊御苑别庄一座，良田千亩、亭台楼阁俱全。此等殊荣百年难遇，然经营维护亦需大量银资。",
+            title = "乡赠别业", desc = "乡里念及族中数代勤谨，特赠郊外别业一座，良田千亩、亭台楼阁俱全。此等厚遇百年难遇，然经营维护亦需大量银资。",
             choices = {
                 { text = "精心经营使之繁盛", effect = function()
                     GameData.AddResource("silver", -30)
                     GameData.AddResource("grain", 60)
                     GameData.AddResource("fame", 20)
-                    GameData.AddLog("御赐庄园经营得当，年产丰饶。")
+                    GameData.AddLog("乡赠庄园经营得当，年产丰饶。")
                 end },
                 { text = "将庄园佃租坐收其利", effect = function()
                     GameData.AddResource("silver", 50)
@@ -253,10 +253,10 @@ events[#events + 1] = {
     isChainEvent = false,
     check = function(s) return true end,
     execute = function(s, report)
-        report.events[#report.events + 1] = "朝中掀起大狱，党争株连甚广，族人被牵涉其中。"
-        GameData.AddLog("党争之祸蔓延，族人受牵连。")
+        report.events[#report.events + 1] = "乡里掀起大狱，朝争株连甚广，族人被牵涉其中。"
+        GameData.AddLog("朝争之祸蔓延，族人受牵连。")
         return {
-            title = "政治清洗", desc = "朝中奸臣当道，兴起文字大狱，罗织罪名株连甚广。族中因往日交游被列入嫌疑之列，锦衣卫已在城中缉拿。危急存亡之秋，须当机立断。",
+            title = "政治清洗", desc = "乡里奸臣当道，兴起文字大狱，罗织罪名株连甚广。族中因往日交游被列入嫌疑之列，缇骑司已在城中缉拿。危急存亡之秋，须当机立断。",
             choices = {
                 { text = "散尽家财上下打点", effect = function()
                     GameData.AddResource("silver", -60)
@@ -287,10 +287,10 @@ events[#events + 1] = {
     isChainEvent = false,
     check = function(s) return true end,
     execute = function(s, report)
-        report.events[#report.events + 1] = "族中大排筵宴，广邀朝中显贵，觥筹交错、冠盖如云。"
+        report.events[#report.events + 1] = "族中大排筵宴，广邀乡里显贵，觥筹交错、冠盖如云。"
         GameData.AddLog("族中举办盛大华宴。")
         return {
-            title = "华宴排场", desc = "值族中喜庆之日，需设宴款待朝中显贵。席间丝竹悠扬、珍馐罗列，觥筹交错间或可结交权贵、广布人脉。然排场愈大，耗费愈巨。",
+            title = "华宴排场", desc = "值族中喜庆之日，需设宴款待乡里显贵。席间丝竹悠扬、珍馐罗列，觥筹交错间或可结交权贵、广布人脉。然排场愈大，耗费愈巨。",
             choices = {
                 { text = "极尽奢华大宴百席", effect = function()
                     GameData.AddResource("silver", -50)
@@ -326,7 +326,7 @@ events[#events + 1] = {
         report.events[#report.events + 1] = "北方铁骑南下，烽烟四起，边关告急。"
         GameData.AddLog("外族大举入侵，天下震动。")
         return {
-            title = "外族入侵", desc = "北方铁骑破关而入，所过之处生灵涂炭。朝廷急令各地勤王，族中位高权重，避无可避。是倾力御敌以卫社稷，还是固守家业以图自保？",
+            title = "外族入侵", desc = "北方铁骑破关而入，所过之处生灵涂炭。乡里急请各地大户出丁御敌，族中势大，避无可避。是倾力御敌以卫桑梓，还是固守家业以图自保？",
             choices = {
                 { text = "散家纾难倾力勤王", effect = function()
                     GameData.AddResource("silver", -50)
@@ -337,7 +337,7 @@ events[#events + 1] = {
                 { text = "固守族地保全实力", effect = function()
                     GameData.AddResource("grain", -20)
                     GameData.AddResource("fame", -20)
-                    GameData.AddLog("固守不出，宗族得保然朝中非议不断。")
+                    GameData.AddLog("固守不出，宗族得保然乡里非议不断。")
                 end },
             }
         }
@@ -402,7 +402,7 @@ events[#events + 1] = {
         report.events[#report.events + 1] = "族中嫡庶争位，内斗日烈，几近分裂。"
         GameData.AddLog("嫡庶之争愈演愈烈。")
         return {
-            title = "嫡庶之争", desc = "族中家主年迈体衰，嫡庶子弟各怀心思，暗中结党争夺继承大位。族内人心惶惶，若不及时平息，百年基业恐毁于一旦。",
+            title = "嫡庶之争", desc = "族中家主年迈体衰，嫡庶子弟各怀心思，暗中结朝争夺继承大位。族内人心惶惶，若不及时平息，百年基业恐毁于一旦。",
             choices = {
                 { text = "秉公立嫡平息纷争", effect = function()
                     GameData.AddResource("fame", 20)
@@ -440,7 +440,7 @@ events[#events + 1] = {
         report.events[#report.events + 1] = m.name .. "筹划组建远洋船队，出海贸易。"
         GameData.AddLog(m.name .. "主持筹建远洋船队。")
         return {
-            title = "组建船队", desc = "族中" .. m.name .. "观海外之利甚厚，欲效三保太监旧事，组建船队远赴南洋。所需巨资造船、招募水手、备办货物，然一旦成行获利可达十倍。",
+            title = "组建船队", desc = "族中" .. m.name .. "观海外之利甚厚，欲效三宝内侍旧事，组建船队远赴南洋。所需巨资造船、招募水手、备办货物，然一旦成行获利可达十倍。",
             choices = {
                 { text = "倾力建造大型船队", effect = function()
                     GameData.AddResource("silver", -60)
@@ -494,10 +494,10 @@ events[#events + 1] = {
     end,
 }
 
--- 15. 皇家赐婚
+-- 15. 望族联宗
 events[#events + 1] = {
     id = "r6_royal_marriage",
-    title = "皇家赐婚",
+    title = "望族联宗",
     rankRange = {5, 6},
     weight = 8,
     cooldownMonths = 6,
@@ -524,10 +524,10 @@ events[#events + 1] = {
             end
         end
         local name = candidate and candidate.name or "族中子弟"
-        report.events[#report.events + 1] = "天子赐婚，" .. name .. "将与皇族联姻。"
-        GameData.AddLog("皇家赐婚，" .. name .. "蒙此殊荣。")
+        report.events[#report.events + 1] = "名门提亲，" .. name .. "将与望族联宗。"
+        GameData.AddLog("望族联宗，" .. name .. "蒙此殊荣。")
         return {
-            title = "皇家赐婚", desc = "圣上闻族中" .. name .. "才貌出众，特降恩旨赐婚皇族。此乃天恩浩荡，攀龙附凤之良机。是否为" .. name .. "前去相看？",
+            title = "望族联宗", desc = "郡中望族闻族中" .. name .. "才貌出众，特遣媒妁登门求亲。此乃门当户对之良机，可否为" .. name .. "前去相看？",
             choices = {
                 { text = "前去相看", effect = function()
                     if candidate and not candidate.spouseId then
@@ -537,7 +537,7 @@ events[#events + 1] = {
                 end },
                 { text = "婉拒圣恩（声望-15）", effect = function()
                     GameData.AddResource("fame", -15)
-                    GameData.AddLog(name .. "婉拒皇家赐婚，圣上略有不悦。")
+                    GameData.AddLog(name .. "婉拒望族求亲，对方略有不悦。")
                 end },
             }
         }
@@ -593,7 +593,7 @@ events[#events + 1] = {
         report.events[#report.events + 1] = "四海升平、物阜民丰，族中迎来鼎盛之期。"
         GameData.AddLog("太平盛世，百业兴旺。")
         return {
-            title = "太平盛世", desc = "天下承平日久，五谷丰登、百业俱兴。朝廷吏治清明，四方来朝。族中正可乘此盛世之机大展宏图，或广置产业、或投身仕途。",
+            title = "太平盛世", desc = "天下承平日久，五谷丰登、百业俱兴。乡里民风淳厚，四方商旅云集。族中正可乘此盛世之机大展宏图，或广置产业、或潜心文脉。",
             choices = {
                 { text = "广置良田扩充产业", effect = function()
                     GameData.AddResource("silver", -30)
@@ -629,10 +629,10 @@ events[#events + 1] = {
     execute = function(s, report)
         local warriors = GameData.GetMembersByState("从军")
         local m = warriors[1]
-        report.events[#report.events + 1] = m.name .. "受命参与朝廷军制改革大计。"
+        report.events[#report.events + 1] = m.name .. "受命参与乡勇操练改革之议。"
         GameData.AddLog(m.name .. "参与军制改革。")
         return {
-            title = "军制改革", desc = "朝廷锐意革新军制，" .. m.name .. "因精通兵法被委以参议之任。变法虽利国利民，然触动旧勋贵利益，阻力甚大。是锐意改革还是左右逢源？",
+            title = "乡勇改制", desc = "乡里锐意革新团练之法，" .. m.name .. "因精通兵法被委以参议之任。改制虽利乡利民，然触动旧练总之利，阻力甚大。是锐意改革还是左右逢源？",
             choices = {
                 { text = "全力推行新法", effect = function()
                     GameData.AddResource("silver", -20)
@@ -734,32 +734,32 @@ events[#events + 1] = {
     isChainEvent = false,
     check = function(s) return true end,
     execute = function(s, report)
-        report.events[#report.events + 1] = "边疆烽火骤起，朝廷急令勋贵出资出力。"
-        GameData.AddLog("边疆战事吃紧，朝廷催办军饷。")
+        report.events[#report.events + 1] = "边地烽火骤起，乡里急请大户出资出力。"
+        GameData.AddLog("边地战事吃紧，乡里催办粮饷。")
         return {
-            title = "边疆危机", desc = "西北边关遭敌大举寇犯，守将战死、城池连失。朝廷急诏天下勋贵捐资助饷，更有风声言或将抽丁征发。边关战火若不速扑，恐燃及腹地。",
+            title = "边地危机", desc = "西北边地遭敌大举寇犯，守军溃散、城寨连失。乡里急请各地大户捐资助饷，更有风声言或将抽丁征发。边地战火若不速扑，恐燃及腹地。",
             choices = {
                 { text = "慷慨解囊捐银助饷", effect = function()
                     GameData.AddResource("silver", -50)
                     GameData.AddResource("grain", -40)
                     GameData.AddResource("fame", 30)
-                    GameData.AddLog("捐资助饷，边关得以稳固，天子嘉许。")
+                    GameData.AddLog("捐资助饷，边地得以稳固，乡里嘉许。")
                 end },
                 { text = "仅出最低限额敷衍", effect = function()
                     GameData.AddResource("silver", -15)
                     GameData.AddResource("grain", -10)
                     GameData.AddResource("fame", -15)
-                    GameData.AddLog("敷衍了事，朝中颇有微词。")
+                    GameData.AddLog("敷衍了事，乡里颇有微词。")
                 end },
             }
         }
     end,
 }
 
--- 22. 科举改革
+-- 22. 考校改革
 events[#events + 1] = {
     id = "r6_imperial_exam_reform",
-    title = "科举改革",
+    title = "考校改革",
     rankRange = {5, 6},
     weight = 8,
     cooldownMonths = 6,
@@ -774,10 +774,10 @@ events[#events + 1] = {
     execute = function(s, report)
         local scholars = GameData.GetMembersByState("读书")
         local m = scholars[1]
-        report.events[#report.events + 1] = m.name .. "参与朝廷科举改革之议。"
-        GameData.AddLog(m.name .. "上书论科举改革。")
+        report.events[#report.events + 1] = m.name .. "参与书院考校改革之议。"
+        GameData.AddLog(m.name .. "上书论考校改革。")
         return {
-            title = "科举改革", desc = "朝廷议改科举取士之法，" .. m.name .. "以学识渊博被召入议政。有人主张废八股而用策论，有人力主守旧制。族中在科场素有根基，改革成败关系甚大。",
+            title = "考校改革", desc = "书院议改考校取才之法，" .. m.name .. "以学识渊博被邀入共议。有人主张废章句而用策论，有人力主守旧制。族中在文脉素有根基，改革成败关系甚大。",
             choices = {
                 { text = "力倡改革推行新学", effect = function()
                     GameData.AddResource("silver", -25)
@@ -862,7 +862,7 @@ events[#events + 1] = {
                 { text = "公开辟谣稳定人心", effect = function()
                     GameData.AddResource("silver", -10)
                     GameData.AddResource("fame", 15)
-                    GameData.AddLog("出面辟谣安抚人心，朝廷赞许。")
+                    GameData.AddLog("出面辟谣安抚人心，乡里赞许。")
                 end },
             }
         }

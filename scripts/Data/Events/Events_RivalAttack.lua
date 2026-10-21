@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明人生官场模拟 - C4 敌对势力进攻事件池
+-- 大明家族人生模拟 - C4 敌对势力进攻事件池
 -- 高品阶家族面临外部势力主动进攻，必须做出防御决策
 -- 包含3D战斗、防御策略、外交博弈、连锁事件
 -- ============================================================================
@@ -283,12 +283,12 @@ events[#events + 1] = {
 }
 
 -- ============================================================================
--- 事件2：倭寇侵袭（品阶5-8，沿海年代限定）
--- 倭寇登陆袭击，需要军事防御
+-- 事件2：海寇侵袭（品阶5-8，沿海年代限定）
+-- 海寇登陆袭击，需要军事防御
 -- ============================================================================
 events[#events + 1] = {
     id = "ra_wokou_attack",
-    title = "倭寇侵袭",
+    title = "海寇侵袭",
     rankRange = { 5, 8 },
     weight = 5,
     cooldownMonths = 12,
@@ -303,21 +303,21 @@ events[#events + 1] = {
         local armySize = GetArmySize()
 
         return {
-            title = "倭寇侵袭",
-            desc = "海疆急报！一支倭寇船队在附近登岸，约" ..
+            title = "海寇侵袭",
+            desc = "海疆急报！一支海寇船队在附近登岸，约" ..
                    math.floor(400 * scale) .. "人，正向内陆劫掠。\n\n" ..
                    "官府征调各方乡勇协防，" .. s.surname .. "家作为当地望族责无旁贷。\n\n" ..
                    "可调用兵力：" .. armySize .. "人 | 将领" .. #allFighters .. "员",
             choices = {
                 {
-                    text = "主动出击截杀倭寇！（3D战斗·较高难度·高回报）",
+                    text = "主动出击截杀海寇！（3D战斗·较高难度·高回报）",
                     effect = function()
                         if #allFighters < 2 then
                             GameData.AddResource("fame", -10)
-                            GameData.AddLog("无将可用，未能出战抗倭，声望大损。")
+                            GameData.AddLog("无将可用，未能出战抗海寇，声望大损。")
                             return
                         end
-                        local rival = GenerateAttacker("倭寇先锋", s.clanRank + 1, s.year)
+                        local rival = GenerateAttacker("海寇先锋", s.clanRank + 1, s.year)
                         local GS = require("UI.GameScreen")
                         GS.EventBattle(allFighters, rival, {
                             soldierCount = math.min(armySize, 500),
@@ -327,20 +327,20 @@ events[#events + 1] = {
                                     local fr = math.floor(25 * scale)
                                     GameData.AddResource("silver", sr)
                                     GameData.AddResource("fame", fr)
-                                    GameData.AddLog("大破倭寇！缴获银两" .. sr .. "，声望+" .. fr .. "。朝廷嘉奖有功。")
-                                    -- 连锁：朝廷嘉奖
+                                    GameData.AddLog("大破海寇！缴获银两" .. sr .. "，声望+" .. fr .. "。乡里嘉奖有功。")
+                                    -- 连锁：乡里嘉奖
                                     s.pendingEvents = s.pendingEvents or {}
                                     s.pendingEvents[#s.pendingEvents + 1] = {
-                                        title = "抗倭功勋",
-                                        desc = "朝廷闻报" .. s.surname .. "家奋勇抗倭，特遣使者前来嘉奖。\n\n" ..
-                                               "钦差道：'圣上龙颜大悦，赐御笔亲书忠义之家匾额，另赏赐良田。'",
+                                        title = "抗海寇功勋",
+                                        desc = "乡里闻报" .. s.surname .. "家奋勇抗海寇，特遣使者前来嘉奖。\n\n" ..
+                                               "乡使道：'乡耆众人称叹，赐名家亲题亲书忠义之家匾额，另赏赐良田。'",
                                         choices = {
                                             {
                                                 text = "领旨谢恩",
                                                 effect = function()
                                                     GameData.AddResource("fame", 15)
                                                     GameData.AddResource("silver", 30)
-                                                    GameData.AddLog("获朝廷赐匾'忠义之家'，赏银30两，声望+15。")
+                                                    GameData.AddLog("获乡里赐匾'忠义之家'，赏银30两，声望+15。")
                                                 end,
                                             },
                                         },
@@ -351,7 +351,7 @@ events[#events + 1] = {
                                     GameData.AddResource("silver", -sL)
                                     GameData.AddResource("grain", -gL)
                                     GameData.AddResource("fame", -5)
-                                    GameData.AddLog("抗倭失利，倭寇趁势劫掠。损失银两" .. sL .. "、粮食" .. gL .. "。")
+                                    GameData.AddLog("抗海寇失利，海寇趁势劫掠。损失银两" .. sL .. "、粮食" .. gL .. "。")
                                     -- 族人伤亡
                                     for _, mid in ipairs(deployedIds) do
                                         local m = GameData.GetMember(mid)
@@ -360,7 +360,7 @@ events[#events + 1] = {
                                             m.deathAge = m.age
                                             m.deathYear = s.year
                                             m.deathCause = "战死"
-                                            GameData.AddLog(m.name .. "在抗倭战斗中壮烈殉国。")
+                                            GameData.AddLog(m.name .. "在抗海寇战斗中壮烈殉国。")
                                             GameData.CheckPatriarchDeath(m)
                                             GameData.NotifyDeath(m, "战死")
                                         end
@@ -381,7 +381,7 @@ events[#events + 1] = {
                         if s.army and s.army.infantry then
                             s.army.infantry = math.max(0, s.army.infantry - armyLoss)
                         end
-                        GameData.AddLog("出兵协防抗倭，消耗粮食" .. grainCost .. "，损兵" .. armyLoss .. "人。朝廷记功，声望+5。")
+                        GameData.AddLog("出兵协防抗海寇，消耗粮食" .. grainCost .. "，损兵" .. armyLoss .. "人。乡里记功，声望+5。")
                     end,
                 },
                 {
@@ -392,7 +392,7 @@ events[#events + 1] = {
                         GameData.AddResource("silver", -silverLoss)
                         GameData.AddResource("grain", -grainLoss)
                         GameData.AddResource("fame", -12)
-                        GameData.AddLog("举族避入内陆，庄园被倭寇洗劫。损失银两" .. silverLoss ..
+                        GameData.AddLog("举族避入内陆，庄园被海寇洗劫。损失银两" .. silverLoss ..
                                        "、粮食" .. grainLoss .. "，声望-12。但族人无恙。")
                     end,
                 },
@@ -403,7 +403,7 @@ events[#events + 1] = {
 
 -- ============================================================================
 -- 事件3：流寇围城（品阶6-9，明末限定）
--- 李自成/张献忠式流民军围攻
+-- 李自承/张献钟式流民军围攻
 -- ============================================================================
 events[#events + 1] = {
     id = "ra_rebel_siege",
@@ -421,7 +421,7 @@ events[#events + 1] = {
         local allFighters = GetAllFighters()
         local armySize = GetArmySize()
 
-        local leaderNames = {"闯王", "八大王", "过天星", "混天王", "扫地王"}
+        local leaderNames = {"闯将", "八大王", "踏天星", "混天王", "扫尘王"}
         local leaderName = leaderNames[math.random(1, #leaderNames)]
 
         return {
@@ -942,12 +942,12 @@ events[#events + 1] = {
 }
 
 -- ============================================================================
--- 事件7：蒙古骑兵南侵（品阶7-9，早期年代限定）
+-- 事件7：蒙兀骑兵南侵（品阶7-9，早期年代限定）
 -- 北方骑兵南下劫掠
 -- ============================================================================
 events[#events + 1] = {
     id = "ra_mongol_raid",
-    title = "蒙古骑兵南侵",
+    title = "蒙兀骑兵南侵",
     rankRange = { 7, 9 },
     weight = 4,
     cooldownMonths = 18,
@@ -962,11 +962,11 @@ events[#events + 1] = {
         local armySize = GetArmySize()
 
         return {
-            title = "蒙古骑兵南侵",
-            desc = "北疆急报！一支蒙古铁骑约" .. math.floor(500 * scale) ..
+            title = "蒙兀骑兵南侵",
+            desc = "北疆急报！一支蒙兀铁骑约" .. math.floor(500 * scale) ..
                    "骑突破边防，长驱直入！\n\n" ..
                    "沿途州县已有数处被劫，骑兵来势汹汹，直奔此地而来。\n\n" ..
-                   "朝廷调令：各大家族即刻动员乡勇，据城死守！\n\n" ..
+                   "乡里调令：各大家族即刻动员乡勇，据城死守！\n\n" ..
                    "可用兵力：" .. armySize .. "人",
             choices = {
                 {
@@ -977,7 +977,7 @@ events[#events + 1] = {
                             GameData.AddLog("将领不足，无力出城野战。龟缩城中等骑兵退去。")
                             return
                         end
-                        local rival = GenerateAttacker("蒙古骑兵", s.clanRank + 1, s.year)
+                        local rival = GenerateAttacker("蒙兀骑兵", s.clanRank + 1, s.year)
                         rival.soldiers = math.floor(rival.soldiers * 1.4)
                         local GS = require("UI.GameScreen")
                         GS.EventBattle(allFighters, rival, {
@@ -988,20 +988,20 @@ events[#events + 1] = {
                                     local fr = math.floor(40 * scale)
                                     GameData.AddResource("silver", sr)
                                     GameData.AddResource("fame", fr)
-                                    GameData.AddLog("大破蒙古骑兵！缴获战马财帛无数，银两+" .. sr .. "，声望+" .. fr .. "！")
-                                    -- 连锁：朝廷封赏
+                                    GameData.AddLog("大破蒙兀骑兵！缴获战马财帛无数，银两+" .. sr .. "，声望+" .. fr .. "！")
+                                    -- 连锁：乡里封赏
                                     s.pendingEvents = s.pendingEvents or {}
                                     s.pendingEvents[#s.pendingEvents + 1] = {
                                         title = "北疆封赏",
-                                        desc = "朝廷闻" .. s.surname .. "家于野战中大破蒙古骑兵，\n" ..
-                                               "兵部尚书亲自上奏请封赏，圣上恩准。",
+                                        desc = "乡里闻" .. s.surname .. "家于野战中大破蒙兀骑兵，\n" ..
+                                               "武曹尚书亲自上奏请封赏，乡耆恩准。",
                                         choices = {
                                             {
                                                 text = "领旨谢恩",
                                                 effect = function()
                                                     GameData.AddResource("fame", 25)
                                                     GameData.AddResource("silver", 80)
-                                                    GameData.AddLog("获朝廷重赏！赐银八十两，声望+25。")
+                                                    GameData.AddLog("获乡里重赏！赐银八十两，声望+25。")
                                                 end,
                                             },
                                         },
@@ -1015,7 +1015,7 @@ events[#events + 1] = {
                                     if s.army then
                                         s.army.infantry = math.max(0, (s.army.infantry or 0) - math.floor(300 * scale))
                                     end
-                                    GameData.AddLog("野战失利，蒙古骑兵大肆劫掠。兵力和物资损失惨重。")
+                                    GameData.AddLog("野战失利，蒙兀骑兵大肆劫掠。兵力和物资损失惨重。")
                                     for _, mid in ipairs(deployedIds) do
                                         local m = GameData.GetMember(mid)
                                         if m and math.random(100) <= 15 then
@@ -1023,7 +1023,7 @@ events[#events + 1] = {
                                             m.deathAge = m.age
                                             m.deathYear = s.year
                                             m.deathCause = "战死"
-                                            GameData.AddLog(m.name .. "在对蒙古骑兵的野战中阵亡。")
+                                            GameData.AddLog(m.name .. "在对蒙兀骑兵的野战中阵亡。")
                                             GameData.CheckPatriarchDeath(m)
                                             GameData.NotifyDeath(m, "战死")
                                         end
@@ -1041,7 +1041,7 @@ events[#events + 1] = {
                         -- 骑兵不善攻城，80%概率安全
                         if math.random(100) <= 80 then
                             GameData.AddResource("fame", 5)
-                            GameData.AddLog("据城坚守，蒙古骑兵围城数日后退去。消耗粮食" ..
+                            GameData.AddLog("据城坚守，蒙兀骑兵围城数日后退去。消耗粮食" ..
                                            grainCost .. "，声望+5。")
                         else
                             local silverLoss = math.floor(50 * scale)
@@ -1060,7 +1060,7 @@ events[#events + 1] = {
                         GameData.AddResource("silver", -silverBurn)
                         GameData.AddResource("grain", -grainBurn)
                         GameData.AddResource("fame", 8)
-                        GameData.AddLog("下令焚毁城外粮仓物资，蒙古骑兵无法就地补给，被迫退兵。" ..
+                        GameData.AddLog("下令焚毁城外粮仓物资，蒙兀骑兵无法就地补给，被迫退兵。" ..
                                        "损失银两" .. silverBurn .. "、粮食" .. grainBurn ..
                                        "，但计策奏效，声望+8。")
                     end,

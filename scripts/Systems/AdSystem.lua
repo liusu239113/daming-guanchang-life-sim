@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明人生官场模拟 - 广告变现系统
+-- 大明家族人生模拟 - 广告变现系统
 -- 激励视频广告触发点与奖励管理
 -- 使用 sdk:ShowRewardVideoAd(callback) API
 -- 广告次数按游戏年重置，加速特权按真实时间24小时有效
@@ -24,7 +24,7 @@ AdSystem.AD_SLOTS = {
     double_income   = { id = "double_income",   name = "双倍产出",     yearlyLimit = 6 },
     free_training   = { id = "free_training",    name = "免费培养",     yearlyLimit = 24 },
     market_discount = { id = "market_discount",  name = "集市优惠",     yearlyLimit = 12 },
-    exam_boost      = { id = "exam_boost",       name = "科举加持",     yearlyLimit = 4 },
+    exam_boost      = { id = "exam_boost",       name = "文脉加持",     yearlyLimit = 4 },
     exam_retry      = { id = "exam_retry",      name = "重考机会",     yearlyLimit = 8 },
     exam_hint       = { id = "exam_hint",       name = "考题提示",     yearlyLimit = 12 },
     battle_boost    = { id = "battle_boost",      name = "战力提升",     yearlyLimit = 6 },
@@ -309,13 +309,13 @@ function AdSystem.MarketDiscount(silverSpent, onDone)
     end)
 end
 
---- 科举加持（额外+15%成功率，存入临时标记）
+--- 文脉加持（额外+15%成功率，存入临时标记）
 ---@param onDone function|nil
 function AdSystem.ExamBoost(onDone)
     AdSystem.ShowRewardAd("exam_boost", function()
         local s = GameData.state
         s.adExamBoost = true
-        GameData.AddLog("科举加持：本次考试成功率+15%")
+        GameData.AddLog("文脉加持：本次考试成功率+15%")
         if onDone then onDone(true) end
     end, function(msg)
         if onDone then onDone(false, msg) end

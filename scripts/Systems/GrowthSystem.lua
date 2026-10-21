@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明人生官场模拟 - 族人成长系统（从 MonthlyUpdate.lua 拆分）
+-- 大明家族人生模拟 - 族人成长系统（从 MonthlyUpdate.lua 拆分）
 -- 包含：年龄增长、生老病死、读书武艺成长、生育系统
 -- ============================================================================
 
@@ -214,7 +214,7 @@ function GrowthSystem.Process(report, ruleEffects)
                 -- 有族中秀才/举人当先生加成：额外10%概率+1
                 local hasTeacher = false
                 for _, t in ipairs(GameData.GetAliveMembers()) do
-                    if t.id ~= m.id and (t.identity == "秀才" or t.identity == "举人" or t.identity == "进士" or t.identity == "监生") then
+                    if t.id ~= m.id and (t.identity == "书生" or t.identity == "才俊" or t.identity == "名士" or t.identity == "附读") then
                         hasTeacher = true
                         break
                     end

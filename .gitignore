@@ -38,13 +38,3 @@ tools/
 urhox-libs/
 AGENTS.md
 CLAUDE.md
-
-# Maker 默认忽略规则（自动补充；平台内容不应提交）
-.org.chromium.Chromium.??????
-
-# H5 复刻参考资料包（显式纳入版本控制，见 h5-reference/README.md）
-!h5-reference/
-!h5-reference/**
-
-# dist 导出包：完整包（含 assets.7z，62MiB）不入库，仅清单包入库
-dist-export/daming-dist-full.tar.gz

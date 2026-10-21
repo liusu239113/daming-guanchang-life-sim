@@ -1,16 +1,16 @@
 -- ============================================================================
--- 大明人生官场模拟 - 豪阀品级（8级）专属事件池
--- 设计理念：豪阀势大，招致朝廷猜忌、外敌虎视
+-- 大明家族人生模拟 - 豪阀品级（8级）专属事件池
+-- 设计理念：豪阀势大，招致乡里猜忌、外敌虎视
 -- ============================================================================
 
 local GameData = require("Data.GameData")
 local EventSystem = require("Systems.EventSystem")
 local events = {}
 
--- 1. 朝廷猜忌 — 功高震主
+-- 1. 乡里猜忌 — 功高震主
 events[#events + 1] = {
     id = "r8_imperial_suspicion",
-    title = "朝廷猜忌",
+    title = "乡里猜忌",
     rankRange = {8, 9},
     weight = 10,
     cooldownMonths = 8,
@@ -19,11 +19,11 @@ events[#events + 1] = {
     execute = function(s, report)
         local fameLoss = math.ceil(s.fame * 0.1)
         local silverLoss = math.ceil(s.silver * 0.08)
-        report.events[#report.events + 1] = "朝廷对家族势力心生猜忌！"
-        GameData.AddLog("功高震主，圣上对家族猜忌日深。")
+        report.events[#report.events + 1] = "乡里对家族势力心生猜忌！"
+        GameData.AddLog("功高震主，乡耆对家族猜忌日深。")
         return {
-            title = "朝廷猜忌",
-            desc = "家族势力膨胀，引起朝中御史弹劾，言官奏章如雪片飞来，参你族'结党营私，恃势凌人'。\n圣上龙颜不悦，下旨查办。",
+            title = "乡里猜忌",
+            desc = "家族势力膨胀，引起乡里御史弹劾，言官奏章如雪片飞来，参你族'结党营私，恃势凌人'。\n乡耆龙颜不悦，下旨查办。",
             choices = {
                 { text = "主动献银表忠心（-" .. silverLoss .. "银两）", cost = {silver = silverLoss}, effect = function()
                     GameData.AddResource("fame", -math.ceil(fameLoss * 0.3))
@@ -32,7 +32,7 @@ events[#events + 1] = {
                 { text = "上书自辩清白", effect = function()
                     if math.random() < 0.5 then
                         GameData.AddResource("fame", 10)
-                        GameData.AddLog("辩章入微，圣上释疑，反赐嘉奖。")
+                        GameData.AddLog("辩章入微，乡耆释疑，反赐嘉奖。")
                     else
                         GameData.AddResource("fame", -fameLoss)
                         GameData.AddResource("silver", -math.ceil(silverLoss * 0.5))
@@ -82,12 +82,12 @@ events[#events + 1] = {
                     GameData.AddResource("cloth", -clothLoss)
                     GameData.AddLog("集中力量保住了银库，但粮仓和织坊尽毁。")
                 end },
-                { text = "向朝廷请赈（-20声望）", effect = function()
+                { text = "向乡里请赈（-20声望）", effect = function()
                     GameData.AddResource("grain", -math.ceil(grainLoss * 0.6))
                     GameData.AddResource("silver", -math.ceil(silverLoss * 0.6))
                     GameData.AddResource("cloth", -math.ceil(clothLoss * 0.6))
                     GameData.AddResource("fame", -20)
-                    GameData.AddLog("上书请赈，朝廷拨付部分钱粮，然名望受损。")
+                    GameData.AddLog("上书请赈，乡里拨付部分钱粮，然名望受损。")
                 end },
             }
         }

@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明人生官场模拟 - 区域战役数据模块（两级地图系统）
+-- 大明家族人生模拟 - 区域战役数据模块（两级地图系统）
 -- 12个大区域，每区域4-5个关卡，共58关
 -- Stage ID编码：stageId = areaId * 100 + stageNum
 -- ============================================================================
@@ -530,11 +530,11 @@ CampaignRegions.AREAS = {
                 desc = "天下群雄的最终决战。",
             },
             {
-                id = 1204, areaId = 12, name = "京师之战", difficulty = 57,
+                id = 1204, areaId = 12, name = "京畿之战", difficulty = 57,
                 soldierRange = { 38000, 44000 }, memberRange = { 6, 6 },
                 martialRange = { 90, 98 }, healthRange = { 90, 100 },
                 rewards = { silver = { 250, 400 }, grain = { 165, 268 }, fame = { 60, 85 } },
-                desc = "攻入京师，改朝换代。",
+                desc = "攻入京畿，改朝换代。",
             },
             {
                 id = 1205, areaId = 12, name = "天命所归", difficulty = 58, isBoss = true,

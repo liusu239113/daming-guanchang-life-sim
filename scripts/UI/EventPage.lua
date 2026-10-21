@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明人生官场模拟 - 事件/历史大势页面（从 GameScreen.lua 拆分）
+-- 大明家族人生模拟 - 事件/历史大势页面（从 GameScreen.lua 拆分）
 -- EventPage.Create(PageTitle, screen) 创建事件页面
 -- ============================================================================
 
@@ -34,7 +34,7 @@ function EventPage.Create(PageTitle, screen)
             justifyContent = "center", alignItems = "center",
             onTap = function(self) screen.ShowEndingScreen() end,
             children = {
-                UI.Label { text = "甲申之变 · 查看终局结算", fontSize = 17, fontColor = Theme.TEXT_WHITE, letterSpacing = 1 },
+                UI.Label { text = "天倾之变 · 查看终局结算", fontSize = 17, fontColor = Theme.TEXT_WHITE, letterSpacing = 1 },
             },
         }
     end

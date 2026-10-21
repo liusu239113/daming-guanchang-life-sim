@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明人生官场模拟 — 大明风华
+-- 大明家族人生模拟 — 大明风华
 -- 主入口文件
 -- ============================================================================
 
@@ -321,7 +321,7 @@ function ShowSettingsModal()
             UI.Panel {
                 width = "100%", alignItems = "center", gap = 4,
                 children = {
-                    UI.Label { text = "大明人生官场模拟", fontSize = 15, fontColor = Theme.TEXT_PRIMARY },
+                    UI.Label { text = "大明家族人生模拟", fontSize = 15, fontColor = Theme.TEXT_PRIMARY },
                     UI.Label { text = "大明风华 · 版本 v1.0.59", fontSize = 11, fontColor = Theme.TEXT_MUTED },
                     UI.Label { text = "一款大明王朝宗族模拟经营游戏", fontSize = 11, fontColor = Theme.TEXT_MUTED },
                 },
@@ -441,7 +441,7 @@ function ShowEndingsGalleryModal()
         local descMap = {
             extinction = "最后一位族人离世，宗祠香火断绝。",
             bankrupt = "资财散尽，门庭零落，终成过眼云烟。",
-            executed = "声名狼藉，终遭朝廷满门抄斩。",
+            executed = "声名狼藉，终遭官府满门抄斩。",
             scholar_dynasty = "十年寒窗，一朝金榜，书香门第传千古。",
             warlord = "铁骑纵横，战功赫赫，将门世家威名远播。",
             merchant_empire = "商贾云集，富可敌国，天下财富尽归一族。",
@@ -584,7 +584,7 @@ end
 
 function Start()
     -- 设置窗口标题
-    graphics.windowTitle = "大明人生官场模拟 — 大明风华"
+    graphics.windowTitle = "大明家族人生模拟 — 大明风华"
 
     -- 初始化随机种子
     math.randomseed(os.time())
@@ -664,13 +664,13 @@ function Start()
     -- 显示主菜单
     ShowScreen("menu")
 
-    print("[大明人生官场模拟] 游戏启动完成")
+    print("[大明家族人生模拟] 游戏启动完成")
 end
 
 function Stop()
     -- 退出时自动存档
     if currentScreen_ == "game" and GameData.state then
         SaveSystem.AutoSave()
-        print("[大明人生官场模拟] 退出自动存档完成")
+        print("[大明家族人生模拟] 退出自动存档完成")
     end
 end

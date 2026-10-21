@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明人生官场模拟 - 天气与季节系统
+-- 大明家族人生模拟 - 天气与季节系统
 -- 根据月份生成季节和天气，影响产出、健康、军事
 -- ============================================================================
 
@@ -79,7 +79,7 @@ local function weightedRandomWeather(season, year)
     for wType, w in pairs(weights) do
         local finalW = w
         if year and year >= 1600 and disasterTypes[wType] then
-            -- 1600年后灾害概率逐步升高，崇祯年间（1628-1644）达到峰值
+            -- 1600年后灾害概率逐步升高，崇贞年间（1628-1644）达到峰值
             local factor = 1.0 + math.min((year - 1600) / 44, 1.0) * 0.8
             finalW = math.ceil(w * factor)
         end

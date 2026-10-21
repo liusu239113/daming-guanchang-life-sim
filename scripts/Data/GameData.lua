@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明人生官场模拟 - 核心游戏数据模块
+-- 大明家族人生模拟 - 核心游戏数据模块
 -- 管理所有游戏状态：资源、族人、产业、年份等
 -- ============================================================================
 
@@ -23,8 +23,8 @@ GameData.ORIGINS = {
 GameData.REGIONS = {
     { id = "shaanbei", name = "陕北", desc = "流寇频繁、天灾多、民风彪悍", disasterRate = 0.3, banditRate = 0.25, taxRate = 0.1 },
     { id = "henan", name = "河南", desc = "四战之地、灾荒严重", disasterRate = 0.25, banditRate = 0.2, taxRate = 0.12 },
-    { id = "jiangnan", name = "江南", desc = "富庶但赋税重、后期清军压力", disasterRate = 0.1, banditRate = 0.08, taxRate = 0.2 },
-    { id = "huguang", name = "湖广", desc = "鱼米之乡、但张献忠之乱将至", disasterRate = 0.12, banditRate = 0.15, taxRate = 0.12 },
+    { id = "jiangnan", name = "江南", desc = "富庶但赋税重、后期北军压力", disasterRate = 0.1, banditRate = 0.08, taxRate = 0.2 },
+    { id = "huguang", name = "湖广", desc = "鱼米之乡、但张献钟之乱将至", disasterRate = 0.12, banditRate = 0.15, taxRate = 0.12 },
 }
 
 -- 宗族品级
@@ -116,7 +116,7 @@ GameData.CLAN_RULES = {
 
 GameData.FAMILY_MOTTOS = {
     { id = "study",    name = "诗书传家", icon = "书",
-      desc = "全族学识成长+20%，科举通过率+10%",
+      desc = "全族学识成长+20%，考校通过率+10%",
       effects = { studyGrowthMul = 0.2, examPassBonus = 0.1 } },
     { id = "martial",  name = "武德充沛", icon = "武",
       desc = "全族武艺成长+25%，从军存活率+15%",
@@ -198,7 +198,7 @@ GameData.EXPEDITION_TYPES = {
       desc = "上京朝觐，结交朝中权贵", duration = 3,
       cost = { silver = 500, grain = 200 },
       rewards = { fame = { 20, 50 }, silver = { 100, 300 } },
-      riskRate = 0.10, riskDesc = "卷入党争" },
+      riskRate = 0.10, riskDesc = "卷入朝争" },
 
     -- === 名门（7级）===
     { id = "border_patrol", name = "巡边戍守", icon = "戍",
@@ -220,8 +220,8 @@ GameData.EXPEDITION_TYPES = {
       riskRate = 0.30, riskDesc = "沙匪劫掠" },
 
     -- === 国柱（9级）===
-    { id = "tributary_mission", name = "万邦来朝", icon = "使",
-      desc = "代天子出使四方，宣扬国威；声望名利双收", duration = 5,
+    { id = "tributary_mission", name = "万商云集", icon = "商",
+      desc = "代商会远行四方，结交各地商帮；声望名利双收", duration = 5,
       cost = { silver = 1500, grain = 600 },
       rewards = { fame = { 50, 120 }, silver = { 800, 2000 } },
       riskRate = 0.15, riskDesc = "外邦刁难" },
@@ -287,25 +287,25 @@ GameData.ACHIEVEMENTS = {
       check = function(s) return s.fame >= 100 end },
     { id = "fame_200",    name = "天下闻名",     desc = "声望达到200",             icon = "天", reward = { silver = 50, grain = 30 },
       check = function(s) return s.fame >= 200 end },
-    -- 科举类
-    { id = "first_xiucai", name = "首中秀才",    desc = "族中首次出现秀才",         icon = "秀", reward = { fame = 10, silver = 10 },
+    -- 文脉类
+    { id = "first_xiucai", name = "初入书塾",    desc = "族中首次出现书生",         icon = "书", reward = { fame = 10, silver = 10 },
       check = function(s)
           for _, m in ipairs(GameData.GetAliveMembers()) do
-              if m.identity == "秀才" or m.identity == "举人" or m.identity == "进士" then return true end
+              if m.identity == "书生" or m.identity == "才俊" or m.identity == "名士" then return true end
           end
           return false
       end },
-    { id = "first_juren",  name = "金榜题名",    desc = "族中首次出现举人",         icon = "举", reward = { fame = 20, silver = 30 },
+    { id = "first_juren",  name = "文会魁首",    desc = "族中首次出现才俊",         icon = "魁", reward = { fame = 20, silver = 30 },
       check = function(s)
           for _, m in ipairs(GameData.GetAliveMembers()) do
-              if m.identity == "举人" or m.identity == "进士" then return true end
+              if m.identity == "才俊" or m.identity == "名士" then return true end
           end
           return false
       end },
-    { id = "first_jinshi", name = "天子门生",    desc = "族中首次出现进士",         icon = "进", reward = { fame = 40, silver = 60 },
+    { id = "first_jinshi", name = "儒林名士",    desc = "族中首次出现名士",         icon = "儒", reward = { fame = 40, silver = 60 },
       check = function(s)
           for _, m in ipairs(GameData.GetAliveMembers()) do
-              if m.identity == "进士" then return true end
+              if m.identity == "名士" then return true end
           end
           return false
       end },
@@ -343,14 +343,14 @@ GameData.ACHIEVEMENTS = {
       check = function(s) return s.totalMonths >= 60 end },
     { id = "survive_10y", name = "十年磨剑",     desc = "宗族延续10年以上",         icon = "剑", reward = { fame = 15, silver = 30 },
       check = function(s) return s.totalMonths >= 120 end },
-    { id = "survive_end", name = "乱世生存者",   desc = "坚持到1644年甲申之变",     icon = "存", reward = { fame = 30, silver = 50 },
+    { id = "survive_end", name = "乱世生存者",   desc = "坚持到1644年天倾之变",     icon = "存", reward = { fame = 30, silver = 50 },
       check = function(s) return s.year >= 1644 end },
     -- 特殊类
     { id = "births_10",   name = "多子多孙",     desc = "累计出生10名族人",         icon = "孙", reward = { fame = 10 },
       check = function(s) return s.totalBirths >= 10 end },
     { id = "births_20",   name = "子孙满堂",     desc = "累计出生20名族人",         icon = "满", reward = { fame = 20 },
       check = function(s) return s.totalBirths >= 20 end },
-    { id = "exams_3",     name = "书香世家",     desc = "累计3人通过科举",          icon = "书", reward = { fame = 15, silver = 20 },
+    { id = "exams_3",     name = "书香世家",     desc = "累计3人通过书院考校",      icon = "书", reward = { fame = 15, silver = 20 },
       check = function(s) return s.totalExamPasses >= 3 end },
     { id = "merits_5",    name = "将门虎子",     desc = "累计5次军功",             icon = "虎", reward = { fame = 20, silver = 25 },
       check = function(s) return s.totalMilitaryMerits >= 5 end },
@@ -448,7 +448,7 @@ GameData.YEARLY_GOAL_POOL = {
           end
           return false
       end },
-    { id = "exam_pass",  name = "金榜题名", desc = "本年至少1名族人通过科举",
+    { id = "exam_pass",  name = "文会夺魁", desc = "本年至少1名族人通过书院考校",
       icon = "榜", reward = { fame = 15, silver = 20 },
       check = function(s, snapshot) return s.totalExamPasses > snapshot.totalExamPasses end,
       condition = function(s)
@@ -514,7 +514,7 @@ GameData.TAB_UNLOCK = {
     clan      = 1,  -- 寒门即可：宗族（宗祠+族规）
     members   = 1,  -- 寒门即可：族人管理
     industry  = 1,  -- 寒门即可：经营（产业+库房）
-    career    = 2,  -- 农户解锁：功业（仕途+书院+历练，取最低=书院2）
+    career    = 2,  -- 农户解锁：功业（文脉+书院+历练，取最低=书院2）
     events    = 1,  -- 寒门即可：事件
 }
 
@@ -526,7 +526,7 @@ GameData.SUB_TAB_UNLOCK = {
     ind_main       = 1,  -- 寒门：产业
     ind_market     = 3,  -- 乡绅：集市
     ind_store      = 4,  -- 望族：库房
-    car_career     = 3,  -- 乡绅：仕途
+    car_career     = 3,  -- 乡绅：文脉
     car_academy    = 2,  -- 农户：书院
     car_expedition = 3,  -- 乡绅：历练
 }
@@ -558,7 +558,7 @@ GameData.EXPEDITION_UNLOCK = {
     border_patrol = 7, -- 名门解锁：巡边戍守
     treasure_hunt = 7, -- 名门解锁：寻访古迹
     silk_road     = 8, -- 豪阀解锁：丝路远征
-    tributary_mission = 9, -- 国柱解锁：万邦来朝
+    tributary_mission = 9, -- 国柱解锁：万商云集
 }
 
 --- 族规可启用上限
@@ -574,11 +574,11 @@ GameData.RULES_MAX_BY_RANK = {
     [9] = 5,  -- 国柱：5条
 }
 
---- 仕途子功能解锁
+--- 文脉子功能解锁
 GameData.CAREER_UNLOCK = {
-    exam     = 3,  -- 乡绅解锁：科举
+    exam     = 3,  -- 乡绅解锁：书院考校
     military = 3,  -- 乡绅解锁：从军（但世家前从军死亡率+20%）
-    donate   = 4,  -- 望族解锁：纳捐
+    donate   = 4,  -- 望族解锁：捐资
 }
 
 --- 品级提升时的解锁提示文本
@@ -593,7 +593,7 @@ GameData.RANK_UNLOCK_DESC = {
     },
     [3] = {  -- 乡绅
         "集市交易：买卖粮布药材铁器书籍马匹",
-        "仕途系统：科举取士、从军报国",
+        "文脉系统：书院考校、从军报国",
         "武馆（书院页面）：习练武艺",
         "历练系统：赶集贸易、游学求教",
         "祭天祈福：占卜卦象、抉择命运，获取物品与资源",
@@ -611,7 +611,7 @@ GameData.RANK_UNLOCK_DESC = {
         "铁匠铺产业：银两兼声望，提升武艺成长",
         "深山探秘、招贤纳士历练",
         "官宦世家联姻：声望大增",
-        "纳捐功能：银两买监生身份",
+        "捐资功能：银两捐书院附读名额",
         "族规上限提升至3条",
     },
     [5] = {  -- 世家
@@ -619,13 +619,13 @@ GameData.RANK_UNLOCK_DESC = {
         "马场产业：声望收益，从军族人战力提升",
         "镖局产业：高收益但有折损风险",
         "书坊产业：声望银两双收，提升学识成长",
-        "盐场产业：暴利但有官府稽查风险",
+        "盐场产业：暴利但有盐课稽查风险",
         "行商远途历练：高风险高收益远途贸易",
         "军户世家联姻：武艺加成",
         "产业进化：商铺→商号、织坊→绸缎庄",
     },
     [6] = {  -- 勋贵
-        "天子诰封：承办朝廷差事，积累皇恩兑换封赏",
+        "乡贤嘉奖：承办乡里事务，积累德望兑换褒奖",
         "钱庄产业：放贷收息，按总资产额外生利",
         "船队产业：海上贸易，利润极高",
         "庄园产业：粮银名三收的终极产业",
@@ -634,34 +634,34 @@ GameData.RANK_UNLOCK_DESC = {
         "当铺产业：典当质押，乱世暴利，按银两存量+1%收益",
         "染坊产业：染制锦缎彩绸，布匹银两双收",
         "私塾产业：开馆授徒，声名远播，全族学识+10%",
-        "漕运码头：扼守漕运要道，南北货物中转抽成",
-        "皇亲国戚联姻：皇室姻亲，声望飞涨，配偶全属性+20",
+        "河漕码头：扼守河漕要道，南北货物中转抽成",
+        "书香望族联姻：文名远播，声望飞涨，配偶全属性+20",
         "巡边戍守历练：率精锐巡视边关，军功换声望",
         "寻访古迹历练：探访前朝遗迹，寻觅传世珍宝",
         "名师授业/名将指点：高级培养，成长×2.5",
         "商队领队打工：率领商队远行，收入丰厚",
-        "镖局可进化为漕运码头",
+        "镖局可进化为河漕码头",
         "族规上限提升至4条，产业上限提升至25个",
     },
     [8] = {  -- 豪阀
         "军械坊产业：铸造兵器甲胄，从军族人战力+25%",
-        "织造局产业：承接官府织造，布匹银两声望三收",
+        "织造坊产业：承接大宗织造，布匹银两声望三收",
         "钱庄/当铺可进化为票号：汇通天下，总资产额外生利2%",
-        "藩镇将门联姻：配偶武艺+35，赠送精兵50",
+        "镖局武家联姻：配偶武艺+35，赠送精兵50",
         "丝路远征历练：远赴西域，带回奇珍异宝",
-        "矿监打工：监管矿山开采，收入极高",
+        "矿头打工：主持矿山开采，收入极高",
         "高阶天灾应对：需调动更多资源赈灾",
         "敌对势力进攻：组织防御抵御外敌入侵",
         "产业上限提升至30个",
     },
     [9] = {  -- 国柱
-        "皇商行产业：皇家特许经营，垄断盐铁茶叶，暴利产业",
+        "官榷行产业：官家特许经营，垄断盐铁茶叶，暴利产业",
         "海关行产业：把持海关贸易，坐收厘金，银两声望双收",
         "万亩良田产业：终极农业，粮银双收且不受天灾",
         "宰辅门第联姻：宰相之家，全族声望月产+5",
-        "万邦来朝历练：代天子出使四方，声望名利双收",
+        "万商云集历练：远行四方通商，声望名利双收",
         "全才培养：文武兼修，全属性成长×2.0",
-        "税使打工：代征赋税，权势滔天",
+        "税吏打工：代收商税，收入丰厚",
         "盐场可进化为海关行，庄园可进化为万亩良田",
         "族规上限提升至5条，产业上限提升至40个",
         "恭喜！已达最高品级——国柱！",

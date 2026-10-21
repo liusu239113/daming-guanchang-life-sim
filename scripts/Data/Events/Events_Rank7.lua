@@ -1,6 +1,6 @@
 -- ============================================================================
--- 大明人生官场模拟 - 名门品级（7级）专属事件池
--- 设计理念：名门望族树大招风，面临朝堂倾轧、地方豪强觊觎
+-- 大明家族人生模拟 - 名门品级（7级）专属事件池
+-- 设计理念：名门望族树大招风，面临乡里倾轧、地方豪强觊觎
 -- ============================================================================
 
 local GameData = require("Data.GameData")
@@ -147,10 +147,10 @@ events[#events + 1] = {
     end,
 }
 
--- 4. 天子赐匾 — 名门获御赐匾额，荣耀加身
+-- 4. 乡耆赐匾 — 名门获乡赠匾额，荣耀加身
 events[#events + 1] = {
     id = "r7_imperial_plaque",
-    title = "天子赐匾",
+    title = "乡耆赐匾",
     rankRange = {7, 9},
     weight = 8,
     cooldownMonths = 18,
@@ -158,31 +158,31 @@ events[#events + 1] = {
     check = function(s) return s.fame > 400 end,
     execute = function(s, report)
         local feastCost = math.ceil(40 + s.clanRank * 8)
-        report.events[#report.events + 1] = "圣上御笔亲题匾额，赐予家族！"
-        GameData.AddLog("天子御赐匾额，阖族荣光。")
+        report.events[#report.events + 1] = "乡耆名家亲题匾额，赐予家族！"
+        GameData.AddLog("乡耆乡赠匾额，阖族荣光。")
         return {
-            title = "天子赐匾",
-            desc = "家族声名上达天听，圣上龙颜大悦，御笔亲题「忠义传家」四字匾额，遣钦差送至府上。\n此乃天大的荣耀，然迎匾之礼若失体统，恐惹圣颜不悦；若大操大办，又需破费不少。",
+            title = "乡耆赐匾",
+            desc = "家族声名上达天听，乡耆龙颜大悦，名家亲题「忠义传家」四字匾额，遣乡使送至府上。\n此乃天大的荣耀，然迎匾之礼若失体统，恐惹圣颜不悦；若大操大办，又需破费不少。",
             choices = {
                 { text = "隆重迎匾，宴请四方（-" .. feastCost .. "银两，声望+40）", cost = {silver = feastCost},
-                  result = "族中张灯结彩，焚香沐浴，鼓乐齐鸣，阖族跪迎御匾入祠。四方宾客纷至沓来，观礼者挤满街巷。钦差回京复命，盛赞家族知礼守义，天颜甚悦。",
+                  result = "族中张灯结彩，焚香沐浴，鼓乐齐鸣，阖族跪迎赠匾入祠。四方宾客纷至沓来，观礼者挤满街巷。乡使回京复命，盛赞家族知礼守义，天颜甚悦。",
                   effect = function()
                     GameData.AddResource("fame", 40)
-                    GameData.AddLog("隆重迎匾入祠，朝廷嘉许，声威大振。")
+                    GameData.AddLog("隆重迎匾入祠，乡里嘉许，声威大振。")
                   end },
                 { text = "简朴恭迎，诚心为上（声望+20）",
-                  result = "族长率全族老幼素衣跪迎，不设鼓乐，不摆宴席，唯有满腔赤诚。钦差见状动容，叹道「真忠义之家也」。礼数虽薄，诚意却重。",
+                  result = "族长率全族老幼素衣跪迎，不设鼓乐，不摆宴席，唯有满腔赤诚。乡使见状动容，叹道「真忠义之家也」。礼数虽薄，诚意却重。",
                   effect = function()
                     GameData.AddResource("fame", 20)
-                    GameData.AddLog("简朴恭迎御匾，以诚敬之心感召乡里。")
+                    GameData.AddLog("简朴恭迎赠匾，以诚敬之心感召乡里。")
                   end },
                 { text = "拓印匾文分赠族学（-20银两，全族学识+3）", cost = {silver = 20},
-                  result = "族长命人精拓匾文数十份，分悬于族学、书院与各房子弟读书处，令后人日日瞻仰，不忘忠义之训。子弟见御笔而自励，学风为之一振。",
+                  result = "族长命人精拓匾文数十份，分悬于族学、书院与各房子弟读书处，令后人日日瞻仰，不忘忠义之训。子弟见名家亲题而自励，学风为之一振。",
                   effect = function()
                     for _, m in ipairs(GameData.GetAliveMembers()) do
                         m.study = math.min(100, m.study + 3)
                     end
-                    GameData.AddLog("拓印御匾文分赠族学，子弟向学之风大盛。")
+                    GameData.AddLog("拓印赠匾文分赠族学，子弟向学之风大盛。")
                   end },
             }
         }
@@ -234,10 +234,10 @@ events[#events + 1] = {
     end,
 }
 
--- 6. 朝廷摊派
+-- 6. 乡里摊派
 events[#events + 1] = {
     id = "r7_court_levy",
-    title = "朝廷摊派",
+    title = "乡里摊派",
     rankRange = {7, 9},
     weight = 9,
     cooldownMonths = 6,
@@ -247,17 +247,17 @@ events[#events + 1] = {
         local scale = EventSystem.GetDisasterScale(s.clanRank)
         local levy = math.ceil(s.silver * math.min(0.15, 0.05 * scale))
         local grainLevy = math.ceil(s.grain * math.min(0.1, 0.03 * scale))
-        report.events[#report.events + 1] = "朝廷加派赋税！银两-" .. levy .. " 粮食-" .. grainLevy
-        GameData.AddLog("朝廷以军饷不足为由，向豪族加派重税。")
+        report.events[#report.events + 1] = "乡里加派赋税！银两-" .. levy .. " 粮食-" .. grainLevy
+        GameData.AddLog("乡里以军饷不足为由，向豪族加派重税。")
         return {
-            title = "朝廷摊派",
-            desc = "朝廷以边关军饷不足为由，向各地豪门大族加派钱粮。\n应缴银两" .. levy .. "、粮食" .. grainLevy .. "\n名门之家，首当其冲。",
+            title = "乡里摊派",
+            desc = "乡里以边关军饷不足为由，向各地豪门大族加派钱粮。\n应缴银两" .. levy .. "、粮食" .. grainLevy .. "\n名门之家，首当其冲。",
             choices = {
                 { text = "如数缴纳以示恭顺", effect = function()
                     GameData.AddResource("silver", -levy)
                     GameData.AddResource("grain", -grainLevy)
                     GameData.AddResource("fame", 10)
-                    GameData.AddLog("如数上缴，朝廷嘉许。")
+                    GameData.AddLog("如数上缴，乡里嘉许。")
                 end },
                 { text = "疏通关系减免三成（-" .. math.ceil(levy * 0.3) .. "银两行贿）", cost = {silver = math.ceil(levy * 0.3)}, effect = function()
                     GameData.AddResource("silver", -math.ceil(levy * 0.7))

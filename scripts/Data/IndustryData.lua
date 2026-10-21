@@ -1,5 +1,5 @@
 -- ============================================================================
--- 大明人生官场模拟 - 产业数据模块
+-- 大明家族人生模拟 - 产业数据模块
 -- 管理产业类型、进化、解锁等产业相关配置
 -- 从 GameData.lua 中拆分出来
 -- ============================================================================
@@ -81,8 +81,8 @@ IndustryData.INDUSTRY_TYPES = {
     { id = "private_school", name = "私塾", resource = "fame", baseOutput = 10, cost = 1100,
       desc = "开馆授徒，声名远播；全族学识成长+10%", specialEffect = "study_grow_10",
       resource2 = "silver", baseOutput2 = 8 },
-    { id = "canal_wharf", name = "漕运码头", resource = "silver", baseOutput = 38, cost = 1800,
-      desc = "扼守漕运要道，南北货物中转抽成", specialEffect = "trade_hub" },
+    { id = "canal_wharf", name = "河漕码头", resource = "silver", baseOutput = 38, cost = 1800,
+      desc = "扼守河漕要道，南北货物中转抽成", specialEffect = "trade_hub" },
 
     -- === 豪阀（8级）===
     { id = "arsenal",     name = "军械坊", resource = "silver", baseOutput = 30, cost = 2200,
@@ -121,7 +121,7 @@ IndustryData.INDUSTRY_EVOLUTION = {
     pawnshop     = { to = "piaohao",      reqLevel = 3, reqRank = 8, cost = 1000,
                      desc = "典当升级，升级为票号" },
     escort       = { to = "canal_wharf",  reqLevel = 3, reqRank = 7, cost = 900,
-                     desc = "镖路转漕运，升级为漕运码头" },
+                     desc = "镖路转河漕，升级为河漕码头" },
     salt_field   = { to = "customs_house",reqLevel = 3, reqRank = 9, cost = 2000,
                      desc = "盐政转关务，升级为海关行" },
     estate       = { to = "grand_farmland", reqLevel = 3, reqRank = 9, cost = 1800,
